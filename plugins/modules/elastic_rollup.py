@@ -118,17 +118,17 @@ EXAMPLES = r'''
           - "avg"
 
 - name: Delete a roll up job called sensor
-  community.elastic.elastic_rollup
+  community.elastic.elastic_rollup:
     name: sensor
     state: absent
 
 - name: Start a roll up job called sensor
-  community.elastic.elastic_rollup
+  community.elastic.elastic_rollup:
     name: sensor
     state: started
 
 - name: Stop a roll up job called sensor
-  community.elastic.elastic_rollup
+  community.elastic.elastic_rollup:
     name: sensor
     state: stopped
 '''
