@@ -1,0 +1,91 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      login_user: elastic
+      login_password: secret
+      auth_method: http_auth
+      timeout: 30
+
+  block:
+
+  - name: Create an index called myindex1
+    community.elastic.elastic_index:
+      name: myindex1
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex1' was created."
+        - result.changed == True
+
+  - name: Add some test documents to the source
+    uri:
+      method: POST
+      url: "http://elastic:secret@localhost:9200/_bulk?pretty"
+      body_format: json
+      body: |
+        { "index": { "_index": "myindex1", "_id": "1" } }
+        { "field1": "value1" }
+        { "index": { "_index": "myindex1", "_id": "2" } }
+        { "field1": "value1" }
+        { "index": { "_index": "myindex1", "_id": "3" } }
+        { "field1": "value1" }
+        { "index": { "_index": "myindex1", "_id": "4" } }
+        { "field1": "value1" }
+        { "index": { "_index": "myindex1", "_id": "5" } }
+        { "field1": "value1" }
+        { "index": { "_index": "myindex1", "_id": "6" } }
+        { "field1": "value1" }
+        { "index": { "_index": "myindex1", "_id": "7" } }
+        { "field1": "value1" }
+        { "index": { "_index": "myindex1", "_id": "8" } }
+        { "field1": "value1" }
+        { "index": { "_index": "myindex1", "_id": "9" } }
+        { "field1": "value1" }
+        { "index": { "_index": "myindex1", "_id": "10" } }
+        { "field1": "value1" }\n\n
+
+  # Last doc above in uri module task above throws an error. Find out why and fix
+
+  - name: Create an index called myindex2
+    community.elastic.elastic_index:
+      name: myindex2
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex2' was created."
+        - result.changed == True
+
+  - name: Copy documents from myindex1 to myindex2 (with auth)
+    community.elastic.elastic_reindex:
+      <<: *elastic_index_parameters
+      source: myindex1
+      dest: myindex2
+      wait_for_completion: yes
+    register: reindex
+
+  - assert:
+      that:
+        - "reindex.changed == True"
+        - "reindex.created == 9"
+        - "reindex.updated == 0"
+        - "reindex.deleted == 0"
+        - "reindex.batches == 1"
+        - "reindex.msg == 'The copy from myindex1 to myindex2 was successful.'"
+
+  - name: Copy documents from myindex2 to myindex3 without waiting (with auth)
+    community.elastic.elastic_reindex:
+      <<: *elastic_index_parameters
+      source: myindex2
+      dest: myindex3
+      wait_for_completion: no
+    register: reindex
+
+  - assert:
+      that:
+        - "reindex.changed == True"
+        - "reindex.msg == 'The copy task from myindex2 to myindex3 has been started.'"
+        - "reindex.task is defined"

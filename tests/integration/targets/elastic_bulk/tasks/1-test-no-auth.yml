@@ -1,0 +1,189 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      timeout: 30
+
+  block:
+
+  - name: Create an index called myindex1
+    community.elastic.elastic_index:
+      name: myindex1
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex1' was created."
+        - result.changed == True
+
+  - name: Add some test documents to the source
+    community.elastic.elastic_bulk:
+      <<: *elastic_index_parameters
+      index: myindex
+      actions:
+        index:
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed"
+        - "elastic.errors == 0"
+        - "elastic.msg == 'Successfully executed Bulk actions'"
+        - "elastic.took > 0"
+
+  - name: Flush the index
+    community.elastic.elastic_index:
+      <<: *elastic_index_parameters
+      name: myindex
+      state: flush
+
+  - name: Count documents in myindex
+    shell: curl --silent -X GET http://localhost:9200/myindex/_count
+    register: count
+
+  - assert:
+      that:
+        - "'{\"count\":10,' in count.stdout"
+
+  - name: Add some test documents to the source
+    community.elastic.elastic_bulk:
+      <<: *elastic_index_parameters
+      index: idonotexist
+      actions:
+        index:
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed"
+        - "elastic.errors == 0"
+        - "elastic.msg == 'Successfully executed Bulk actions'"
+        - "elastic.took > 0"
+
+  - name: Flush the index
+    community.elastic.elastic_index:
+      <<: *elastic_index_parameters
+      name: idonotexist
+      state: flush
+
+  - name: Count documents in idonotexist
+    shell: curl --silent -X GET http://localhost:9200/idonotexist/_count
+    register: count
+
+  - assert:
+      that:
+        - "'{\"count\":10,' in count.stdout"
+
+  - name: Setup multiactions index
+    community.elastic.elastic_bulk:
+      <<: *elastic_index_parameters
+      index: multiactions
+      actions:
+        index:
+          - { "_id": 99 }
+          - { "_id": 101 }
+          - { "_id": "XXX" }
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed"
+        - "elastic.errors == 0"
+        - "elastic.msg == 'Successfully executed Bulk actions'"
+        - "elastic.took > 0"
+
+  - name: Use the actions key to include json inline
+    community.elastic.elastic_bulk:
+      <<: *elastic_index_parameters
+      index: multiactions
+      actions:
+        index:
+          - { "quote": "To be, or not to be: that is the question" }
+          - { "quote": "This above all: to thine own self be true" }
+          - { "quote": "Cowards die many times before their deaths; The valiant never taste of death but once." }
+          - { "_id:": 1,  "hello": "Lorum ipsum" }
+        create:
+          - { "foo": "bar" }
+        delete:
+          - { "_id": 99 }
+        update:
+          - { "_id": "XXX", "foo": "Lorum ipsum" }
+          - { "_id": 101, "foo": "Lorum ipsum" }
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed"
+        - "elastic.errors == 0"
+        - "elastic.msg == 'Successfully executed Bulk actions'"
+        - "elastic.took > 0"
+
+  - name: Flush the index
+    community.elastic.elastic_index:
+      <<: *elastic_index_parameters
+      name: multiactions
+      state: flush
+
+  - name: Count documents in idonotexist
+    shell: curl --silent -X GET http://localhost:9200/multiactions/_count
+    register: count
+
+  - assert:
+      that:
+        - "'{\"count\":7,' in count.stdout"
+
+  - name: Count documents with _id 101
+    shell: curl --silent -X GET http://localhost:9200/multiactions/_count?q=_id:101
+    register: count
+
+  - assert:
+      that:
+        - "'{\"count\":1,' in count.stdout"
+
+  - name: Count documents that were updated
+    shell: curl --silent -X GET http://localhost:9200/multiactions/_count?q=foo:Lorum
+    register: count
+
+  - assert:
+      that:
+        - "'{\"count\":2,' in count.stdout"
+
+  - name: Bulk load from json file - one record per line
+    community.elastic.elastic_bulk:
+      index: loaded_from_file
+      src: "{{ role_path }}/files/test-data.json"
+    register: load_from_filex
+
+  - name: Flush the index
+    community.elastic.elastic_index:
+      <<: *elastic_index_parameters
+      name: loaded_from_file
+      state: flush
+
+  - name: Count documents that were uploaded from the file
+    shell: curl --silent -X GET http://localhost:9200/loaded_from_file/_count
+    register: count
+
+  - assert:
+      that:
+        - "'{\"count\":10000,' in count.stdout"

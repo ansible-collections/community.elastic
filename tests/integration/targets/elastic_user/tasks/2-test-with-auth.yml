@@ -1,0 +1,177 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      login_user: elastic
+      login_password: secret
+      auth_method: http_auth
+      timeout: 30
+
+  block:
+
+  - name: Create a user
+    community.elastic.elastic_user:
+      name: rhys
+      password: secret
+      full_name: "Rhys Campbell"
+      email: email@email.com
+      state: present
+      roles:
+        - "role1"
+        - "role2"
+      <<: *elastic_index_parameters
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed == True"
+        - "'The user rhys was successfully created' in elastic.msg"
+
+  - name: Create user again - should be updated
+    community.elastic.elastic_user:
+      name: rhys
+      password: secret
+      full_name: "Rhys Campbell"
+      email: email@email.com
+      state: present
+      roles:
+        - "role1"
+        - "role2"
+      <<: *elastic_index_parameters
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed == True"
+        - "'The user rhys was successfully updated' in elastic.msg"
+
+  - name: Create user again - should NOT be updated
+    community.elastic.elastic_user:
+      name: rhys
+      password: secret
+      full_name: "Rhys Campbell"
+      email: email@email.com
+      state: present
+      roles:
+        - "role1"
+        - "role2"
+      update_password: "on_create"
+      <<: *elastic_index_parameters
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed == False"
+        - "elastic.msg == 'The user rhys already exists as configured.'"
+
+  - name: Delete user
+    community.elastic.elastic_user:
+      name: rhys
+      state: absent
+      <<: *elastic_index_parameters
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed == True"
+        - "elastic.msg == 'The user rhys was deleted.'"
+
+  - name: Delete user again
+    community.elastic.elastic_user:
+      name: rhys
+      state: absent
+      <<: *elastic_index_parameters
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed == False"
+        - "elastic.msg == 'The user rhys does not exist.'"
+
+  - name: Create a few roles
+    community.elastic.elastic_role:
+      name: "{{ item }}"
+      state: present
+      cluster:
+        - all
+      applications:
+        - application: myapp
+          privileges:
+            - admin
+            - read
+          resources:
+            - "*"
+      <<: *elastic_index_parameters
+    loop:
+      - "role1"
+      - "role2"
+      - "role3"
+      - "role4"
+      - "role5"
+
+  - name: Create a user with a bunch of roles assigned
+    community.elastic.elastic_user:
+      name: rhys
+      password: secret
+      full_name: "Rhys Campbell"
+      email: email@email.com
+      state: present
+      roles:
+        - "role1"
+        - "role2"
+        - "role3"
+        - "role4"
+        - "role5"
+      <<: *elastic_index_parameters
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed == True"
+        - "'The user rhys was successfully created' in elastic.msg"
+
+  - name: Run user create again should NOT change
+    community.elastic.elastic_user:
+      name: rhys
+      password: secret
+      full_name: "Rhys Campbell"
+      email: email@email.com
+      state: present
+      roles:
+        - "role1"
+        - "role2"
+        - "role3"
+        - "role4"
+        - "role5"
+      update_password: "on_create"
+      <<: *elastic_index_parameters
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed == False"
+        - "elastic.msg == 'The user rhys already exists as configured.'"
+
+  - name: Disable user
+    community.elastic.elastic_user:
+      name: rhys
+      password: secret
+      full_name: "Rhys Campbell"
+      email: email@email.com
+      state: present
+      roles:
+        - "role1"
+        - "role2"
+        - "role3"
+        - "role4"
+        - "role5"
+      update_password: "on_create"
+      enabled: no
+      <<: *elastic_index_parameters
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed == True"
+        - "'The user rhys was successfully updated' in elastic.msg"
+
+# TODO check_mode tests - See elastic_role tests

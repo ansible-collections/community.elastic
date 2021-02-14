@@ -1,0 +1,108 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      timeout: 30
+
+  block:
+
+  - name: Delete an index called myindex
+    community.elastic.elastic_index:
+      name: myindex
+      state: absent
+      <<: *elastic_index_parameters
+
+  - name: Create an index called myindex
+    community.elastic.elastic_index:
+      name: myindex
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex' was created."
+        - result.changed == True
+
+  - name: Delete an index called myindex
+    community.elastic.elastic_index:
+      name: myindex
+      state: absent
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex' was deleted."
+        - result.changed == True
+
+  - name: Create an index called myindex with some settings and mappings
+    community.elastic.elastic_index:
+      name: myindex
+      settings:
+        number_of_shards: 5
+        number_of_replicas: 3
+      mappings:
+        properties:
+          age: { "type": "integer" }
+          email: { "type": "keyword" }
+          name: { "type": "text" }
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex' was created."
+        - result.changed == True
+
+  - name: Attempt to create myindex again
+    community.elastic.elastic_index:
+      name: myindex
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex' already exists."
+        - result.changed == False
+
+  - name: Delete an index called myindex
+    community.elastic.elastic_index:
+      name: myindex
+      state: absent
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex' was deleted."
+        - result.changed == True
+
+  - name: Delete myindex again
+    community.elastic.elastic_index:
+      name: myindex
+      state: absent
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex' does not exist."
+        - result.changed == False
+
+  - name: Create an index called myindex with some settings and mappings
+    community.elastic.elastic_index:
+      name: myindex
+      settings:
+        number_of_shards: 5
+        number_of_replicas: 3
+      mappings:
+        properties:
+          age: { "type": "integer" }
+          email: { "type": "keyword" }
+          name: { "type": "text" }
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex' was created."
+        - result.changed == True

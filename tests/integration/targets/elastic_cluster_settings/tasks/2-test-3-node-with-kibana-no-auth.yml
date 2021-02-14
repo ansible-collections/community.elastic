@@ -1,0 +1,198 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      timeout: 30
+
+  block:
+
+  - name: Wait for cluster to stabilse after setup
+    community.elastic.elastic_cluster_health:
+      status: red
+      wait_for: 'number_of_nodes'
+      to_be: "3"
+      timeout: 90
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'Elasticsearch health is good. The variable number_of_nodes has reached the value 3.'"
+        - "elastic.iterations >= 1"
+        - "elastic.changed == False"
+
+  # 3 node cluster tests
+  - name: Basic module test - expect green
+    community.elastic.elastic_cluster_health:
+      status: green
+      <<: *elastic_index_parameters
+    ignore_errors: yes
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'Elasticsearch health is good.'"
+        - "elastic.changed == False"
+        - "elastic.status == 'green'"
+        - "elastic.iterations <= 3"
+
+
+  - name: Basic module test - success expect green
+    community.elastic.elastic_cluster_health:
+      <<: *elastic_index_parameters
+      status: green
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.active_primary_shards >= 0"
+        - "elastic.active_shards >= 0"
+        - "elastic.active_shards_percent_as_number >= 0.0"
+        - "elastic.changed == False"
+        - "elastic.cluster_name == 'es-docker-cluster'"
+        - "elastic.delayed_unassigned_shards == 0"
+        - "elastic.initializing_shards == 0"
+        - "elastic.msg == 'Elasticsearch health is good.'"
+        - "elastic.number_of_data_nodes == 3"
+        - "elastic.number_of_in_flight_fetch == 0"
+        - "elastic.number_of_nodes == 3"
+        - "elastic.number_of_pending_tasks >= 0"
+        - "elastic.relocating_shards == 0"
+        - "elastic.status == 'green'"
+        - "elastic.task_max_waiting_in_queue_millis >= 0"
+        - "elastic.timed_out == false"
+        - "elastic.unassigned_shards  >= 0"
+
+  - name: Wait for 3 active nodes
+    community.elastic.elastic_cluster_health:
+      <<: *elastic_index_parameters
+      status: green
+      wait_for: 'number_of_nodes'
+      to_be: 3
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.status == 'green'"
+        - "elastic.msg == 'Elasticsearch health is good. The variable number_of_nodes has reached the value 3.'"
+
+  - name: Not enough nodes failure >3
+    community.elastic.elastic_cluster_health:
+      <<: *elastic_index_parameters
+      status: green
+      wait_for: 'number_of_nodes'
+      to_be: 10
+      poll: 12
+      interval: 3
+    ignore_errors: yes
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.status == 'green'"
+        - "elastic.msg == 'The variable number_of_nodes did not reached the value 10.'"
+        - "elastic.iterations == 12"
+
+  - name: Test all health statuses - all should pass
+    community.elastic.elastic_cluster_health:
+      <<: *elastic_index_parameters
+      status: "{{ item }}"
+    with_items:
+      - red
+      - yellow
+      - green
+    register: elastic
+
+  - assert:
+      that:
+        - "item.msg == 'Elasticsearch health is good.'"
+    loop: "{{ elastic.results }}"
+
+  - name: Test all wait_for values - all should pass
+    community.elastic.elastic_cluster_health:
+      <<: *elastic_index_parameters
+      wait_for: "{{ item.wait_for }}"
+      to_be: "{{ item.to_be }}"
+    loop:
+      - { "wait_for": 'status', "to_be": "green" }
+      - { "wait_for": 'number_of_nodes', "to_be": 3 }
+      - { "wait_for": 'number_of_data_nodes', "to_be": 3 }
+      - { "wait_for": 'active_primary_shards', "to_be": 6 }
+      - { "wait_for": 'active_shards', "to_be": 12 }
+      - { "wait_for": 'relocating_shards', "to_be": 0 }
+      - { "wait_for": 'initializing_shards', "to_be": 0 }
+      - { "wait_for": 'unassigned_shards', "to_be": 0 }
+      - { "wait_for": 'delayed_unassigned_shards', "to_be": 0 }
+      - { "wait_for": 'number_of_pending_tasks', "to_be": 0 }
+      - { "wait_for": 'number_of_in_flight_fetch', "to_be": 0 }
+      - { "wait_for": 'task_max_waiting_in_queue_millis', "to_be": 0 }
+      - { "wait_for": 'active_shards_percent_as_number', "to_be": 100 }
+    register: elastic
+
+  # Kill docker container tests
+  #- name: Stop es02 container
+  #  community.general.docker_container:
+  #    name: es02
+  #    state: stopped
+
+  - name: Stop es02 container
+    shell: docker-compose -f 3-node-with-kibana-no-auth.yml stop es02
+    args:
+      chdir: "{{role_path}}/docker"
+
+  - name: Get status after es02 is killed
+    community.elastic.elastic_cluster_health:
+      <<: *elastic_index_parameters
+    ignore_errors: yes
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'Timed out waiting for elastic health to converge.'"
+        - "elastic.status == 'yellow'"
+        - "elastic.number_of_nodes == 2"
+        - "elastic.active_shards_percent_as_number >= 50.0"
+        - "elastic.failures == 3"
+
+  #- name: Start es02 container again
+  #  community.general.docker_container:
+  #    name: es02
+  #    state: started
+  #    volumes:
+  #      - docker_data02:/usr/share/elasticsearch/data
+  #    ports:
+  #      - 9201:9201
+  #    network_mode: bridge
+  #    networks:
+  #      - name: docker_elastic  # docker-compose adds docker_ prefix
+  #    ulimits:
+  #      - 'memlock:-1:-1'
+  #    env:
+  #      node.name: "es02"
+  #      cluster.name: "es-docker-cluster"
+  #      discovery.seed_hosts: "es01,es03"
+        #cluster.initial_master_nodes: "es01,es02,es03"
+  #      bootstrap.memory_lock: "true"
+  #      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+
+  - name: Start es02 container again - Doesn't work "No containers to restart"
+    shell: docker-compose -f 3-node-with-kibana-no-auth.yml restart es02
+    args:
+      chdir: "{{role_path}}/docker"
+
+  - name: Wait for es02 to rejoin the cluster
+    community.elastic.elastic_cluster_health:
+      <<: *elastic_index_parameters
+      status: green
+      wait_for: 'number_of_nodes'
+      to_be: 3
+      poll: 99
+      interval: 1
+    ignore_errors: yes
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'Elasticsearch health is good. The variable number_of_nodes has reached the value 3.'"
+        - "elastic.status == 'green'"
+        - "elastic.number_of_nodes == 3"
+        - "elastic.active_shards_percent_as_number == 100"
+        - "elastic.iterations >= 1"

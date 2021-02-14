@@ -1,0 +1,261 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      login_user: elastic
+      login_password: secret
+      auth_method: http_auth
+      timeout: 30
+
+  block:
+
+  - name: Create a simple role
+    community.elastic.elastic_role:
+      name: myrole
+      state: present
+      indices:
+        - names:
+            - "index1"
+            - "index2"
+          privileges:
+            - "all"
+      <<: *elastic_index_parameters
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed"
+        - "'The role myrole was successfully created' in elastic.msg"
+
+  - name: Recreate same role - no change
+    community.elastic.elastic_role:
+      name: myrole
+      state: present
+      indices:
+        - names:
+            - "index1"
+            - "index2"
+          privileges:
+            - "all"
+      <<: *elastic_index_parameters
+    register: elastic
+
+- assert:
+    that:
+      - "elastic.changed == False"
+      - "elastic.msg == 'The role myrole already exists as configured.'"
+
+- name: Update the role
+  community.elastic.elastic_role:
+    name: myrole
+    state: present
+    indices:
+      - names:
+          - "index1"
+          - "index2"
+          - "index3"
+        privileges:
+          - "all"
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "'The role myrole was successfully updated' in elastic.msg"
+
+- name: Delete the role
+  community.elastic.elastic_role:
+    name: myrole
+    state: absent
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed"
+      - elastic.msg == 'The role myrole was deleted.'
+
+- name: Add a new role with check mode
+  community.elastic.elastic_role:
+    name: myrole
+    state: present
+    indices:
+      - names:
+          - "index1"
+          - "index2"
+        privileges:
+          - "all"
+    <<: *elastic_index_parameters
+  register: elastic
+  check_mode: yes
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "'The role myrole was successfully created' in elastic.msg"
+
+- name: Add new role
+  community.elastic.elastic_role:
+    name: myrole
+    state: present
+    indices:
+      - names:
+          - "index1"
+          - "index2"
+        privileges:
+          - "all"
+    <<: *elastic_index_parameters
+  register: elastic
+  check_mode: no
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "'The role myrole was successfully created' in elastic.msg"
+
+- name: Modify role check mode
+  community.elastic.elastic_role:
+    name: myrole
+    state: present
+    indices:
+      - names:
+          - "index1"
+          - "index2"
+          - "index3"
+        privileges:
+          - "all"
+    <<: *elastic_index_parameters
+  register: elastic
+  check_mode: yes
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "'The role myrole was successfully updated' in elastic.msg"
+
+- name: Modify role
+  community.elastic.elastic_role:
+    name: myrole
+    state: present
+    indices:
+      - names:
+          - "index1"
+          - "index2"
+          - "index3"
+        privileges:
+          - "all"
+    <<: *elastic_index_parameters
+  register: elastic
+  check_mode: no
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "'The role myrole was successfully updated' in elastic.msg"
+
+- name: Delete role check mode
+  community.elastic.elastic_role:
+    name: myrole
+    state: absent
+    <<: *elastic_index_parameters
+  register: elastic
+  check_mode: yes
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "elastic.msg == 'The role myrole was deleted.'"
+
+- name: Delete role
+  community.elastic.elastic_role:
+    name: myrole
+    state: absent
+    <<: *elastic_index_parameters
+  register: elastic
+  check_mode: no
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "elastic.msg == 'The role myrole was deleted.'"
+
+- name: Create a role with cluster privs
+  community.elastic.elastic_role:
+    name: snapshot
+    state: present
+    cluster:
+      - create_snapshot
+      - monitor_snapshot
+      - manage_slm
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "'The role snapshot was successfully created' in elastic.msg"
+
+- name: Create a role with cluster privs
+  community.elastic.elastic_role:
+    name: snapshot
+    state: present
+    cluster:
+      - create_snapshot
+      - monitor_snapshot
+      - manage_slm
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed == False"
+      - "'The role snapshot already exists as configured.' in elastic.msg"
+
+- name: Create a role with all cluster privs
+  community.elastic.elastic_role:
+    name: root
+    state: present
+    cluster:
+      - all
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "'The role root was successfully created' in elastic.msg"
+
+- name: Create a role with all cluster privs
+  community.elastic.elastic_role:
+    name: root
+    state: present
+    cluster:
+      - all
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed == False"
+      - "'The role root already exists as configured.' in elastic.msg"
+
+- name: Add an application to a role
+  community.elastic.elastic_role:
+    name: root
+    state: present
+    cluster:
+      - all
+    applications:
+      - application: myapp
+        privileges:
+          - admin
+          - read
+        resources:
+          - "*"
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "'The role root was successfully updated' in elastic.msg"

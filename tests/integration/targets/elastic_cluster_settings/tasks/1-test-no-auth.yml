@@ -1,0 +1,118 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      timeout: 90
+
+  block:
+
+  - name: Basic module test - single node no auth 1
+    community.elastic.elastic_cluster_settings:
+      <<: *elastic_index_parameters
+      settings:
+        action.auto_create_index: "true"
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'There are no cluster configuration changes to perform.'"
+        - "elastic.changed == False"
+
+  - name: Basic module test - single node no auth 2
+    community.elastic.elastic_cluster_settings:
+      <<: *elastic_index_parameters
+      settings:
+        action.auto_create_index: "false"
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'The cluster configuration has been updated.'"
+        - "elastic.changed == True"
+        - 'elastic.cluster_cfg_changes == {"action.auto_create_index": {"new_value": "false", "old_value": "true"}}'
+
+  - name: Basic module test - single node no auth 3
+    community.elastic.elastic_cluster_settings:
+      <<: *elastic_index_parameters
+      settings:
+        action.auto_create_index: "false"
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'There are no cluster configuration changes to perform.'"
+        - "elastic.changed == False"
+
+  - name: Test check_mode
+    community.elastic.elastic_cluster_settings:
+      <<: *elastic_index_parameters
+      settings:
+        action.auto_create_index: "true"
+    check_mode: yes
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'The cluster configuration has been updated.'"
+        - "elastic.changed == True"
+        - 'elastic.cluster_cfg_changes == {"action.auto_create_index": {"new_value": "true", "old_value": "false"}}'
+
+  - name: Update setting after check mode test
+    community.elastic.elastic_cluster_settings:
+      <<: *elastic_index_parameters
+      settings:
+        action.auto_create_index: "true"
+    check_mode: no
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'The cluster configuration has been updated.'"
+        - "elastic.changed == True"
+        - 'elastic.cluster_cfg_changes == {"action.auto_create_index": {"new_value": "true", "old_value": "false"}}'
+
+  - name: Update a bunch of cluster settings
+    community.elastic.elastic_cluster_settings:
+      <<: *elastic_index_parameters
+      settings:
+        action.auto_create_index: "false"
+        action.destructive_requires_name: "true"
+        cluster.auto_shrink_voting_configuration: "false"
+        cluster.indices.close.enable: "false"
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'The cluster configuration has been updated.'"
+        - "elastic.changed == True"
+        - 'elastic.cluster_cfg_changes == {"action.auto_create_index": {"new_value": "false", "old_value": "true"}, "action.destructive_requires_name": {"new_value": "true", "old_value": "false"}, "cluster.auto_shrink_voting_configuration": {"new_value": "false", "old_value": "true"}, "cluster.indices.close.enable": {"new_value": "false", "old_value": "true"}}'
+
+  - name: Reset settings to default
+    community.elastic.elastic_cluster_settings:
+      <<: *elastic_index_parameters
+      settings:
+        action.auto_create_index: null
+        action.destructive_requires_name: null
+        cluster.auto_shrink_voting_configuration: null
+        cluster.indices.close.enable: null
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'The cluster configuration has been updated.'"
+        - "elastic.changed == True"
+
+
+  - name: Run again - should be no effective change
+    community.elastic.elastic_cluster_settings:
+      <<: *elastic_index_parameters
+      settings:
+        action.auto_create_index: null
+        action.destructive_requires_name: null
+        cluster.auto_shrink_voting_configuration: null
+        cluster.indices.close.enable: null
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.msg == 'There are no cluster configuration changes to perform.'"
+        - "elastic.changed == False"

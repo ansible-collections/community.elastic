@@ -1,0 +1,11 @@
+{
+    "ANSIBLE_MODULE_ARGS": {
+        "settings": {
+          "indices": {
+            "recovery": {
+                "max_bytes_per_sec": "50mb"
+            }
+          }
+        }
+    }
+}

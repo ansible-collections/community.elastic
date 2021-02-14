@@ -1,0 +1,51 @@
+---
+- name: Ensure docker-compose is installed
+  package:
+    name: docker-compose
+    state: present
+
+- name: Ensure any existing docker containers are removed
+  community.general.docker_container:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ docker_containers }}"
+
+- name: Clean up docker volumes
+  community.general.docker_volume:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ docker_volumes }}"
+
+- name: Run docker-compose file
+  shell: docker-compose -f {{ docker_compose_file | default('single-node-elastic.yml') }} up --detach
+  args:
+    chdir: "{{role_path}}/docker"
+  environment:
+    ELASTICSEARCH_VERSION: "{{ elasticsearch_version }}"
+    KIBANA_VERSION: "{{ kibana_version }}"
+  notify: Clean up docker containers and volumes
+
+- name: Set elastic_ports to 9200 when using a single node
+  set_fact:
+    elastic_ports:
+      - 9200
+  when: docker_compose_file is undefined or "'single-node' in docker_compose_file"
+
+- name: Wait for ports to become available
+  wait_for:
+    port: "{{ item }}"
+    delay: 3
+  with_items: "{{ elastic_ports }}"
+
+- name: Wait for Elastic to come up
+  uri:
+    url: "http://127.0.0.1:9200"
+    method: GET
+    return_content: yes
+    status_code:
+      - 200
+      - 401
+  register: _result
+  until: '"You Know, for Search" in _result.content or "missing authentication credentials for REST request" in _result.content'
+  retries: 30 # retry X times
+  delay: 3 # pause for X sec b/w each call

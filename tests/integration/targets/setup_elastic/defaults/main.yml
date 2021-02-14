@@ -1,0 +1,22 @@
+---
+# docker image versions
+  elasticsearch_version: "7.10.1"
+  kibana_version: "7.10.1"
+  elastic_ports:
+    - 9200
+    - 9201
+    - 9202
+    - 5601
+  docker_containers:
+    - single-node-01
+    - single-node-auth-01
+    - es01
+    - es02
+    - es03
+    - kib01
+  docker_volumes:
+    - docker_single-node-01
+    - docker_single-node-auth-01
+    - docker_data01
+    - docker_data02
+    - docker_data03

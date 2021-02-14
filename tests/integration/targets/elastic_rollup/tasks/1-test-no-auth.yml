@@ -1,0 +1,224 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      timeout: 30
+
+  block:
+
+  - name: Create an index called myindex1
+    community.elastic.elastic_index:
+      name: myindex1
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex1' was created."
+        - result.changed == True
+
+  - name: Add some test documents to the source
+    community.elastic.elastic_bulk:
+      <<: *elastic_index_parameters
+      index: myindex
+      actions:
+        index:
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed"
+        - "elastic.errors == 0"
+        - "elastic.msg == 'Successfully executed Bulk actions'"
+        - "elastic.took > 0"
+
+  - name: Flush the index
+    community.elastic.elastic_index:
+      <<: *elastic_index_parameters
+      name: myindex
+      state: flush
+
+  - name: Count documents in myindex
+    shell: curl --silent -X GET http://localhost:9200/myindex/_count
+    register: count
+
+  - assert:
+      that:
+        - "'{\"count\":10,' in count.stdout"
+
+  - name: Add some test documents to the source
+    community.elastic.elastic_bulk:
+      <<: *elastic_index_parameters
+      index: idonotexist
+      actions:
+        index:
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+          - { "foo": "bar" }
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed"
+        - "elastic.errors == 0"
+        - "elastic.msg == 'Successfully executed Bulk actions'"
+        - "elastic.took > 0"
+
+  - name: Flush the index
+    community.elastic.elastic_index:
+      <<: *elastic_index_parameters
+      name: idonotexist
+      state: flush
+
+  - name: Count documents in idonotexist
+    shell: curl --silent -X GET http://localhost:9200/idonotexist/_count
+    register: count
+
+  - assert:
+      that:
+        - "'{\"count\":10,' in count.stdout"
+
+  - name: Create a sensor index
+    community.elastic.elastic_index:
+      name: sensor-03-02-2020
+      <<: *elastic_index_parameters
+      mappings:
+        properties:
+          timestamp:
+            type: "date"
+          node:
+            type: "keyword"
+          temperature:
+            type: "float"
+            coerce: true
+          voltage:
+            type: "long"
+            coerce: true
+    register: result
+
+  - name: Insert some documents into the sensor index
+    community.elastic.elastic_bulk:
+      <<: *elastic_index_parameters
+      index: sensor-03-02-2020
+      actions:
+        index:
+          - { "timestamp": '2021-02-03T00:00:00.123456789Z', "node": 'node1', "temperature", 10.0, "voltage": 240 }
+          - { "timestamp": '2021-02-03T01:00:00.123456789Z', "node": 'node2', "temperature", 11.0, "voltage": 230 }
+          - { "timestamp": '2021-02-03T02:00:00.123456789Z', "node": 'node3', "temperature", 10.0, "voltage": 210 }
+          - { "timestamp": '2021-02-03T03:00:00.123456789Z', "node": 'node4', "temperature", 12.0, "voltage": 210 }
+          - { "timestamp": '2021-02-03T04:00:00.123456789Z', "node": 'node5', "temperature", 10.0, "voltage": 210 }
+          - { "timestamp": '2021-02-03T05:00:00.123456789Z', "node": 'node1', "temperature", 15.0, "voltage": 210 }
+          - { "timestamp": '2021-02-03T06:00:00.123456789Z', "node": 'node2', "temperature", 10.0, "voltage": 240 }
+          - { "timestamp": '2021-02-03T07:00:00.123456789Z', "node": 'node3', "temperature", 16.0, "voltage": 240 }
+          - { "timestamp": '2021-02-03T08:00:00.123456789Z', "node": 'node4', "temperature", 16.0, "voltage": 240 }
+          - { "timestamp": '2021-02-03T09:00:00.123456789Z', "node": 'node5', "temperature", 10.0, "voltage": 260 }
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed"
+        - "elastic.errors == 0"
+        - "elastic.msg == 'Successfully executed Bulk actions'"
+        - "elastic.took > 0"
+
+  - name: Run module test
+    community.elastic.elastic_rollup:
+      name: sensor
+      state: present
+      index_pattern: "sensor-*"
+      rollup_index: "sensor_rollup"
+      cron: "*/30 * * * * ?"
+      page_size: 1000
+      groups:
+        date_histogram:
+          field: "timestamp"
+          fixed_interval: "1h"
+          delay: "7d"
+        terms:
+          fields:
+            - "node"
+      metrics:
+        - field: "temperature"
+          metrics:
+            - "min"
+            - "max"
+            - "sum"
+        - field: "voltage"
+          metrics:
+            - "avg"
+    register: sensor_job_created
+
+  - assert:
+      that:
+        - "sensor_job_created.changed == True"
+        - "sensor_job_created.msg == 'The rollup job sensor was successfully created.'"
+
+  - name: Get rollup job document
+    shell: curl --silent -X GET http://localhost:9200/_rollup/job/sensor
+    register: sensor_job
+
+  - assert:
+      that:
+        - "sensor_job.rc == 0"
+        - "'sensor' in sensor_job.stdout"
+        - "'date_histogram' in sensor_job.stdout"
+        - "'1h' in sensor_job.stdout"
+
+  - name: Run module test again - should not change anything
+    community.elastic.elastic_rollup:
+      name: sensor
+      state: present
+      index_pattern: "sensor-*"
+      rollup_index: "sensor_rollup"
+      cron: "*/30 * * * * ?"
+      page_size: 1000
+      groups:
+        date_histogram:
+          field: "timestamp"
+          fixed_interval: "1h"
+          delay: "7d"
+          time_zone: "UTC"  # This is default - TODO Was?
+        terms:
+          fields:
+            - "node"
+      metrics:
+        - field: "temperature"
+          metrics:
+            - "min"
+            - "max"
+            - "sum"
+        - field: "voltage"
+          metrics:
+            - "avg"
+    register: sensor_job_created
+
+  - assert:
+      that:
+        - "sensor_job_created.changed == False"
+        - "sensor_job_created.msg == 'The rollup job sensor already exists and no updates were needed.'"
+
+  - name: Run module test again - started
+    community.elastic.elastic_rollup:
+      name: sensor
+      state: started
+
+  - name: Run module test again - stopped
+    community.elastic.elastic_rollup:
+      name: sensor
+      state: stopped

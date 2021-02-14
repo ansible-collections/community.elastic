@@ -1,0 +1,10 @@
+{
+    "ANSIBLE_MODULE_ARGS": {
+        "name": "rhys",
+	"state": "absent",
+        "settings": {
+          "number_of_shards": 5,
+          "number_of_replicas": 3
+        }
+    }
+}
