@@ -120,13 +120,6 @@ jobs:
         with:
           python-version: ${{ matrix.python_version }}
 
-      - name: Install docker-compose
-        uses: nick-invision/retry@v2
-        with:
-          timeout_minutes: 3
-          max_attempts: 3
-        command: sudo curl -L "https://github.com/docker/compose/releases/download/1.28.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-
       - name: Install ansible-base (${{ matrix.ansible_version }})
         uses: nick-invision/retry@v2
         with:
