@@ -165,7 +165,6 @@ def user_is_different(current_user, module):
         user[name]['metadata'] = module.params['metadata']
     dict1 = json.dumps(current_user, sort_keys=True)
     dict2 = json.dumps(user, sort_keys=True)
-    #module.exit_json(dict1=str(dict1), dict2=str(dict2))
     is_different = False
     if dict1 != dict2:
         is_different = True

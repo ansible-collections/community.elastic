@@ -72,6 +72,7 @@ def cluster_put_settings(client, body):
     response = client.cluster.put_settings(body=body, params=None, headers=None)
     return response
 
+
 def cluster_get_settings(client):
     response = client.cluster.get_settings(include_defaults=True,
                                            flat_settings=True)
@@ -105,9 +106,9 @@ def main():
     # TODO main module logic
     try:
         if persistent:
-            settings_doc = { "persistent": settings }
+            settings_doc = {"persistent": settings}
         else:
-            settings_doc = { "transient": settings }
+            settings_doc = {"transient": settings}
 
         elastic = ElasticHelpers(module)
         client = elastic.connect()
@@ -131,16 +132,16 @@ def main():
             desired_value = None
             actual_value = None
             if settings_doc[selected_key][config_item] is None \
-                and config_item in list(current_settings[selected_key].keys()):
-                    cluster_configuration_changes[config_item] = {
+                    and config_item in list(current_settings[selected_key].keys()):
+                cluster_configuration_changes[config_item] = {
                         "old_value": None,
                         "new_value": "<default>"
                     }
             elif settings_doc[selected_key][config_item] == \
-                current_settings[selected_key].get(config_item):
-                    pass
+                    current_settings[selected_key].get(config_item):
+                pass
             elif settings_doc[selected_key][config_item] == \
-                current_settings["defaults"].get(config_item):
+                    current_settings["defaults"].get(config_item):
                 pass
             else:
                 # If we reach here the value results in a cluster settings change
@@ -173,6 +174,7 @@ def main():
                     module.fail_json(msg="Something has gone wrong: {0}".format(str(response)))
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()

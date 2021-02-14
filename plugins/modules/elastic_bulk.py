@@ -133,12 +133,12 @@ def get_data_from_file(file_name):
     return data
 
 
+def bulk_json_data(json_file, _index, doc_type):
 '''
 generator to push bulk data from a JSON
 file into an Elasticsearch index
 https://kb.objectrocket.com/elasticsearch/how-to-use-python-helpers-to-bulk-load-data-into-an-elasticsearch-index
 '''
-def bulk_json_data(json_file, _index, doc_type):
     json_list = get_data_from_file(json_file)
     for doc in json_list:
         # use a `yield` generator so that the data
@@ -175,8 +175,8 @@ def main():
         argument_spec=argument_spec,
         supports_check_mode=True,
         required_together=[
-                ['login_user', 'login_password']
-            ],
+            ['login_user', 'login_password']
+        ],
     )
 
     if not elastic_found:
@@ -262,6 +262,7 @@ def main():
 
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()

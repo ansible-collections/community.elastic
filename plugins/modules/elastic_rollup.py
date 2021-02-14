@@ -166,7 +166,6 @@ def get_rollup_job(client, name):
         job_config = None
     return job_config
 
-
  # TODO Seems solid refactor to True / False
 def job_is_different(current_job, module):
     is_different = 0
@@ -193,6 +192,7 @@ def job_is_different(current_job, module):
 # ================
 # Module execution
 #
+
 
 def main():
 
@@ -338,6 +338,7 @@ def main():
 
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()

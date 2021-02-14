@@ -135,6 +135,7 @@ def elastic_status(desired_status, cluster_status):
     else:
         return False
 
+
 def cast_to_be(to_be):
     '''
     Cast the value to int if possible. Otherwise return the str value
@@ -168,7 +169,7 @@ def main():
         'number_of_in_flight_fetch',
         'task_max_waiting_in_queue_millis',
         'active_shards_percent_as_number'
-        ]
+    ]
 
     argument_spec = elastic_common_argument_spec()
     argument_spec.update(
@@ -188,7 +189,7 @@ def main():
         required_together=[
                 ['login_user', 'login_password'],
                 ['wait_for', 'to_be'],
-            ],
+        ],
     )
 
     if not elastic_found:
@@ -226,13 +227,11 @@ def main():
                         msg = "Elasticsearch health is good."
                         if wait_for is not None:
                             if health_data[wait_for] == cast_to_be(to_be):
-                                msg += " The variable {0} has reached the value {1}.".format(wait_for,
-                                                                                            to_be)
+                                msg += " The variable {0} has reached the value {1}.".format(wait_for, to_be)
                                 failed = False
                                 break
                             else:
-                                msg = "The variable {0} did not reached the value {1}.".format(wait_for,
-                                                                                                to_be)
+                                msg = "The variable {0} did not reached the value {1}.".format(wait_for, to_be)
                                 failures += 1
                         else:
                             failed = False
@@ -265,6 +264,7 @@ def main():
 
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()

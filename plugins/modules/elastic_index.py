@@ -192,5 +192,6 @@ def main():
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
 
+
 if __name__ == '__main__':
     main()

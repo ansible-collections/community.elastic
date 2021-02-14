@@ -97,10 +97,10 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 import time
 
 
-
 # ================
 # Module execution
 #
+
 
 def main():
 
@@ -115,8 +115,8 @@ def main():
         argument_spec=argument_spec,
         supports_check_mode=False,
         required_together=[
-                ['login_user', 'login_password']
-            ],
+            ['login_user', 'login_password']
+        ],
     )
 
     if not elastic_found:
@@ -132,9 +132,8 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        result = dict(client.reindex({ "source": {"index": source},
-                                        "dest": {"index": dest}},
-                        wait_for_completion=wait_for_completion))
+        result = dict(client.reindex({"source": {"index": source}, "dest": {"index": dest}},
+                    wait_for_completion=wait_for_completion))
         if isinstance(result, dict) and 'task' in list(result.keys()):
             msg = "The copy task from {0} to {1} has been started.".format(source, dest)
             module.exit_json(changed=True,
@@ -158,6 +157,7 @@ def main():
 
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()
