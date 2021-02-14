@@ -78,7 +78,7 @@ class ElasticHelpers():
                                 **auth)
         return elastic
 
-    def query(self, client, query):
+    def query(self, client, index, query):
         response = client.search(index=index, body=query)
         return response
 
