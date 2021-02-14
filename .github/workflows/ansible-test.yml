@@ -30,7 +30,7 @@ jobs:
           command: pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
 
       - name: Run sanity tests
-        run: ansible-test sanity --docker -v --color --python 3.6 --exclude docs/*
+        run: ansible-test sanity --docker -v --color --python 3.6
 
   units:
     runs-on: ubuntu-20.04
@@ -132,7 +132,7 @@ jobs:
         with:
           timeout_minutes: 3
           max_attempts: 3
-          command: ansible-galaxy collection install community.general -p /home/runner/.ansible/collections
+          command: ansible-galaxy collection install community.general -p ansible_collections/
 
       #- name: Install community.crypto
       #  uses: nick-invision/retry@v2

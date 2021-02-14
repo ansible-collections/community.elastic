@@ -132,7 +132,7 @@
 
   # Kill docker container tests
   #- name: Stop es02 container
-  #  community.general.docker_container:
+  #  community.docker.docker_container:
   #    name: es02
   #    state: stopped
 
@@ -156,7 +156,7 @@
         - "elastic.failures == 3"
 
   #- name: Start es02 container again
-  #  community.general.docker_container:
+  #  community.docker.docker_container:
   #    name: es02
   #    state: started
   #    volumes:
