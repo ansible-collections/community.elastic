@@ -154,6 +154,7 @@ def put_role(module, client, name):
         module.fail_json(msg=str(excep))
     return response
 
+
 def role_is_different(current_role, module):
     '''
     Simplified version of original function to check if role is different
@@ -238,7 +239,6 @@ def main():
         module.fail_json(msg=missing_required_lib('elasticsearch'),
                          exception=E_IMP_ERR)
 
-
     name = module.params['name']
     state = module.params['state']
 
@@ -272,6 +272,7 @@ def main():
                     module.exit_json(changed=True, msg="The role {0} was deleted.".format(name))
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()

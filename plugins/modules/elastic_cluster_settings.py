@@ -66,32 +66,7 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     elastic_common_argument_spec,
     ElasticHelpers
 )
-# Refactor this to module_utils
-#class ElasticHelpers():
-#    """
-#    Class containing helper functions for Elasticsearch
-#
-#    """
-#    def __init__(self, hosts, options):
-#        self.hosts = hosts
-#        self.options = options
-#        self.auth = []
-#
-#    def connect(self):
-#        elastic = Elasticsearch(self.hosts, *self.options)
-#        return elastic
-#
-#    def query(self, client, query):
-#        response = client.search(index=index, body=query)
-#        return response
-#
-#    def cluster_put_settings(self, client, body):
-#        response = client.cluster.put_settings(body=body, params=None, headers=None)
-#        return response
-#
-#    def cluster_get_settings(self, client):
-#        response = client.cluster.get_settings(include_defaults=True)
-#        return response
+
 
 def cluster_put_settings(client, body):
     response = client.cluster.put_settings(body=body, params=None, headers=None)

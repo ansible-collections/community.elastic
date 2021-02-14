@@ -149,6 +149,7 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 )
 import json
 
+
 def check_param_state_present(module, param, param_name):
     if param is None:
         module.fail_json(msg="You must supply a value for {0} when state == 'present'".format(param_name))
@@ -184,7 +185,7 @@ def job_is_different(current_job, module):
         dict1 = json.dumps(module.params['metrics'], sort_keys=True)
         dict2 = json.dumps(current_job['metrics'], sort_keys=True)
         if dict1 != dict2:
-            is_different += 8 # todo need timeout here? How to avoid clash with the general timeout var?
+            is_different += 8  # todo need timeout here? How to avoid clash with the general timeout var?
     elif module.params['page_size'] != current_job['page_size']:
         is_different += 32
     return is_different
@@ -325,7 +326,7 @@ def main():
                         "metrics": metrics,
                         "page_size": page_size,
                         "rollup_index": rollup_index
-                        }
+                    }
                     response = client.rollup.put_job(id=name,
                                                      body=body,
                                                      headers=None)

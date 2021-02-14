@@ -106,67 +106,6 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     elastic_common_argument_spec,
     ElasticHelpers
 )
-# Refactor this to module_utils
-#class ElasticHelpers():
-#    """
-#    Class containing helper functions for Elasticsearch
-#
-#    """
-#    def __init__(self, hosts, options):
-#        self.hosts = hosts
-#        self.options = options
-#        self.auth = []
-#
-#    def connect(self):
-#        elastic = Elasticsearch(self.hosts, *self.options, **self.auth)
-#        return elastic
-#
-#    def query(self, client, query):
-#        response = client.search(index=index, body=query)
-#        return response
-#
-#    def cluster_put_settings(self, client, body):
-#        response = client.cluster.put_settings(body=body, params=None, headers=None)
-#        return response
-#
-#    def cluster_get_settings(self, client):
-#        response = client.cluster.get_settings(include_defaults=True)
-#        return response
-#
-#    def index_dynamic_method(self, module, client, method, name):
-#        '''
-#        This method is here so we don't have to dulicate loads of code.
-#        It's only really for very simple method where we only pass the index name
-#        @client - ES connection
-#        @method - The indicies method to call
-#        @name - The index name.
-#        '''
-#        if not client.indices.exists(name):
-#            module.fail_json(msg='Cannot perform {0} action on an index that does not exist'.format(method))
-#        else:
-#            class_method = getattr(client.indices, method)
-#            response = class_method(name)
-#            module.exit_json(changed=True, msg="The '{0}' action was performed on the index '{1}'.".format(method, name), **response)
-#
-#    def build_auth(self, module):
-#        '''
-#        Build the auth list for elastic according to the passed in parameters
-#        '''
-#        auth = {}
-#        if module.params['auth_method'] is not None:
-#            if module.params['auth_method'] == 'http_auth':
-#                auth["http_auth"] = (module.params['login_user'],
-#                                     module.params['login_password'])
-#
-#                auth["http_scheme"] = module.params['auth_scheme']
-#                if module.params['cafile'] is not None:
-#                    from ssl import create_default_context
-#                    context = create_default_context(module.params['cafile'])
-#                    auth["ssl_context"] = context
-#            else:
-#                raise AttributeError("Invalid or unsupported auth_method provided")
-#        self.auth = auth
-#        return auth
 
 
 # ================

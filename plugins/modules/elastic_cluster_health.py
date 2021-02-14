@@ -119,53 +119,6 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 )
 import time
 
-# Refactor this to module_utils
-#class ElasticHelpers():
-#    """
-#    Class containing helper functions for Elasticsearch
-#
-#    """
-#    def __init__(self, hosts, options):
-#        self.hosts = hosts
-#        self.options = options
-#        self.auth = {}
-#
-#    def connect(self):
-#        elastic = Elasticsearch(self.hosts, *self.options, **self.auth)
-#        return elastic
-#
-#    def query(self, client, query):
-#        response = client.search(index=index, body=query)
-#        return response
-#
-#    def cluster_put_settings(self, client, body):
-#        response = client.cluster.put_settings(body=body, params=None, headers=None)
-#        return response
-#
-#    def cluster_get_settings(self, client):
-#        response = client.cluster.get_settings(include_defaults=True)
-#        return response
-#
-#    def build_auth(self, module):
-#        '''
-#        Build the auth list for elastic according to the passed in parameters
-#        '''
-#        auth = {}
-#        if module.params['auth_method'] is not None:
-#            if module.params['auth_method'] == 'http_auth':
-#                auth["http_auth"] = (module.params['login_user'],
-#                                     module.params['login_password'])
-#
-#                auth["http_scheme"] = module.params['auth_scheme']
-#                if module.params['cafile'] is not None:
-#                    from ssl import create_default_context
-#                    context = create_default_context(module.params['cafile'])
-#                    auth["ssl_context"] = context
-#            else:
-#                raise AttributeError("Invalid or unsupported auth_method provided")
-#        self.auth = auth
-#        return auth
-
 
 def elastic_status(desired_status, cluster_status):
     '''
@@ -196,6 +149,7 @@ def cast_to_be(to_be):
 # ================
 # Module execution
 #
+
 
 def main():
 

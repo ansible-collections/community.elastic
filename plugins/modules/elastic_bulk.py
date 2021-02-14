@@ -104,6 +104,7 @@ import time
 import json
 import uuid
 
+
 def process_document_for_bulk(module, index, action, document):
     '''
     Processes documents into a format suitable for the Elastic Bulk API
@@ -131,6 +132,7 @@ def get_data_from_file(file_name):
     file.close()
     return data
 
+
 '''
 generator to push bulk data from a JSON
 file into an Elasticsearch index
@@ -150,9 +152,11 @@ def bulk_json_data(json_file, _index, doc_type):
                 "_source": doc
             }
 
+
 # ================
 # Module execution
 #
+
 
 def main():
 
@@ -194,7 +198,7 @@ def main():
         if actions is not None:  # Build actions iterable
             if len(list(set(actions.keys()) - set(["create", "index", "update", "delete"]))) > 0:
                 module.fail_json(msg="Invalid key provided in actions dictionary")
-            else:  #https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html
+            else:  # https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html
                 if "create" in list(actions.keys()):
                     if isinstance(actions['create'], list):
                         for item in actions['create']:
@@ -233,7 +237,6 @@ def main():
                         module.fail_json(msg="delete key should be a list")
         elif src is not None:
             bulk_actions = bulk_json_data(src, index, "document")
-            #module.exit_json(msg=str(bulk_actions))
         else:
             module.fail_json(msg="Must supply one of actions or src when executing this module.")
 

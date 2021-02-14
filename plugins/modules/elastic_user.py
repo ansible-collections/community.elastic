@@ -42,7 +42,7 @@ options:
     type: dict
   password:
     description:
-      -  The user’s password.
+      -  The user's password.
     type: str
   roles:
     description:
@@ -144,6 +144,7 @@ def put_user(module, client, name):
         module.fail_json(msg=str(excep))
     return response
 
+
 def user_is_different(current_user, module):
     '''
     Check if user is different
@@ -240,6 +241,7 @@ def main():
                     module.exit_json(changed=True, msg="The user {0} was deleted.".format(name))
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()
