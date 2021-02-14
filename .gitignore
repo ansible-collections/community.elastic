@@ -1,0 +1,4 @@
+plugins/module_utils/__pycache__/*
+plugins/modules/__pycache__/*
+tests/output/*
+venv/*
