@@ -92,7 +92,7 @@ options:
 
 EXAMPLES = r'''
 - name: Create a roll up job called sensor
-  community.elastic.elastic_rollup
+  community.elastic.elastic_rollup:
     name: sensor
     state: present
     index_pattern: "sensor-*"

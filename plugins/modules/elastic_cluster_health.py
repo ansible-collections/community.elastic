@@ -79,7 +79,6 @@ options:
     description:
       - Expected status of the cluster changes to the one provided or better, i.e. green > yellow > red.
     type: str
-    default: false
     choices:
       - green
       - yellow

@@ -1,5 +1,4 @@
-
----
+--
   - import_tasks: 1-test-no-auth.yml
 
     #- name: Run handlers to remove previous es instances
