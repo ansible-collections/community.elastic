@@ -9,10 +9,12 @@ import sys
 elastic_found = False
 E_IMP_ERR = None
 NotFoundError = None
+helpers = None
 
 try:
     from elasticsearch import Elasticsearch
     from elasticsearch.exceptions import NotFoundError
+    from elasticsearch import helpers
     elastic_found = True
 except ImportError:
     E_IMP_ERR = traceback.format_exc()
