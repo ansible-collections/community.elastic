@@ -38,7 +38,7 @@ options:
 
 EXAMPLES = r'''
 - name: Update a setting
-  community.elastic.elastic_cluster
+  community.elastic.elastic_cluster:
     settings:
       - "indices.recovery.max_bytes_per_sec": "50mb"
 

@@ -43,7 +43,7 @@ options:
     description:
       - A list of indices permissions entries.
     type: list
-    elements dict
+    elements: dict
   metadata:
     description:
       - Arbitrary metadata that you want to associate with the role.
@@ -71,7 +71,7 @@ options:
 
 EXAMPLES = r'''
 - name: Create a role called admin
-  community.elastic.elastic_role
+  community.elastic.elastic_role:
     name: admin
     cluster:
       - all

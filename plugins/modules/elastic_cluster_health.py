@@ -38,7 +38,7 @@ options:
       - If true, the request retrieves information from the local node only.
       - Defaults to false, which means information is retrieved from the master node.
     type: bool
-    default false
+    default: false
   poll:
     description:
       - The maximum number of times to query for the replicaset status before the set converges or we fail.
