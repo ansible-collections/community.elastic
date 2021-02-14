@@ -13,7 +13,6 @@ options:
     choices:
        - None
        - http_auth
-    default: None
   auth_scheme:
     description:
       - Authentication scheme.
@@ -26,7 +25,6 @@ options:
     description:
       - Path to ca file
     type: str
-    default: None
   connection_options:
     description:
       - Additional connection options for Elasticsearch
@@ -49,7 +47,7 @@ options:
       - The Elastic hosts to connect to.
     required: no
     type: list
-    elements: raw
+    elements: str
     default: 'localhost'
   login_port:
     description:

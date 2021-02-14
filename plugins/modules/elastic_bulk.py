@@ -41,6 +41,8 @@ options:
   stats_only:
     description:
       - Report number of successful/failed operations instead of just number of successful and a list of error responses
+    type: bool
+    default: True
   additional_es_options:
     description:
       - Additional parameters

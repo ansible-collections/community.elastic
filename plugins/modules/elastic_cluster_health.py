@@ -69,7 +69,6 @@ options:
       - number_of_in_flight_fetch
       - task_max_waiting_in_queue_millis
       - active_shards_percent_as_number
-    default: None
   to_be:
     description:
       - Used in conjunction with wait_for.
