@@ -120,6 +120,13 @@ jobs:
         with:
           python-version: ${{ matrix.python_version }}
 
+      - name: Install python packages
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 3
+          max_attempts: 3
+          command: pip install docker elasticsearch        
+
       - name: Install ansible-base (${{ matrix.ansible_version }})
         uses: nick-invision/retry@v2
         with:
