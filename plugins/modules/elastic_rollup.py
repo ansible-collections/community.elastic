@@ -167,7 +167,7 @@ def get_rollup_job(client, name):
     return job_config
 
 
- # TODO Seems solid refactor to True / False
+# TODO Seems solid refactor to True / False
 def job_is_different(current_job, module):
     is_different = 0
     if module.params['index_pattern'] != current_job['index_pattern']:
