@@ -20,7 +20,7 @@ author: Rhys Campbell (@rhysmeister)
 version_added: "0.0.1"
 
 extends_documentation_fragment:
-  - community.elastic.login_options.py
+  - community.elastic.login_options
 
 options:
   name:

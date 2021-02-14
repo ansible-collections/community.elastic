@@ -21,7 +21,7 @@ author: Rhys Campbell (@rhysmeister)
 version_added: "0.0.1"
 
 extends_documentation_fragment:
-  - community.elastic.login_options.py
+  - community.elastic.login_options
 
 options:
   source:
@@ -133,7 +133,7 @@ def main():
         client = elastic.connect()
 
         result = dict(client.reindex({"source": {"index": source}, "dest": {"index": dest}},
-                                wait_for_completion=wait_for_completion))
+                            wait_for_completion=wait_for_completion))
         if isinstance(result, dict) and 'task' in list(result.keys()):
             msg = "The copy task from {0} to {1} has been started.".format(source, dest)
             module.exit_json(changed=True,
