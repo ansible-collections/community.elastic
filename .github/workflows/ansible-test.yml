@@ -102,9 +102,6 @@ jobs:
         python_version:
           - "3.6"
         elastic_module: ${{ fromJson(needs.integration_matrix.outputs.matrix) }}
-        docker_image:
-          - ubuntu1804
-          - centos8
         ansible_version:
           - stable-2.10
           - devel
@@ -155,8 +152,8 @@ jobs:
       #    max_attempts: 3
       #    command: ansible-galaxy collection install community.crypto -p ansible_collections/
 
-      - name: Run integration tests on Python ${{ matrix.python_version }} | ${{ matrix.docker_image }} | ${{ matrix.ansible_version }}
-        run: ansible-test integration --docker ${{ matrix.docker_image }} -v --color --retry-on-error --python ${{ matrix.python_version }} --continue-on-error --diff --coverage ${{ matrix.elastic_module }}
+      - name: Run integration tests on Python ${{ matrix.python_version }} | ${{ matrix.ansible_version }}
+        run: ansible-test integration -v --color --retry-on-error --python ${{ matrix.python_version }} --continue-on-error --diff --coverage ${{ matrix.elastic_module }}
 
       - name: Upload Coverage data
         run: tests/coverage.sh
