@@ -128,12 +128,12 @@ jobs:
           max_attempts: 3
           command: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible_version }}.tar.gz --disable-pip-version-check
 
-      #- name: Install community.general
-      #  uses: nick-invision/retry@v2
-      #  with:
-      #    timeout_minutes: 3
-      #    max_attempts: 3
-      #    command: ansible-galaxy collection install community.general -p ansible_collections/
+      - name: Install community.general
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 3
+          max_attempts: 3
+          command: ansible-galaxy collection install community.general -p ansible_collections/
 
       #- name: Install community.crypto
       #  uses: nick-invision/retry@v2
