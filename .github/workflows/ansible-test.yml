@@ -101,7 +101,6 @@ jobs:
       matrix:
         python_version:
           - "3.6"
-          - "3.9"
         elastic_module: ${{ fromJson(needs.integration_matrix.outputs.matrix) }}
         docker_image:
           - ubuntu1804
