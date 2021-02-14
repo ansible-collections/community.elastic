@@ -77,7 +77,7 @@ batches:
   returned: on success when wait_for_completion is true
   type: int
 took:
-  descirption: How long the copy took in ms.
+  description: How long the copy took in ms.
   returned: on success when wait_for_completion is true
   type: int
 '''
