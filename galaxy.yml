@@ -1,0 +1,23 @@
+namespace: community
+name: elastic
+version: 0.0.1
+readme: README.md
+authors:
+  - Rhys Campbell (https://github.com/rhysmeister)
+description: null
+license_file: COPYING
+tags:
+  - elastic
+  - elasticsearch
+  - database
+  - nosql
+dependencies:
+  community.general: '>=1.0.0'
+repository: https://github.com/ansible-collections/community.elastic
+documentation: https://github.com/ansible-collections/community.elastic/tree/master/docs
+homepage: https://github.com/ansible-collections/community.elastic
+issues: https://github.com/ansible-collections/community.elastic
+build_ignore:
+  - 'tests/*'
+  - '*.tar.gz'
+  - 'docs/*'
