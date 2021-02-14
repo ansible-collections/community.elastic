@@ -42,7 +42,7 @@ options:
       - refresh
       - stats
       - upgrade
-     default: present
+    default: present
   name:
     description:
       - The index name

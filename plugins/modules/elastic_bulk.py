@@ -16,13 +16,13 @@ short_description: Perform actions with documents using the Bulk API.
 description:
   - Perform actions with documents using the Bulk API.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options
+extends_documentation_fragment:
+  - community.elastic.login_options
 
- options:
+options:
   source:
     description:
       - The index to copy documents from.
