@@ -133,7 +133,7 @@ jobs:
         with:
           timeout_minutes: 3
           max_attempts: 3
-          command: ansible-galaxy collection install community.general -p ansible_collections/
+          command: ansible-galaxy collection install community.general
 
       #- name: Install community.crypto
       #  uses: nick-invision/retry@v2
