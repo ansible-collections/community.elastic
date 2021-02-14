@@ -1,9 +1,4 @@
 ---
-- name: Ensure docker-compose is installed
-  package:
-    name: docker-compose
-    state: present
-
 - name: Ensure any existing docker containers are removed
   community.docker.docker_container:
     name: "{{ item }}"
