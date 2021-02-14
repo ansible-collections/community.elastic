@@ -16,11 +16,11 @@ short_description: Manage Elasticsearch user roles.
 description:
   - Manage Elasticsearch user roles.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options.py
 
 options:
   name:
@@ -165,6 +165,7 @@ def get_rollup_job(client, name):
     except IndexError:
         job_config = None
     return job_config
+
 
  # TODO Seems solid refactor to True / False
 def job_is_different(current_job, module):

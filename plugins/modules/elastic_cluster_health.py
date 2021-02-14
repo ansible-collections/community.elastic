@@ -17,22 +17,22 @@ description:
   - Validate cluster health.
   - Optionally wait for an expected status.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options.py
 
- options:
-   level:
-     description:
-       - Controls the details level of the health information returned
-     type: str
-     choices:
-       - cluster
-       - indicies
-       - shards
-     default: cluster
+options:
+  level:
+    description:
+      - Controls the details level of the health information returned
+    type: str
+    choices:
+      - cluster
+      - indicies
+      - shards
+    default: cluster
   local:
     description:
       - If true, the request retrieves information from the local node only.
@@ -187,8 +187,8 @@ def main():
         argument_spec=argument_spec,
         supports_check_mode=False,
         required_together=[
-                ['login_user', 'login_password'],
-                ['wait_for', 'to_be'],
+            ['login_user', 'login_password'],
+            ['wait_for', 'to_be'],
         ],
     )
 

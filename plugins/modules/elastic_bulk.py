@@ -23,11 +23,11 @@ description:
    - community.elastic.login_options.py
 
  options:
-   source:
-     description:
-       - The index to copy documents from.
-     type: str
-     required: True
+  source:
+    description:
+      - The index to copy documents from.
+    type: str
+    required: True
   dest:
     description:
       - The index to copy documents to.
@@ -134,11 +134,11 @@ def get_data_from_file(file_name):
 
 
 def bulk_json_data(json_file, _index, doc_type):
-'''
-generator to push bulk data from a JSON
-file into an Elasticsearch index
-https://kb.objectrocket.com/elasticsearch/how-to-use-python-helpers-to-bulk-load-data-into-an-elasticsearch-index
-'''
+    '''
+    generator to push bulk data from a JSON
+    file into an Elasticsearch index
+    https://kb.objectrocket.com/elasticsearch/how-to-use-python-helpers-to-bulk-load-data-into-an-elasticsearch-index
+    '''
     json_list = get_data_from_file(json_file)
     for doc in json_list:
         # use a `yield` generator so that the data

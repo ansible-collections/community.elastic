@@ -17,18 +17,18 @@ description:
   - Copies documents from a source to a destination.
   - The source and destination can be any pre-existing index, index alias, or data stream.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options.py
 
- options:
-   source:
-     description:
-       - The index to copy documents from.
-     type: str
-     required: True
+options:
+  source:
+    description:
+      - The index to copy documents from.
+    type: str
+    required: True
   dest:
     description:
       - The index to copy documents to.
@@ -133,7 +133,7 @@ def main():
         client = elastic.connect()
 
         result = dict(client.reindex({"source": {"index": source}, "dest": {"index": dest}},
-                    wait_for_completion=wait_for_completion))
+                        wait_for_completion=wait_for_completion))
         if isinstance(result, dict) and 'task' in list(result.keys()):
             msg = "The copy task from {0} to {1} has been started.".format(source, dest)
             module.exit_json(changed=True,

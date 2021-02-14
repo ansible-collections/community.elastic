@@ -20,39 +20,42 @@ description:
   - Create indexes with settings and mapping documents.
   - No support for settings or mapping document updates.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options.py
 
- options:§
-   state:
-     description: The state of the index.
-     type: str
-     choices:
-       - present
-       - absent
-       - closed
-       - opened
-       - clear_cache
-       - flush
-       - flush_synced
-       - info
-       - refresh
-       - stats
-       - upgrade
-      default: present
+options:
+  state:
+    description: The state of the index.
+    type: str
+    choices:
+      - present
+      - absent
+      - closed
+      - opened
+      - clear_cache
+      - flush
+      - flush_synced
+      - info
+      - refresh
+      - stats
+      - upgrade
+     default: present
   name:
-    description: The index name
+    description:
+      - The index name
     type: str
     required: yes
   settings:
-    description: Index settings document.
+    description:
+      - Index settings document.
     type: dict
     required: no
   mappings:
-    description: Index mappings document.
+    description:
+      - Index mappings document.
     type: dict
     required: no
   wait_for_active_shards:

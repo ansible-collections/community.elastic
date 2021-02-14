@@ -16,11 +16,11 @@ short_description: Manage Elasticsearch users.
 description:
   - Manage Elasticsearchusers.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options.py
 
 options:
   enabled:

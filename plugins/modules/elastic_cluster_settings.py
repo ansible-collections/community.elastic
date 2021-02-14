@@ -16,19 +16,19 @@ short_description: Manage Elastic Search Cluster Settings
 description:
   - Manage Elastic Search Cluster Settings
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options.py
 
- options:
-   persistent:
-     description:
-       - Whether to make a setting update persistent or transient.
-       - If security is enabled you need the manage cluster privilege.
-     type: bool
-     default: true
+options:
+  persistent:
+    description:
+      - Whether to make a setting update persistent or transient.
+      - If security is enabled you need the manage cluster privilege.
+    type: bool
+    default: true
   settings:
     description:
       - The Elastic search settings to update.
@@ -134,9 +134,9 @@ def main():
             if settings_doc[selected_key][config_item] is None \
                     and config_item in list(current_settings[selected_key].keys()):
                 cluster_configuration_changes[config_item] = {
-                        "old_value": None,
-                        "new_value": "<default>"
-                    }
+                    "old_value": None,
+                    "new_value": "<default>"
+                }
             elif settings_doc[selected_key][config_item] == \
                     current_settings[selected_key].get(config_item):
                 pass
