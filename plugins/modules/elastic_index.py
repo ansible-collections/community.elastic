@@ -133,8 +133,6 @@ def main():
 
     argument_spec = elastic_common_argument_spec()
     argument_spec.update(
-        additional_es_options=dict(type='list', elements='dict'),
-        connection_options=dict(type='list', elements='dict', default=[]),
         name=dict(type='str', required='yes'),
         state=dict(type='str', choices=state_choices, default='present'),
         settings=dict(type='dict', default={}),

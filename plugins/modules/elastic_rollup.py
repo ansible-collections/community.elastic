@@ -29,7 +29,7 @@ options:
     type: str
     required: yes
   index_pattern:
-    descriptioln:
+    description:
       - The index pattern to roll up.
     type: str
   rollup_index:
@@ -207,7 +207,6 @@ def main():
     argument_spec = elastic_common_argument_spec()
     # TODO Add options from above
     argument_spec.update(
-        connection_options=dict(type='list', elements='dict', default=[]),
         name=dict(type='str', required='yes'),
         index_pattern=dict(type='str'),
         rollup_index=dict(type='str'),

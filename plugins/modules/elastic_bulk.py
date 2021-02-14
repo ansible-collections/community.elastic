@@ -43,11 +43,6 @@ options:
       - Report number of successful/failed operations instead of just number of successful and a list of error responses
     type: bool
     default: True
-  additional_es_options:
-    description:
-      - Additional parameters
-    type: list
-    elements: dict
 '''
 
 EXAMPLES = r'''
@@ -164,13 +159,11 @@ def main():
 
     argument_spec = elastic_common_argument_spec()
     argument_spec.update(
-        connection_options=dict(type='list', elements='dict', default=[]),
         src=dict(type='str'),
         actions=dict(type='dict'),
         chunk_size=dict(type='int', default=1000),
         index=dict(type='str', required=True),
         stats_only=dict(type='bool', default=True),
-        additional_es_options=dict(type='list', elements='dict')
     )
 
     module = AnsibleModule(

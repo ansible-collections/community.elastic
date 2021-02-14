@@ -24,6 +24,11 @@ extends_documentation_fragment:
   - community.elastic.login_options
 
 options:
+  fail_on_exception:
+    description:
+      - Fail immediately on exception rather than retrying.
+    type: bool
+    default: False
   level:
     description:
       - Controls the details level of the health information returned
@@ -56,7 +61,7 @@ options:
       - https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html
     type: str
     choices:
-      - None
+      - null
       - number_of_nodes
       - number_of_data_nodes
       - active_primary_shards
@@ -73,7 +78,7 @@ options:
     description:
       - Used in conjunction with wait_for.
       - Expected value of the wait_for variable
-    type: int
+    type: str
   status:
     description:
       - Expected status of the cluster changes to the one provided or better, i.e. green > yellow > red.

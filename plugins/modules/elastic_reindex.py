@@ -34,6 +34,11 @@ options:
       - The index to copy documents to.
     type: str
     required: True
+  wait_for_completion:
+    description:
+      - Wait for the command to cpmplete before continuing.
+    type: bool
+    default: False
 '''
 
 EXAMPLES = r'''
