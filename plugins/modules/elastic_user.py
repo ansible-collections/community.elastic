@@ -16,11 +16,11 @@ short_description: Manage Elasticsearch users.
 description:
   - Manage Elasticsearchusers.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options
 
 options:
   enabled:
@@ -42,14 +42,18 @@ options:
     type: dict
   password:
     description:
-      -  The user’s password.
+      -  The user's password.
     type: str
   roles:
     description:
       - A set of roles the user has.
     type: list
     elements: str
-    required: true
+  run_as:
+    description:
+      - LIst of users that this user can impersonate.
+    type: list
+    elements: str
   state:
     description:
       - The desired state of the user.
@@ -144,6 +148,7 @@ def put_user(module, client, name):
         module.fail_json(msg=str(excep))
     return response
 
+
 def user_is_different(current_user, module):
     '''
     Check if user is different
@@ -164,7 +169,6 @@ def user_is_different(current_user, module):
         user[name]['metadata'] = module.params['metadata']
     dict1 = json.dumps(current_user, sort_keys=True)
     dict2 = json.dumps(user, sort_keys=True)
-    #module.exit_json(dict1=str(dict1), dict2=str(dict2))
     is_different = False
     if dict1 != dict2:
         is_different = True
@@ -190,7 +194,7 @@ def main():
         metadata=dict(type='dict', default={}),
         password=dict(type='str', no_log=True),
         roles=dict(type='list', elements='str'),
-        name=dict(type='str', required='yes'),
+        name=dict(type='str', required=True),
         run_as=dict(type='list', elements='str'),
         state=dict(type='str', choices=state_choices, default='present'),
         update_password=dict(type='str', choices=['always', 'on_create'], default='always', no_log=True)
@@ -240,6 +244,7 @@ def main():
                     module.exit_json(changed=True, msg="The user {0} was deleted.".format(name))
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()

@@ -16,18 +16,18 @@ short_description: Perform actions with documents using the Bulk API.
 description:
   - Perform actions with documents using the Bulk API.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options
 
- options:
-   source:
-     description:
-       - The index to copy documents from.
-     type: str
-     required: True
+options:
+  source:
+    description:
+      - The index to copy documents from.
+    type: str
+    required: True
   dest:
     description:
       - The index to copy documents to.
@@ -41,11 +41,8 @@ description:
   stats_only:
     description:
       - Report number of successful/failed operations instead of just number of successful and a list of error responses
-  additional_es_options:
-    description:
-      - Additional parameters
-    type: list
-    elements: dict
+    type: bool
+    default: True
 '''
 
 EXAMPLES = r'''
@@ -104,6 +101,7 @@ import time
 import json
 import uuid
 
+
 def process_document_for_bulk(module, index, action, document):
     '''
     Processes documents into a format suitable for the Elastic Bulk API
@@ -131,12 +129,13 @@ def get_data_from_file(file_name):
     file.close()
     return data
 
-'''
-generator to push bulk data from a JSON
-file into an Elasticsearch index
-https://kb.objectrocket.com/elasticsearch/how-to-use-python-helpers-to-bulk-load-data-into-an-elasticsearch-index
-'''
+
 def bulk_json_data(json_file, _index, doc_type):
+    '''
+    generator to push bulk data from a JSON
+    file into an Elasticsearch index
+    https://kb.objectrocket.com/elasticsearch/how-to-use-python-helpers-to-bulk-load-data-into-an-elasticsearch-index
+    '''
     json_list = get_data_from_file(json_file)
     for doc in json_list:
         # use a `yield` generator so that the data
@@ -150,29 +149,29 @@ def bulk_json_data(json_file, _index, doc_type):
                 "_source": doc
             }
 
+
 # ================
 # Module execution
 #
+
 
 def main():
 
     argument_spec = elastic_common_argument_spec()
     argument_spec.update(
-        connection_options=dict(type='list', elements='dict', default=[]),
         src=dict(type='str'),
         actions=dict(type='dict'),
         chunk_size=dict(type='int', default=1000),
         index=dict(type='str', required=True),
         stats_only=dict(type='bool', default=True),
-        additional_es_options=dict(type='list', elements='dict')
     )
 
     module = AnsibleModule(
         argument_spec=argument_spec,
         supports_check_mode=True,
         required_together=[
-                ['login_user', 'login_password']
-            ],
+            ['login_user', 'login_password']
+        ],
     )
 
     if not elastic_found:
@@ -194,7 +193,7 @@ def main():
         if actions is not None:  # Build actions iterable
             if len(list(set(actions.keys()) - set(["create", "index", "update", "delete"]))) > 0:
                 module.fail_json(msg="Invalid key provided in actions dictionary")
-            else:  #https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html
+            else:  # https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html
                 if "create" in list(actions.keys()):
                     if isinstance(actions['create'], list):
                         for item in actions['create']:
@@ -233,7 +232,6 @@ def main():
                         module.fail_json(msg="delete key should be a list")
         elif src is not None:
             bulk_actions = bulk_json_data(src, index, "document")
-            #module.exit_json(msg=str(bulk_actions))
         else:
             module.fail_json(msg="Must supply one of actions or src when executing this module.")
 
@@ -259,6 +257,7 @@ def main():
 
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()

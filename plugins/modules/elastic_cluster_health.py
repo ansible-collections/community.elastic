@@ -17,28 +17,33 @@ description:
   - Validate cluster health.
   - Optionally wait for an expected status.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options
 
- options:
-   level:
-     description:
-       - Controls the details level of the health information returned
-     type: str
-     choices:
-       - cluster
-       - indicies
-       - shards
-     default: cluster
+options:
+  fail_on_exception:
+    description:
+      - Fail immediately on exception rather than retrying.
+    type: bool
+    default: False
+  level:
+    description:
+      - Controls the details level of the health information returned
+    type: str
+    choices:
+      - cluster
+      - indicies
+      - shards
+    default: cluster
   local:
     description:
       - If true, the request retrieves information from the local node only.
       - Defaults to false, which means information is retrieved from the master node.
     type: bool
-    default false
+    default: false
   poll:
     description:
       - The maximum number of times to query for the replicaset status before the set converges or we fail.
@@ -56,7 +61,8 @@ description:
       - https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html
     type: str
     choices:
-      - None
+      - null
+      - status
       - number_of_nodes
       - number_of_data_nodes
       - active_primary_shards
@@ -69,17 +75,15 @@ description:
       - number_of_in_flight_fetch
       - task_max_waiting_in_queue_millis
       - active_shards_percent_as_number
-    default: None
   to_be:
     description:
       - Used in conjunction with wait_for.
       - Expected value of the wait_for variable
-    type: int
+    type: str
   status:
     description:
       - Expected status of the cluster changes to the one provided or better, i.e. green > yellow > red.
     type: str
-    default: false
     choices:
       - green
       - yellow
@@ -119,53 +123,6 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 )
 import time
 
-# Refactor this to module_utils
-#class ElasticHelpers():
-#    """
-#    Class containing helper functions for Elasticsearch
-#
-#    """
-#    def __init__(self, hosts, options):
-#        self.hosts = hosts
-#        self.options = options
-#        self.auth = {}
-#
-#    def connect(self):
-#        elastic = Elasticsearch(self.hosts, *self.options, **self.auth)
-#        return elastic
-#
-#    def query(self, client, query):
-#        response = client.search(index=index, body=query)
-#        return response
-#
-#    def cluster_put_settings(self, client, body):
-#        response = client.cluster.put_settings(body=body, params=None, headers=None)
-#        return response
-#
-#    def cluster_get_settings(self, client):
-#        response = client.cluster.get_settings(include_defaults=True)
-#        return response
-#
-#    def build_auth(self, module):
-#        '''
-#        Build the auth list for elastic according to the passed in parameters
-#        '''
-#        auth = {}
-#        if module.params['auth_method'] is not None:
-#            if module.params['auth_method'] == 'http_auth':
-#                auth["http_auth"] = (module.params['login_user'],
-#                                     module.params['login_password'])
-#
-#                auth["http_scheme"] = module.params['auth_scheme']
-#                if module.params['cafile'] is not None:
-#                    from ssl import create_default_context
-#                    context = create_default_context(module.params['cafile'])
-#                    auth["ssl_context"] = context
-#            else:
-#                raise AttributeError("Invalid or unsupported auth_method provided")
-#        self.auth = auth
-#        return auth
-
 
 def elastic_status(desired_status, cluster_status):
     '''
@@ -182,6 +139,7 @@ def elastic_status(desired_status, cluster_status):
     else:
         return False
 
+
 def cast_to_be(to_be):
     '''
     Cast the value to int if possible. Otherwise return the str value
@@ -196,6 +154,7 @@ def cast_to_be(to_be):
 # ================
 # Module execution
 #
+
 
 def main():
 
@@ -214,7 +173,7 @@ def main():
         'number_of_in_flight_fetch',
         'task_max_waiting_in_queue_millis',
         'active_shards_percent_as_number'
-        ]
+    ]
 
     argument_spec = elastic_common_argument_spec()
     argument_spec.update(
@@ -232,9 +191,9 @@ def main():
         argument_spec=argument_spec,
         supports_check_mode=False,
         required_together=[
-                ['login_user', 'login_password'],
-                ['wait_for', 'to_be'],
-            ],
+            ['login_user', 'login_password'],
+            ['wait_for', 'to_be'],
+        ],
     )
 
     if not elastic_found:
@@ -272,13 +231,11 @@ def main():
                         msg = "Elasticsearch health is good."
                         if wait_for is not None:
                             if health_data[wait_for] == cast_to_be(to_be):
-                                msg += " The variable {0} has reached the value {1}.".format(wait_for,
-                                                                                            to_be)
+                                msg += " The variable {0} has reached the value {1}.".format(wait_for, to_be)
                                 failed = False
                                 break
                             else:
-                                msg = "The variable {0} did not reached the value {1}.".format(wait_for,
-                                                                                                to_be)
+                                msg = "The variable {0} did not reached the value {1}.".format(wait_for, to_be)
                                 failures += 1
                         else:
                             failed = False
@@ -311,6 +268,7 @@ def main():
 
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()

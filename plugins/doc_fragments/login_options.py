@@ -11,22 +11,20 @@ options:
       - Authentication Method.
     type: str
     choices:
-     - None
-     - http_auth
-    default: None
+       - None
+       - http_auth
   auth_scheme:
     description:
       - Authentication scheme.
     type: str
     choices:
-     - http
-     - https
-     default: http
+       - http
+       - https
+    default: http
   cafile:
     description:
       - Path to ca file
     type: str
-    default: None
   connection_options:
     description:
       - Additional connection options for Elasticsearch
@@ -49,7 +47,7 @@ options:
       - The Elastic hosts to connect to.
     required: no
     type: list
-    elements: raw
+    elements: str
     default: 'localhost'
   login_port:
     description:
@@ -61,12 +59,12 @@ options:
     description:
       - Timeout in seconds for connection to a master node.
     type: int
-    default 30
+    default: 30
   timeout:
     description:
       - Response timeout in seconds.
     type: int
-    default 30
+    default: 30
 notes:
   - Requires the elasticsearch Python module.
 

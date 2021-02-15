@@ -9,27 +9,27 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: elastic_role
+module: elastic_rollup
 
 short_description: Manage Elasticsearch user roles.
 
 description:
   - Manage Elasticsearch user roles.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options
 
 options:
   name:
     description:
       - The name of the rollup job
     type: str
-    required: yes
+    required: True
   index_pattern:
-    descriptioln:
+    description:
       - The index pattern to roll up.
     type: str
   rollup_index:
@@ -53,31 +53,32 @@ options:
       description:
         - A date histogram group aggregates a date field into time-based buckets.
       type: dict
-      required: yes
+      required: True
     histogram:
       description:
         - The histogram group aggregates one or more numeric fields into numeric histogram intervals.
       type: dict
-      required: no
     terms:
       description:
         - The terms group can be used on keyword or numeric fields to allow bucketing via the terms aggregation at a later point.
       type: dict
-      required: no
   metrics:
     description:
       - Defines the metrics to collect for each grouping tuple.
-    type: dict
+    type: list
+    elements: dict
     field:
       description:
         - The field to collect metrics for. This must be a numeric of some kind.
       type: str
-      required: yes
-    metrics:
+      required: True
+    metric:
       description:
         - An array of metrics to collect for the field.
         - At least one metric must be configured.
         - Acceptable metrics are min,max,sum,avg, and value_count.
+      type: list
+      elements: str
   state:
     description:
       - State of the rollup job
@@ -92,7 +93,7 @@ options:
 
 EXAMPLES = r'''
 - name: Create a roll up job called sensor
-  community.elastic.elastic_rollup
+  community.elastic.elastic_rollup:
     name: sensor
     state: present
     index_pattern: "sensor-*"
@@ -118,17 +119,17 @@ EXAMPLES = r'''
           - "avg"
 
 - name: Delete a roll up job called sensor
-  community.elastic.elastic_rollup
+  community.elastic.elastic_rollup:
     name: sensor
     state: absent
 
 - name: Start a roll up job called sensor
-  community.elastic.elastic_rollup
+  community.elastic.elastic_rollup:
     name: sensor
     state: started
 
 - name: Stop a roll up job called sensor
-  community.elastic.elastic_rollup
+  community.elastic.elastic_rollup:
     name: sensor
     state: stopped
 '''
@@ -149,6 +150,7 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 )
 import json
 
+
 def check_param_state_present(module, param, param_name):
     if param is None:
         module.fail_json(msg="You must supply a value for {0} when state == 'present'".format(param_name))
@@ -166,7 +168,7 @@ def get_rollup_job(client, name):
     return job_config
 
 
- # TODO Seems solid refactor to True / False
+# TODO Seems solid refactor to True / False
 def job_is_different(current_job, module):
     is_different = 0
     if module.params['index_pattern'] != current_job['index_pattern']:
@@ -184,7 +186,7 @@ def job_is_different(current_job, module):
         dict1 = json.dumps(module.params['metrics'], sort_keys=True)
         dict2 = json.dumps(current_job['metrics'], sort_keys=True)
         if dict1 != dict2:
-            is_different += 8 # todo need timeout here? How to avoid clash with the general timeout var?
+            is_different += 8  # todo need timeout here? How to avoid clash with the general timeout var?
     elif module.params['page_size'] != current_job['page_size']:
         is_different += 32
     return is_different
@@ -192,6 +194,7 @@ def job_is_different(current_job, module):
 # ================
 # Module execution
 #
+
 
 def main():
 
@@ -205,12 +208,11 @@ def main():
     argument_spec = elastic_common_argument_spec()
     # TODO Add options from above
     argument_spec.update(
-        connection_options=dict(type='list', elements='dict', default=[]),
-        name=dict(type='str', required='yes'),
+        name=dict(type='str', required=True),
         index_pattern=dict(type='str'),
         rollup_index=dict(type='str'),
         cron=dict(type='str'),
-        page_size=dict(type='int', defualt=1000),
+        page_size=dict(type='int', default=1000),
         groups=dict(type='dict'),
         metrics=dict(type='list', elements='dict'),
         state=dict(type='str', choices=state_choices, default='present'),
@@ -325,7 +327,7 @@ def main():
                         "metrics": metrics,
                         "page_size": page_size,
                         "rollup_index": rollup_index
-                        }
+                    }
                     response = client.rollup.put_job(id=name,
                                                      body=body,
                                                      headers=None)
@@ -337,6 +339,7 @@ def main():
 
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()

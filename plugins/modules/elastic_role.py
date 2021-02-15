@@ -16,11 +16,11 @@ short_description: Manage Elasticsearch user roles.
 description:
   - Manage Elasticsearch user roles.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options
 
 options:
   applications:
@@ -34,7 +34,7 @@ options:
       - The cluster level actions that users with this role can execute.
     type: list
     elements: str
-  global:
+  global_v:
     description:
       - An object defining global privileges.
       - A global privilege is a form of cluster privilege that is request-aware.
@@ -43,7 +43,7 @@ options:
     description:
       - A list of indices permissions entries.
     type: list
-    elements dict
+    elements: dict
   metadata:
     description:
       - Arbitrary metadata that you want to associate with the role.
@@ -65,13 +65,13 @@ options:
     description:
       - The name of the role
     type: str
-    required: yes
+    required: True
 
 '''
 
 EXAMPLES = r'''
 - name: Create a role called admin
-  community.elastic.elastic_role
+  community.elastic.elastic_role:
     name: admin
     cluster:
       - all
@@ -154,6 +154,7 @@ def put_role(module, client, name):
         module.fail_json(msg=str(excep))
     return response
 
+
 def role_is_different(current_role, module):
     '''
     Simplified version of original function to check if role is different
@@ -223,7 +224,7 @@ def main():
         global_v=dict(type='dict'),
         indices=dict(type='list', elements='dict'),
         metadata=dict(type='dict'),
-        name=dict(type='str', required='yes'),
+        name=dict(type='str', required=True),
         run_as=dict(type='list', elements='str'),
         state=dict(type='str', choices=state_choices, default='present'),
     )
@@ -237,7 +238,6 @@ def main():
     if not elastic_found:
         module.fail_json(msg=missing_required_lib('elasticsearch'),
                          exception=E_IMP_ERR)
-
 
     name = module.params['name']
     state = module.params['state']
@@ -272,6 +272,7 @@ def main():
                     module.exit_json(changed=True, msg="The role {0} was deleted.".format(name))
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()

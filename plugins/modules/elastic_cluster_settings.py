@@ -16,29 +16,30 @@ short_description: Manage Elastic Search Cluster Settings
 description:
   - Manage Elastic Search Cluster Settings
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options
 
- options:
-   persistent:
-     description:
-       - Whether to make a setting update persistent or transient.
-       - If security is enabled you need the manage cluster privilege.
-     type: bool
-     default: true
+options:
+  persistent:
+    description:
+      - Whether to make a setting update persistent or transient.
+      - If security is enabled you need the manage cluster privilege.
+    type: bool
+    default: True
   settings:
     description:
       - The Elastic search settings to update.
       - Supply as a dict key/values.
     type: dict
+    required: True
 '''
 
 EXAMPLES = r'''
 - name: Update a setting
-  community.elastic.elastic_cluster
+  community.elastic.elastic_cluster:
     settings:
       - "indices.recovery.max_bytes_per_sec": "50mb"
 
@@ -66,36 +67,12 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     elastic_common_argument_spec,
     ElasticHelpers
 )
-# Refactor this to module_utils
-#class ElasticHelpers():
-#    """
-#    Class containing helper functions for Elasticsearch
-#
-#    """
-#    def __init__(self, hosts, options):
-#        self.hosts = hosts
-#        self.options = options
-#        self.auth = []
-#
-#    def connect(self):
-#        elastic = Elasticsearch(self.hosts, *self.options)
-#        return elastic
-#
-#    def query(self, client, query):
-#        response = client.search(index=index, body=query)
-#        return response
-#
-#    def cluster_put_settings(self, client, body):
-#        response = client.cluster.put_settings(body=body, params=None, headers=None)
-#        return response
-#
-#    def cluster_get_settings(self, client):
-#        response = client.cluster.get_settings(include_defaults=True)
-#        return response
+
 
 def cluster_put_settings(client, body):
     response = client.cluster.put_settings(body=body, params=None, headers=None)
     return response
+
 
 def cluster_get_settings(client):
     response = client.cluster.get_settings(include_defaults=True,
@@ -130,9 +107,9 @@ def main():
     # TODO main module logic
     try:
         if persistent:
-            settings_doc = { "persistent": settings }
+            settings_doc = {"persistent": settings}
         else:
-            settings_doc = { "transient": settings }
+            settings_doc = {"transient": settings}
 
         elastic = ElasticHelpers(module)
         client = elastic.connect()
@@ -156,16 +133,16 @@ def main():
             desired_value = None
             actual_value = None
             if settings_doc[selected_key][config_item] is None \
-                and config_item in list(current_settings[selected_key].keys()):
-                    cluster_configuration_changes[config_item] = {
-                        "old_value": None,
-                        "new_value": "<default>"
-                    }
+                    and config_item in list(current_settings[selected_key].keys()):
+                cluster_configuration_changes[config_item] = {
+                    "old_value": None,
+                    "new_value": "<default>"
+                }
             elif settings_doc[selected_key][config_item] == \
-                current_settings[selected_key].get(config_item):
-                    pass
+                    current_settings[selected_key].get(config_item):
+                pass
             elif settings_doc[selected_key][config_item] == \
-                current_settings["defaults"].get(config_item):
+                    current_settings["defaults"].get(config_item):
                 pass
             else:
                 # If we reach here the value results in a cluster settings change
@@ -198,6 +175,7 @@ def main():
                     module.fail_json(msg="Something has gone wrong: {0}".format(str(response)))
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()

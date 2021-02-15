@@ -17,23 +17,28 @@ description:
   - Copies documents from a source to a destination.
   - The source and destination can be any pre-existing index, index alias, or data stream.
 
- author: Rhys Campbell (@rhysmeister)
- version_added: "0.0.1"
+author: Rhys Campbell (@rhysmeister)
+version_added: "0.0.1"
 
- extends_documentation_fragment:
-   - community.elastic.login_options.py
+extends_documentation_fragment:
+  - community.elastic.login_options
 
- options:
-   source:
-     description:
-       - The index to copy documents from.
-     type: str
-     required: True
+options:
+  source:
+    description:
+      - The index to copy documents from.
+    type: str
+    required: True
   dest:
     description:
       - The index to copy documents to.
     type: str
     required: True
+  wait_for_completion:
+    description:
+      - Wait for the command to cpmplete before continuing.
+    type: bool
+    default: False
 '''
 
 EXAMPLES = r'''
@@ -77,7 +82,7 @@ batches:
   returned: on success when wait_for_completion is true
   type: int
 took:
-  descirption: How long the copy took in ms.
+  description: How long the copy took in ms.
   returned: on success when wait_for_completion is true
   type: int
 '''
@@ -97,10 +102,10 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 import time
 
 
-
 # ================
 # Module execution
 #
+
 
 def main():
 
@@ -115,8 +120,8 @@ def main():
         argument_spec=argument_spec,
         supports_check_mode=False,
         required_together=[
-                ['login_user', 'login_password']
-            ],
+            ['login_user', 'login_password']
+        ],
     )
 
     if not elastic_found:
@@ -132,11 +137,7 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        result = dict(client.reindex({
-                        "source": {"index": source},
-                        "dest": {"index": dest}
-                        },
-                        wait_for_completion=wait_for_completion))
+        result = dict(client.reindex({"source": {"index": source}, "dest": {"index": dest}}, wait_for_completion=wait_for_completion))
         if isinstance(result, dict) and 'task' in list(result.keys()):
             msg = "The copy task from {0} to {1} has been started.".format(source, dest)
             module.exit_json(changed=True,
@@ -160,6 +161,7 @@ def main():
 
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
+
 
 if __name__ == '__main__':
     main()
