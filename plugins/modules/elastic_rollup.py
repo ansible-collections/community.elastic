@@ -27,7 +27,7 @@ options:
     description:
       - The name of the rollup job
     type: str
-    required: yes
+    required: True
   index_pattern:
     description:
       - The index pattern to roll up.
@@ -53,17 +53,15 @@ options:
       description:
         - A date histogram group aggregates a date field into time-based buckets.
       type: dict
-      required: yes
+      required: True
     histogram:
       description:
         - The histogram group aggregates one or more numeric fields into numeric histogram intervals.
       type: dict
-      required: no
     terms:
       description:
         - The terms group can be used on keyword or numeric fields to allow bucketing via the terms aggregation at a later point.
       type: dict
-      required: no
   metrics:
     description:
       - Defines the metrics to collect for each grouping tuple.
@@ -72,7 +70,7 @@ options:
       description:
         - The field to collect metrics for. This must be a numeric of some kind.
       type: str
-      required: yes
+      required: True
     metrics:
       description:
         - An array of metrics to collect for the field.
@@ -211,9 +209,9 @@ def main():
         index_pattern=dict(type='str'),
         rollup_index=dict(type='str'),
         cron=dict(type='str'),
-        page_size=dict(type='int', defualt=1000),
+        page_size=dict(type='int', default=1000),
         groups=dict(type='dict'),
-        metrics=dict(type='list', elements='dict'),
+        metrics=dict(type='dict'),
         state=dict(type='str', choices=state_choices, default='present'),
     )
 

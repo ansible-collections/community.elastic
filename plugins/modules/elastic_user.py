@@ -49,7 +49,12 @@ options:
       - A set of roles the user has.
     type: list
     elements: str
-    required: true
+    required: True
+  run_as:
+    description:
+      - LIst of users that this user can impersonate.
+    type: list
+    elements: str
   state:
     description:
       - The desired state of the user.
@@ -189,7 +194,7 @@ def main():
         full_name=dict(type='str'),
         metadata=dict(type='dict', default={}),
         password=dict(type='str', no_log=True),
-        roles=dict(type='list', elements='str'),
+        roles=dict(type='list', elements='str', required=True),
         name=dict(type='str', required='yes'),
         run_as=dict(type='list', elements='str'),
         state=dict(type='str', choices=state_choices, default='present'),

@@ -47,17 +47,15 @@ options:
     description:
       - The index name
     type: str
-    required: yes
+    required: True
   settings:
     description:
       - Index settings document.
     type: dict
-    required: no
   mappings:
     description:
       - Index mappings document.
     type: dict
-    required: no
   wait_for_active_shards:
     description:
       - A number controlling to how many active shards to wait for.

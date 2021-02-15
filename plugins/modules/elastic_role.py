@@ -34,7 +34,7 @@ options:
       - The cluster level actions that users with this role can execute.
     type: list
     elements: str
-  global:
+  global_v:
     description:
       - An object defining global privileges.
       - A global privilege is a form of cluster privilege that is request-aware.
@@ -65,7 +65,7 @@ options:
     description:
       - The name of the role
     type: str
-    required: yes
+    required: True
 
 '''
 
