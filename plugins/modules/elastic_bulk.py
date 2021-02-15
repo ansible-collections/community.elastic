@@ -23,12 +23,16 @@ extends_documentation_fragment:
   - community.elastic.login_options
 
 options:
-  source:
+  actions:
     description:
-      - The index to copy documents from.
+      - Include json inline to insert, update or delete documents.
+      - Acceptable subkeys are create, index, update & delete.
+    type: dict
+  src:
+    description:
+      - Path to a json file containing documents to bulk insert.
     type: str
-    required: True
-  dest:
+  index:
     description:
       - The index to copy documents to.
     type: str
