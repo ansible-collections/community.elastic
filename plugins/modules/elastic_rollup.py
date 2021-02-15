@@ -65,13 +65,14 @@ options:
   metrics:
     description:
       - Defines the metrics to collect for each grouping tuple.
-    type: dict
+    type: list
+    elements: dict
     field:
       description:
         - The field to collect metrics for. This must be a numeric of some kind.
       type: str
       required: True
-    metrics:
+    metric:
       description:
         - An array of metrics to collect for the field.
         - At least one metric must be configured.
@@ -211,7 +212,7 @@ def main():
         cron=dict(type='str'),
         page_size=dict(type='int', default=1000),
         groups=dict(type='dict'),
-        metrics=dict(type='dict', elements='dict'),
+        metrics=dict(type='list', elements='dict'),
         state=dict(type='str', choices=state_choices, default='present'),
     )
 
