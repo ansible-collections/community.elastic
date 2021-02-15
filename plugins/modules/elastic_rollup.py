@@ -49,36 +49,38 @@ options:
     description:
       - Defines the grouping fields and aggregations that are defined for this rollup job.
     type: dict
-    date_histogram:
-      description:
-        - A date histogram group aggregates a date field into time-based buckets.
-      type: dict
-      required: True
-    histogram:
-      description:
-        - The histogram group aggregates one or more numeric fields into numeric histogram intervals.
-      type: dict
-    terms:
-      description:
-        - The terms group can be used on keyword or numeric fields to allow bucketing via the terms aggregation at a later point.
-      type: dict
+    suboptions:
+      date_histogram:
+        description:
+          - A date histogram group aggregates a date field into time-based buckets.
+        type: dict
+        required: True
+      histogram:
+        description:
+          - The histogram group aggregates one or more numeric fields into numeric histogram intervals.
+        type: dict
+      terms:
+        description:
+          - The terms group can be used on keyword or numeric fields to allow bucketing via the terms aggregation at a later point.
+        type: dict
   metrics:
     description:
       - Defines the metrics to collect for each grouping tuple.
     type: list
     elements: dict
-    field:
-      description:
-        - The field to collect metrics for. This must be a numeric of some kind.
-      type: str
-      required: True
-    metric:
-      description:
-        - An array of metrics to collect for the field.
-        - At least one metric must be configured.
-        - Acceptable metrics are min,max,sum,avg, and value_count.
-      type: list
-      elements: str
+    suboptions:
+      field:
+        description:
+          - The field to collect metrics for. This must be a numeric of some kind.
+        type: str
+        required: True
+      metric:
+        description:
+          - An array of metrics to collect for the field.
+          - At least one metric must be configured.
+          - Acceptable metrics are min,max,sum,avg, and value_count.
+        type: list
+        elements: str
   state:
     description:
       - State of the rollup job
