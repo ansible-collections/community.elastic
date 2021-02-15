@@ -77,6 +77,8 @@ options:
         - An array of metrics to collect for the field.
         - At least one metric must be configured.
         - Acceptable metrics are min,max,sum,avg, and value_count.
+      type: list
+      elements: str
   state:
     description:
       - State of the rollup job
