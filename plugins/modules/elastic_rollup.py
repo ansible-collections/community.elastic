@@ -211,7 +211,7 @@ def main():
         cron=dict(type='str'),
         page_size=dict(type='int', default=1000),
         groups=dict(type='dict'),
-        metrics=dict(type='dict'),
+        metrics=dict(type='dict', elements='dict'),
         state=dict(type='str', choices=state_choices, default='present'),
     )
 
