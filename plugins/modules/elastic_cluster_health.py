@@ -62,6 +62,7 @@ options:
     type: str
     choices:
       - null
+      - status
       - number_of_nodes
       - number_of_data_nodes
       - active_primary_shards

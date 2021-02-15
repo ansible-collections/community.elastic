@@ -28,12 +28,13 @@ options:
       - Whether to make a setting update persistent or transient.
       - If security is enabled you need the manage cluster privilege.
     type: bool
-    default: true
+    default: True
   settings:
     description:
       - The Elastic search settings to update.
       - Supply as a dict key/values.
     type: dict
+    required: True
 '''
 
 EXAMPLES = r'''

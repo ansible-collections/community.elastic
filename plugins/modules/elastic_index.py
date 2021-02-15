@@ -131,7 +131,7 @@ def main():
 
     argument_spec = elastic_common_argument_spec()
     argument_spec.update(
-        name=dict(type='str', required='yes'),
+        name=dict(type='str', required=True),
         state=dict(type='str', choices=state_choices, default='present'),
         settings=dict(type='dict', default={}),
         mappings=dict(type='dict', default={}),

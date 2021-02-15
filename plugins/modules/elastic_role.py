@@ -224,7 +224,7 @@ def main():
         global_v=dict(type='dict'),
         indices=dict(type='list', elements='dict'),
         metadata=dict(type='dict'),
-        name=dict(type='str', required='yes'),
+        name=dict(type='str', required=True),
         run_as=dict(type='list', elements='str'),
         state=dict(type='str', choices=state_choices, default='present'),
     )

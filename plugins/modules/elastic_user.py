@@ -195,7 +195,7 @@ def main():
         metadata=dict(type='dict', default={}),
         password=dict(type='str', no_log=True),
         roles=dict(type='list', elements='str', required=True),
-        name=dict(type='str', required='yes'),
+        name=dict(type='str', required=True),
         run_as=dict(type='list', elements='str'),
         state=dict(type='str', choices=state_choices, default='present'),
         update_password=dict(type='str', choices=['always', 'on_create'], default='always', no_log=True)

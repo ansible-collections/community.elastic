@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: elastic_role
+module: elastic_rollup
 
 short_description: Manage Elasticsearch user roles.
 
@@ -205,7 +205,7 @@ def main():
     argument_spec = elastic_common_argument_spec()
     # TODO Add options from above
     argument_spec.update(
-        name=dict(type='str', required='yes'),
+        name=dict(type='str', required=True),
         index_pattern=dict(type='str'),
         rollup_index=dict(type='str'),
         cron=dict(type='str'),

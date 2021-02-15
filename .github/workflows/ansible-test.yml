@@ -32,38 +32,38 @@ jobs:
       - name: Run sanity tests
         run: ansible-test sanity --docker -v --color --python 3.6
 
-  units:
-    runs-on: ubuntu-20.04
-    defaults:
-      run:
-        working-directory: ansible_collections/community/elastic
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-        with:
-          path: ansible_collections/community/elastic
+  #units:
+  #  runs-on: ubuntu-20.04
+  #  defaults:
+  #    run:
+  #      working-directory: ansible_collections/community/elastic
+  #  steps:
+  #    - name: Check out code
+  #      uses: actions/checkout@v2
+  #      with:
+  #        path: ansible_collections/community/elastic
 
-      - name: Set up Python 3.6
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.6
+  #    - name: Set up Python 3.6
+  #      uses: actions/setup-python@v1
+  #      with:
+  #        python-version: 3.6
 
-      - name: Install ansible-base (devel)
-        uses: nick-invision/retry@v2
-        with:
-          timeout_minutes: 3
-          max_attempts: 3
-          command: pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
+  #    - name: Install ansible-base (devel)
+  #      uses: nick-invision/retry@v2
+  #      with:
+  #        timeout_minutes: 3
+  #        max_attempts: 3
+  #        command: pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
 
-      - name: Run unit tests
-        run: ansible-test units --docker -v --color --python 3.6 --coverage
+  #    - name: Run unit tests
+  #      run: ansible-test units --docker -v --color --python 3.6 --coverage
 
-      - name: Generate coverage report.
-        run: ansible-test coverage xml -v --requirements --group-by command --group-by version
+  #    - name: Generate coverage report.
+  #      run: ansible-test coverage xml -v --requirements --group-by command --group-by version
 
-      - uses: codecov/codecov-action@v1
-        with:
-          fail_ci_if_error: false
+  #    - uses: codecov/codecov-action@v1
+  #      with:
+  #        fail_ci_if_error: false
 
   integration_matrix:
     runs-on: ubuntu-20.04
