@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: elastic_index
+module: elastic_index_info
 
 short_description: Returns info about Elasticsearch indexes.
 

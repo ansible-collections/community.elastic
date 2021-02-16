@@ -32,3 +32,5 @@
       that:
         - result.msg == "Info about index myindex."
         - result.changed == False
+        - result.myindex is defined
+        - result.myindex.settings is defined
