@@ -38,7 +38,6 @@ options:
       - clear_cache
       - flush
       - flush_synced
-      - info
       - refresh
       - stats
       - upgrade
@@ -123,7 +122,6 @@ def main():
         "clear_cache",
         "flush",
         "flush_synced",
-        "info",
         "refresh",
         "stats",
         "upgrade"
@@ -180,9 +178,6 @@ def main():
                 elastic.index_dynamic_method(module, client, 'open', name)
             elif state == "upgrade":
                 elastic.index_dynamic_method(module, client, 'upgrade', name)
-            elif state == "info":
-                response = dict(client.indices.get(name))
-                module.exit_json(changed=True, msg="Info about index '{0}'.".format(name), **response)
             elif state == "stats":
                 response = dict(client.indices.stats(name))
                 module.exit_json(changed=True, msg="Stats from index '{0}'.".format(name), **response)
