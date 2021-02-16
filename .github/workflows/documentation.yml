@@ -38,17 +38,8 @@ jobs:
       - name: Install rstdoc
         run: pip install -v rstdoc
 
-      - name: Create docs dir
-        run: mkdir -p docs/{lookup,cache}
-
       - name: Create rst files from modules
         run: ansible-doc-extractor ./docs plugins/modules/elastic_*.py
-
-      - name: Create rst files from lookup
-        run: ansible-doc-extractor ./docs/lookup plugins/lookup/elastic*.py
-
-      - name: Create rst files from cache
-        run: ansible-doc-extractor ./docs/cache plugins/cache/elastic*.py
 
       - name: Create collection index document
         run: |
