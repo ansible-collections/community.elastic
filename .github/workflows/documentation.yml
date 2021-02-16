@@ -40,6 +40,9 @@ jobs:
 
       - name: Create rst files from modules
         run: ansible-doc-extractor ./docs plugins/modules/elastic_*.py
+      
+      - name: Create docs dir
+        run: mkdir docs
 
       - name: Create collection index document
         run: |
