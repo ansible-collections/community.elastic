@@ -6,3 +6,9 @@
 
 Under construction....
 
+If you're feeling brave...
+
+```bash
+ansible-galaxy collection install https://github.com/ansible-collections/community.elastic/releases/download/latest/community-elastic-latest.tar.gz
+```
+
