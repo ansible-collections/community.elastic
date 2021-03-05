@@ -101,6 +101,7 @@ jobs:
       matrix:
         python_version:
           - "3.6"
+          - "2.7"
         elastic_module: ${{ fromJson(needs.integration_matrix.outputs.matrix) }}
         ansible_version:
           - stable-2.10
@@ -144,13 +145,6 @@ jobs:
           timeout_minutes: 3
           max_attempts: 3
           command: ansible-galaxy collection install community.docker -p ansible_collections/
-
-      #- name: Install community.crypto
-      #  uses: nick-invision/retry@v2
-      #  with:
-      #    timeout_minutes: 3
-      #    max_attempts: 3
-      #    command: ansible-galaxy collection install community.crypto -p ansible_collections/
 
       - name: Run integration tests on Python ${{ matrix.python_version }} | ${{ matrix.ansible_version }}
         run: ansible-test integration -v --color --retry-on-error --python ${{ matrix.python_version }} --continue-on-error --diff --coverage ${{ matrix.elastic_module }}

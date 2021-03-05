@@ -104,6 +104,7 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 import time
 import json
 import uuid
+import io
 
 
 def process_document_for_bulk(module, index, action, document):
@@ -128,7 +129,7 @@ def process_document_for_bulk(module, index, action, document):
 
 
 def get_data_from_file(file_name):
-    file = open(file_name, encoding="utf8", errors='ignore')
+    file = io.open(file_name, encoding="utf8", errors='ignore')
     data = [line.strip() for line in file]
     file.close()
     return data
