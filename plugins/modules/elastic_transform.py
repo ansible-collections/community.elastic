@@ -240,7 +240,7 @@ import json
 
 def check_param_state_present(module, param):
     if module.params[param] is None:
-        module.fail_json(msg="You must supply a value for {0} when state == 'present'".format(param_name))
+        module.fail_json(msg="You must supply a value for {0} when state == 'present'".format(param))
 
 
 def add_if_not_none(dict, key, module):
