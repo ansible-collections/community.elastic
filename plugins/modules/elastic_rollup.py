@@ -11,10 +11,10 @@ DOCUMENTATION = r'''
 ---
 module: elastic_rollup
 
-short_description: Manage Elasticsearch user roles.
+short_description: Manage Elasticsearch Rollup Jobs.
 
 description:
-  - Manage Elasticsearch user roles.
+  - Manage Elasticsearch Rollup Jobs.
 
 author: Rhys Campbell (@rhysmeister)
 version_added: "0.0.1"
