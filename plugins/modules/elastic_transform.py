@@ -435,7 +435,7 @@ def main():
                         "source": module.params['source'],
                         "sync": module.params['sync'],
                     }
-                    response = client.transform.put_transform(id=name,
+                    response = client.transform.put_transform(transform_id=name,
                                                               body=body,
                                                               headers=None)
                     module.exit_json(changed=True, msg="The transform job {0} was successfully created.".format(name))
