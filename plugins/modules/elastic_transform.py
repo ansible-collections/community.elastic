@@ -244,7 +244,7 @@ def check_param_state_present(module, param, param_name):
 
 
 def add_if_not_none(dict, key, module):
-    if module.param[key] is not None:
+    if module.params[key] is not None:
         dict[key] = module.param[key]
     return dict
 
@@ -443,7 +443,7 @@ def main():
                         "sync"
                     ]
                     for key in body_keys:
-                        add_if_not_none(body, key, module)
+                        body = add_if_not_none(body, key, module)
                     response = client.transform.put_transform(transform_id=name,
                                                               body=body,
                                                               headers=None)
