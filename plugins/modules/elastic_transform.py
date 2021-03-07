@@ -249,7 +249,7 @@ def get_transform_job(client, name):
     try:
         response = client.transform.get_transform(transform_id=name)
         job_config = response["transforms"][0]
-    except NotFoundError:
+    except elasticsearch.NotFoundError:
         job_config = None
     return job_config
 
