@@ -47,6 +47,9 @@
       name: myindex
       state: flush
 
+  - pause:
+      seconds: 5
+
   - name: Count documents in myindex
     shell: curl --silent -X GET http://localhost:9200/myindex/_count
     register: count

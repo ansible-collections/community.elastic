@@ -53,15 +53,18 @@
 
   - name: Start a transform job called ecommerce_transform1
     community.elastic.elastic_transform:
+      <<: *elastic_index_parameters
       name: ecommerce_transform1
       state: started
 
   - name: Stop a transform job called ecommerce_transform1
     community.elastic.elastic_transform:
+      <<: *elastic_index_parameters
       name: ecommerce_transform1
       state: stopped
 
   - name: Delete a transform job called ecommerce_transform1
     community.elastic.elastic_transform:
+      <<: *elastic_index_parameters
       name: ecommerce_transform1
       state: absent
