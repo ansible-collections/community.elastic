@@ -7,6 +7,7 @@
 
   - name: Create a transform job with a pivot (defer_validation)
     community.elastic.elastic_transform:
+      <<: *elastic_index_parameters
       name: ecommerce_transform1
       state: present
       source:
@@ -45,3 +46,22 @@
           }
         }
       defer_validation: yes
+
+  - name: Get transform job document
+    shell: curl --silent -X GET http://localhost:9200/_transform/ecommerce_transform1
+    register: sensor_job
+
+  - name: Start a transform job called ecommerce_transform1
+    community.elastic.elastic_transform:
+      name: ecommerce_transform1
+      state: started
+
+  - name: Stop a transform job called ecommerce_transform1
+    community.elastic.elastic_transform:
+      name: ecommerce_transform1
+      state: stopped
+
+  - name: Delete a transform job called ecommerce_transform1
+    community.elastic.elastic_transform:
+      name: ecommerce_transform1
+      state: absent
