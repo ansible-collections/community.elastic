@@ -246,10 +246,10 @@ def get_transform_job(client, name):
     '''
     Gets the transform job specified by name / job_id
     '''
-    response = client.transform.get_transform(transform_id=name)
     try:
+        response = client.transform.get_transform(transform_id=name)
         job_config = response["transforms"][0]
-    except IndexError:
+    except NotFoundError:
         job_config = None
     return job_config
 
