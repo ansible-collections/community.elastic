@@ -212,7 +212,7 @@ EXAMPLES = r'''
     state: absent
 
 - name: Start a transform job called ecommerce_transform1
-  community.elastic.elastic_transform
+  community.elastic.elastic_transform:
     name: ecommerce_transform1
     state: started
 
@@ -327,7 +327,7 @@ def main():
         name=dict(type='str', required=True, aliases=['transform_id']),
         defer_validation=dict(type='bool', default=False),
         description=dict(type='str'),
-        dest=dict(type='dict', requires=True),
+        dest=dict(type='dict', required=True),
         frequency=dict(type='str', default="1m"),
         latest=dict(type='dict'),
         pivot=dict(type='dict'),
