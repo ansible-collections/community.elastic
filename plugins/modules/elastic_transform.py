@@ -245,7 +245,7 @@ def check_param_state_present(module, param, param_name):
 
 def add_if_not_none(dict, key, module):
     if module.params[key] is not None:
-        dict[key] = module.param[key]
+        dict[key] = module.params[key]
     return dict
 
 
