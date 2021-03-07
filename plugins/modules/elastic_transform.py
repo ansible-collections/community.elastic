@@ -370,8 +370,8 @@ def main():
 
         # We can probably refector this code to reduce by 50% by only chekcing check ode when we actually change something
         if job is not None:  # Job exists
-            job_config = job['config']
-            job_status = job['status']
+            job_config = job
+            job_status = job['state']
             if module.check_mode:
                 if state == "present":
                     is_different = job_is_different(job_config, module)
