@@ -123,7 +123,9 @@ options:
       index:
         description:
           - The source indices for the transform.
-          - It can be a single index, an index pattern (for example, "my-index-*"), an array of indices (for example, ["my-index-000001", "my-index-000002"]), or an array of index patterns (for example, ["my-index-*", "my-other-index-*"].
+          - It can be a single index, an index pattern (for example, "my-index-*"), \
+            an array of indices (for example, ["my-index-000001", "my-index-000002"]), \
+            or an array of index patterns (for example, ["my-index-*", "my-other-index-*"].
         type: raw
         required: yes
       query:
@@ -349,13 +351,13 @@ def main():
     state = module.params['state']
 
     # values that should be supplied when passing state = present
-    #if state == 'present':
+    # if state == 'present':
     #    check_param_state_present(module, index_pattern, "index_pattern")
     #    check_param_state_present(module, transform_index, "transform_index")
     #    check_param_state_present(module, cron, "cron")
     #    check_param_state_present(module, groups, "groups")
     #    check_param_state_present(module, metrics, "metrics")
-        # Check that groups and metrics has the appropriate keys
+    # Check that groups and metrics has the appropriate keys
     #    if len(set(list(groups.keys())) - set(["date_histogram", "histogram", "terms"])) > 0:
     #        module.fail_json(msg="There are invalid keys in the groups dictionary.")
     #    elif not isinstance(metrics, list):
