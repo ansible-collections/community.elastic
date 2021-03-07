@@ -43,7 +43,6 @@ options:
     description:
       - The destination for the transform.
     type: dict
-    required: yes
     suboptions:
       index:
         description:
@@ -118,7 +117,6 @@ options:
     description:
       - The source of the data for the transform.
     type: dict
-    required: yes
     suboptions:
       index:
         description:
@@ -240,8 +238,8 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 import json
 
 
-def check_param_state_present(module, param, param_name):
-    if param is None:
+def check_param_state_present(module, param_name):
+    if module.params[param] is None:
         module.fail_json(msg="You must supply a value for {0} when state == 'present'".format(param_name))
 
 
@@ -327,12 +325,12 @@ def main():
         name=dict(type='str', required=True, aliases=['transform_id']),
         defer_validation=dict(type='bool', default=False),
         description=dict(type='str'),
-        dest=dict(type='dict', required=True),
+        dest=dict(type='dict'),
         frequency=dict(type='str', default="1m"),
         latest=dict(type='dict'),
         pivot=dict(type='dict'),
         settings=dict(type='dict'),
-        source=dict(type='dict', required=True),
+        source=dict(type='dict'),
         sync=dict(type='dict'),
         state=dict(type='str', choices=state_choices, default='present'),
     )
@@ -351,9 +349,9 @@ def main():
     state = module.params['state']
 
     # values that should be supplied when passing state = present
-    # if state == 'present':
-    #    check_param_state_present(module, index_pattern, "index_pattern")
-    #    check_param_state_present(module, transform_index, "transform_index")
+    if state == 'present':
+        check_param_state_present(module, "dest")
+        check_param_state_present(module, "source")
     #    check_param_state_present(module, cron, "cron")
     #    check_param_state_present(module, groups, "groups")
     #    check_param_state_present(module, metrics, "metrics")
