@@ -443,7 +443,7 @@ def main():
                         "sync"
                     ]
                     for key in body_keys:
-                        add_if_not_none(dody, key, module)
+                        add_if_not_none(body, key, module)
                     response = client.transform.put_transform(transform_id=name,
                                                               body=body,
                                                               headers=None)
