@@ -184,6 +184,9 @@
       name: loaded_from_file
       state: flush
 
+  - pause:
+      seconds: 3
+
   - name: Count documents that were uploaded from the file
     shell: curl --silent -X GET http://{{ elastic_index_parameters.login_user }}:{{ elastic_index_parameters.login_password }}@localhost:9200/loaded_from_file/_count
     register: count
