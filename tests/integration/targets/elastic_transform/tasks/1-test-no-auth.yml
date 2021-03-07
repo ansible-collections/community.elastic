@@ -5,7 +5,7 @@
 
   block:
 
-  - name: Create a transform job with a pivot
+  - name: Create a transform job with a pivot (defer_validation)
     community.elastic.elastic_transform:
       name: ecommerce_transform1
       state: present
@@ -44,3 +44,4 @@
             "delay": "60s"
           }
         }
+      defer_validation: yes
