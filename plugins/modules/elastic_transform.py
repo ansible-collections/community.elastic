@@ -232,7 +232,8 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     elastic_found,
     E_IMP_ERR,
     elastic_common_argument_spec,
-    ElasticHelpers
+    ElasticHelpers,
+    NotFoundError
 )
 import json
 
@@ -249,7 +250,7 @@ def get_transform_job(client, name):
     try:
         response = client.transform.get_transform(transform_id=name)
         job_config = response["transforms"][0]
-    except elasticsearch.NotFoundError:
+    except NotFoundError:
         job_config = None
     return job_config
 
