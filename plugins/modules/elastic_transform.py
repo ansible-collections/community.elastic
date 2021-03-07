@@ -238,7 +238,7 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 import json
 
 
-def check_param_state_present(module, param_name):
+def check_param_state_present(module, param):
     if module.params[param] is None:
         module.fail_json(msg="You must supply a value for {0} when state == 'present'".format(param_name))
 
