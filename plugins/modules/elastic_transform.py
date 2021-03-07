@@ -446,7 +446,8 @@ def main():
                         body = add_if_not_none(body, key, module)
                     response = client.transform.put_transform(transform_id=name,
                                                               body=body,
-                                                              headers=None)
+                                                              headers=None,
+                                                              defer_validation=module.params['defer_validation'])
                     module.exit_json(changed=True, msg="The transform job {0} was successfully created.".format(name))
                 elif state == "absent":
                     module.exit_json(changed=False, msg="The transform job {0} does not exist.".format(name))
