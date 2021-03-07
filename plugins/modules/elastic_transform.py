@@ -243,6 +243,12 @@ def check_param_state_present(module, param, param_name):
         module.fail_json(msg="You must supply a value for {0} when state == 'present'".format(param_name))
 
 
+def add_if_not_none(dict, key, module):
+    if module.param[key] is not None:
+        dict[key] = module.param[key]
+    return dict
+
+
 def get_transform_job(client, name):
     '''
     Gets the transform job specified by name / job_id
@@ -425,16 +431,19 @@ def main():
                     module.exit_json(changed=False, msg="Cannot stop or start a job that does not exist.")
             else:
                 if state == "present":
-                    body = {
-                        "description": module.params['description'],
-                        "dest": module.params['dest'],
-                        "frequency": module.params['frequency'],
-                        "latest": module.params['latest'],
-                        "pivot": module.params['pivot'],
-                        "settings": module.params['settings'],
-                        "source": module.params['source'],
-                        "sync": module.params['sync'],
-                    }
+                    body = {}
+                    body_keys = [
+                        "description",
+                        "dest",
+                        "frequency",
+                        "latest",
+                        "pivot",
+                        "settings",
+                        "source",
+                        "sync"
+                    ]
+                    for key in body_keys:
+                        add_if_not_none(dody, key, module)
                     response = client.transform.put_transform(transform_id=name,
                                                               body=body,
                                                               headers=None)
