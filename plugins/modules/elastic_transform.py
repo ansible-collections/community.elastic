@@ -261,7 +261,7 @@ def get_transform_job(client, name):
     return job_config
 
 
-def get_transform_state(client, name):
+def get_transform_state(client, name, module):
     '''
     Returns the state of the transform
     '''
@@ -269,6 +269,7 @@ def get_transform_state(client, name):
         response = client.transform.get_transform_stats(transform_id=name)
         job = response["transforms"][0]
         if 'state' in list(job.keys()):
+            module.fail_json(msg=str(job))
             state = job['state']
         else:
             state = False
