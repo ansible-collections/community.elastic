@@ -72,12 +72,12 @@
       <<: *elastic_index_parameters
       name: ecommerce_transform1
       state: stopped
-    ignore_errors: yes
     register: transform_job
 
   - assert:
       that:
-        - "'Validation Failed' in transform_job.msg"
+        - "transform_job.changed == False"
+        - "transform_job.msg == 'The transform job ecommerce_transform1 is already in a stopped state'"
 
   - name: Delete a transform job called ecommerce_transform1
     community.elastic.elastic_transform:
