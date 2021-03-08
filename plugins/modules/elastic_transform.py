@@ -380,10 +380,10 @@ def main():
 
         job = get_transform_job(client, name)
 
-        # We can probably refector this code to reduce by 50% by only chekcing check ode when we actually change something
+        # We can probably refector this code to reduce by 50% by only checking when we actually change something
         if job is not None:  # Job exists
             job_config = job
-            job_status =
+            job_status = get_transform_state(client, name)
             if module.check_mode:
                 if state == "present":
                     is_different = job_is_different(job_config, module)
