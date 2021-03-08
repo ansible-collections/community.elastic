@@ -275,7 +275,6 @@ def get_transform_state(client, name):
     except NotFoundError:
         state = "notfound"
     return state
-    return True
 
 
 # TODO This will need adjusting to allow for job with some of the fields missing
