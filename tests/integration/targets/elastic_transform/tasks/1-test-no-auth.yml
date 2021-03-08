@@ -1,0 +1,86 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      timeout: 30
+
+  block:
+
+  - name: Create a transform job with a pivot (defer_validation)
+    community.elastic.elastic_transform:
+      <<: *elastic_index_parameters
+      name: ecommerce_transform1
+      state: present
+      source:
+        index: "kibana_sample_data_ecommerce"
+        query: {
+            "term": {
+              "geoip.continent_name": {
+                "value": "Asia"
+              }
+            }
+          }
+      pivot:
+        group_by: {
+            "customer_id": {
+              "terms": {
+                "field": "customer_id"
+              }
+            }
+          }
+        aggregations: {
+            "max_price": {
+              "max": {
+                "field": "taxful_total_price"
+              }
+            }
+          }
+      description: "Maximum priced ecommerce data by customer_id in Asia"
+      dest:
+        index: "kibana_sample_data_ecommerce_transform1"
+        pipeline: "add_timestamp_pipeline"
+      frequency: "5m"
+      sync: {
+          "time": {
+            "field": "order_date",
+            "delay": "60s"
+          }
+        }
+      defer_validation: yes
+
+  - name: Get transform job document
+    shell: curl --silent -X GET http://localhost:9200/_transform/ecommerce_transform1
+    register: transform_job
+
+  - assert:
+      that:
+        - "'Maximum priced ecommerce data by customer_id in Asia' in transform_job.stdout"
+
+  - name: Start a transform job called ecommerce_transform1
+    community.elastic.elastic_transform:
+      <<: *elastic_index_parameters
+      name: ecommerce_transform1
+      state: started
+    ignore_errors: yes
+    register: transform_job
+
+  - assert:
+      that:
+        - "'Validation Failed' in transform_job.msg"
+
+  - name: Stop a transform job called ecommerce_transform1
+    community.elastic.elastic_transform:
+      <<: *elastic_index_parameters
+      name: ecommerce_transform1
+      state: stopped
+    register: transform_job
+
+  - assert:
+      that:
+        - "transform_job.changed == False"
+        - "transform_job.msg == 'The transform job ecommerce_transform1 is already in a stopped state'"
+
+  - name: Delete a transform job called ecommerce_transform1
+    community.elastic.elastic_transform:
+      <<: *elastic_index_parameters
+      name: ecommerce_transform1
+      state: absent

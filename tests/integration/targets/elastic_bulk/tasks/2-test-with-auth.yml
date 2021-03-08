@@ -50,6 +50,9 @@
       name: myindex
       state: flush
 
+  - pause:
+      seconds: 5
+
   - name: Count documents in myindex
     shell: curl --silent -X GET http://{{ elastic_index_parameters.login_user }}:{{ elastic_index_parameters.login_password }}@localhost:9200/myindex/_count
     register: count
@@ -88,6 +91,9 @@
       <<: *elastic_index_parameters
       name: idonotexist
       state: flush
+
+  - pause:
+      seconds: 5
 
   - name: Count documents in idonotexist
     shell: curl --silent -X GET http://{{ elastic_index_parameters.login_user }}:{{ elastic_index_parameters.login_password }}@localhost:9200/idonotexist/_count
@@ -146,6 +152,9 @@
       <<: *elastic_index_parameters
       name: multiactions
       state: flush
+
+  - pause:
+      seconds: 5
 
   - name: Count documents in idonotexist
     shell: curl --silent -X GET http://{{ elastic_index_parameters.login_user }}:{{ elastic_index_parameters.login_password }}@localhost:9200/multiactions/_count
