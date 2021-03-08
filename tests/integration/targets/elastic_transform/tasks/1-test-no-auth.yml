@@ -50,11 +50,10 @@
   - name: Get transform job document
     shell: curl --silent -X GET http://localhost:9200/_transform/ecommerce_transform1
     register: transform_job
-    warn: False
 
   - assert:
       that:
-        - "'Maximum priced ecommerce data by customer_id in Asia' in transform_job.stdout"  
+        - "'Maximum priced ecommerce data by customer_id in Asia' in transform_job.stdout"
 
   - name: Start a transform job called ecommerce_transform1
     community.elastic.elastic_transform:
