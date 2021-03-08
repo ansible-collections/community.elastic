@@ -277,6 +277,7 @@ def get_transform_state(client, name):
     return state
     return True
 
+
 # TODO This will need adjusting to allow for job with some of the fields missing
 # TODO Refector to a list of fields to check (dict1 & dict2)
 def job_is_different(current_job, module):
