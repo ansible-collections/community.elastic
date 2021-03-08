@@ -261,7 +261,7 @@ def get_transform_job(client, name):
     return job_config
 
 
-def get_transform_state(client, name, module):
+def get_transform_state(client, name):
     '''
     Returns the state of the transform
     '''
@@ -269,12 +269,11 @@ def get_transform_state(client, name, module):
         response = client.transform.get_transform_stats(transform_id=name)
         job = response["transforms"][0]
         if 'state' in list(job.keys()):
-            module.fail_json(msg=str(type((job))))
             state = job['state']
         else:
-            state = False
+            state = "nostate"
     except NotFoundError:
-        state = False
+        state = "notfound"
     return state
     return True
 
@@ -389,7 +388,7 @@ def main():
         # We can probably refector this code to reduce by 50% by only checking when we actually change something
         if job is not None:  # Job exists
             job_config = job
-            job_status = get_transform_state(client, name, module)
+            job_status = get_transform_state(client, name)
             if module.check_mode:
                 if state == "present":
                     is_different = job_is_different(job_config, module)
@@ -407,9 +406,9 @@ def main():
                     else:
                         module.fail_jsob(msg="Job {0} was in a unexpected state: {1}.".format(name, state))
                 elif state == "stopped":
-                    if job_status["job_state"] == "started":
+                    if job_status == "started":
                         module.exit_json(changed=True, msg="The transform job {0} was stopped.".format(name))
-                    elif job_status["job_state"] == "stopped":
+                    elif job_status == "stopped":
                         module.exit_json(changed=False, msg="The transform job {0} is already in a stopped state".format(name))
                     else:
                         module.fail_jsob(msg="Job {0} was in a unexpected state: {1}.".format(name, state))
@@ -424,18 +423,18 @@ def main():
                     response = client.transform.delete_transform(transform_id=name)
                     module.exit_json(changed=True, msg="The transform job {0} was removed.".format(name))
                 elif state == "started":
-                    if job_status["job_state"] == "stopped":
+                    if job_status == "stopped":
                         client.transform.start_transform(transform_id=name)
                         module.exit_json(changed=True, msg="The transform job {0} was started.".format(name))
-                    elif job_status["job_state"] == "started":
+                    elif job_status == "started":
                         module.exit_json(changed=False, msg="The transform job {0} is already in a started state".format(name))
                     else:
                         module.fail_jsob(msg="Job {0} was in a unexpected state: {1}.".format(name, state))
                 elif state == "stopped":
-                    if job_status["job_state"] == "started":
+                    if job_status == "started":
                         client.transform.stop_transform(transform_id=name)
                         module.exit_json(changed=True, msg="The transform job {0} was stopped.".format(name))
-                    elif job_status["job_state"] == "stopped":
+                    elif job_status == "stopped":
                         module.exit_json(changed=False, msg="The transform job {0} is already in a stopped state".format(name))
                     else:
                         module.fail_jsob(msg="Job {0} was in a unexpected state: {1}.".format(name, state))
