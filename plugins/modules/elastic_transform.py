@@ -269,7 +269,7 @@ def get_transform_state(client, name, module):
         response = client.transform.get_transform_stats(transform_id=name)
         job = response["transforms"][0]
         if 'state' in list(job.keys()):
-            module.fail_json(msg=str(job))
+            module.fail_json(msg=str(type((job))))
             state = job['state']
         else:
             state = False
