@@ -262,6 +262,7 @@ def get_transform_job(client, name):
 
 
 # TODO This will need adjusting to allow for job with some of the fields missing
+# TODO Refector to a list of fields to check (dict1 & dict2)
 def job_is_different(current_job, module):
     is_different = False
     if module.params['description'] != current_job['description']:
@@ -371,7 +372,7 @@ def main():
         # We can probably refector this code to reduce by 50% by only chekcing check ode when we actually change something
         if job is not None:  # Job exists
             job_config = job
-            job_status = client.get_transform_stats(transform_id=name)[0]['state']
+            job_status = client.transform.get_transform_status(transform_id=name)[0]['state']
             if module.check_mode:
                 if state == "present":
                     is_different = job_is_different(job_config, module)
