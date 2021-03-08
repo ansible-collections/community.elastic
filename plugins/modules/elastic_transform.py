@@ -265,16 +265,16 @@ def get_transform_state(client, name):
     '''
     Returns the state of the transform
     '''
-    #try:
-    #    response = client.transform.get_transform_stats(transform_id=name)
-    #    job = response["transforms"][0]
-    #    if 'state' in list(job.keys()):
-    #        state = job['state']
-    #    else:
-    #        state = False
-    #except NotFoundError:
-    #    state = False
-    #return state
+    try:
+        response = client.transform.get_transform_stats(transform_id=name)
+        job = response["transforms"]
+        if 'state' in list(job.keys()):
+            state = job['state']
+        else:
+            state = False
+    except NotFoundError:
+        state = False
+    return state
     return True
 
 # TODO This will need adjusting to allow for job with some of the fields missing
