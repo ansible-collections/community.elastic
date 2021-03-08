@@ -267,7 +267,11 @@ def get_transform_state(client, name):
     '''
     try:
         response = client.transform.get_transform_stats(transform_id=name)
-        state = response['transforms'][0]['state']
+        job = dict(response["transforms"][0])
+        if 'state' in list(job.keys()):
+            state = job['state']
+        else:
+            state = False
     except NotFoundError:
         state = False
     return state
