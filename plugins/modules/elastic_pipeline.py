@@ -63,7 +63,7 @@ EXAMPLES = r'''
     version: 1
     processors:
       - set: {
-        field: "foo"
+        field: "foo",
         value: "bar"
       }
 
