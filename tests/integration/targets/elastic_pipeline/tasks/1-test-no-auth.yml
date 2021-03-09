@@ -19,7 +19,7 @@
         }
 
   - name: Delete a pipeline
-    community.elastic.elastic_transform:
+    community.elastic.elastic_pipeline:
       <<: *elastic_index_parameters
       name: my-pipeline-id
       state: absent
