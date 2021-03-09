@@ -104,7 +104,7 @@ def add_if_not_none(dict, key, module):
 
 def get_pipeline(client, name):
     '''
-    Gets the pipeline specified by name / job_id
+    Gets the pipeline specified by name
     '''
     try:
         pipeline = client.ingest.get_pipeline(id=name)
@@ -119,9 +119,9 @@ def pipeline_is_different(pipeline, module):
         is_different = True
     elif module.params['version'] != pipeline['version']:
         is_different = True
-    elif module.params['processors'] != current_job['processors']:
+    elif module.params['processors'] != pipeline['processors']:
         dict1 = json.dumps(module.params['processors'], sort_keys=True)
-        dict2 = json.dumps(current_job['processors'], sort_keys=True)
+        dict2 = json.dumps(pipeline['processors'], sort_keys=True)
         if dict1 != dict2:
             is_different = True
     return is_different
@@ -182,7 +182,7 @@ def main():
         pipeline = get_pipeline(client, name)
 
         # We can probably refector this code to reduce by 50% by only checking when we actually change something
-        if pipeline is not None:  # Job exists
+        if pipeline is not None:  # pipeline exists
             if module.check_mode:
                 if state == "present":
                     is_different = pipeline_is_different(pipeline, module)
