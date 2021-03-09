@@ -14,7 +14,7 @@ module: elastic_transform
 short_description: Manage Elasticsearch Transform Jobs.
 
 description:
-  - Manage Elasticsearch user roles.
+  - Manage Elasticsearch Transform Jobs.
 
 author: Rhys Campbell (@rhysmeister)
 version_added: "0.0.1"
@@ -37,7 +37,7 @@ options:
     default: False
   description:
     description:
-      - When true, deferrable validations are not run.
+      - A description of the transform job.
     type: str
   dest:
     description:

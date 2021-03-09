@@ -1,0 +1,25 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      timeout: 30
+
+  block:
+
+  - name: Create a pipeline
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: my-pipeline-id
+      state: present
+      description: "describe pipeline"
+      version: 1
+      processors:
+        - set: {
+          field: "foo"
+          value: "bar"
+        }
+
+  - name: Delete a pipeline
+    community.elastic.elastic_transform:
+      <<: *elastic_index_parameters
+      name: my-pipeline-id
+      state: absent
