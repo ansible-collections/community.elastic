@@ -144,7 +144,7 @@ def main():
     argument_spec.update(
         name=dict(type='str', required=True, aliases=['pipeline_id']),
         description=dict(type='str'),
-        processors=dict(type='list', elements='dict', required=True),
+        processors=dict(type='list', elements='dict'),
         version=dict(type='int'),
         state=dict(type='str', choices=state_choices, default='present'),
     )
