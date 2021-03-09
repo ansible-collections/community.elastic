@@ -219,8 +219,8 @@ def main():
                     for key in body_keys:
                         body = add_if_not_none(body, key, module)
                     response = client.ingest.put_pipeline(id=name,
-                                                              body=body,
-                                                              headers=None)
+                                                          body=body,
+                                                          headers=None)
                     module.exit_json(changed=True, msg="The pipeline {0} was successfully created.".format(name))
                 elif state == "absent":
                     module.exit_json(changed=False, msg="The pipeline {0} does not exist.".format(name))
