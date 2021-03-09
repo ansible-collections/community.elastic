@@ -107,7 +107,7 @@ def get_pipeline(client, name):
     Gets the pipeline specified by name / job_id
     '''
     try:
-        pipeline = client.pipeline.get_pipeline(id=name)
+        pipeline = client.ingest.get_pipeline(id=name)
     except NotFoundError:
         pipeline = None
     return pipeline
@@ -200,7 +200,7 @@ def main():
                     else:
                         module.exit_json(changed=False, msg="The pipeline {0} already exists and no updates were needed.".format(name))
                 elif state == "absent":
-                    response = client.pipeline.delete_pipeline(id=name)
+                    response = client.ingest.delete_pipeline(id=name)
                     module.exit_json(changed=True, msg="The pipeline {0} was removed.".format(name))
         else:
             if module.check_mode:
@@ -218,7 +218,7 @@ def main():
                     ]
                     for key in body_keys:
                         body = add_if_not_none(body, key, module)
-                    response = client.pipeline.put_pipeline(id=name,
+                    response = client.ingest.put_pipeline(id=name,
                                                               body=body,
                                                               headers=None)
                     module.exit_json(changed=True, msg="The pipeline {0} was successfully created.".format(name))
