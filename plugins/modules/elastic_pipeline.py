@@ -46,7 +46,7 @@ options:
     type: int
   state:
     description:
-      - State of the transform job
+      - State of the pipeline
     type: str
     choices:
       - present
@@ -68,7 +68,7 @@ EXAMPLES = r'''
       }
 
 - name: Delete a pipeline
-  community.elastic.elastic_transform:
+  community.elastic.elastic_pipeline:
     name: my-pipeline-id
     state: absent
 '''
@@ -107,7 +107,7 @@ def get_pipeline(client, name):
     Gets the pipeline specified by name / job_id
     '''
     try:
-        pipeline = client.transform.get_pipeline(id=name)
+        pipeline = client.pipeline.get_pipeline(id=name)
     except NotFoundError:
         pipeline = None
     return pipeline
@@ -200,7 +200,7 @@ def main():
                     else:
                         module.exit_json(changed=False, msg="The pipeline {0} already exists and no updates were needed.".format(name))
                 elif state == "absent":
-                    response = client.transform.delete_pipeline(id=name)
+                    response = client.pipeline.delete_pipeline(id=name)
                     module.exit_json(changed=True, msg="The pipeline {0} was removed.".format(name))
         else:
             if module.check_mode:
@@ -218,7 +218,7 @@ def main():
                     ]
                     for key in body_keys:
                         body = add_if_not_none(body, key, module)
-                    response = client.transform.put_pipeline(id=name,
+                    response = client.pipeline.put_pipeline(id=name,
                                                               body=body,
                                                               headers=None)
                     module.exit_json(changed=True, msg="The pipeline {0} was successfully created.".format(name))
