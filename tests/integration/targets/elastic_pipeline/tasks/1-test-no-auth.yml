@@ -23,3 +23,25 @@
       <<: *elastic_index_parameters
       name: my-pipeline-id
       state: absent
+
+  - name: Create a pipeline with painless sripting lang
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: painless-pipeline
+      state: present
+      description: "My painless pipelines"
+      version: 1
+      processors:
+        - script: {
+            lang: "painless",
+            source: "ctx.field_a_plus_b_times_c = (ctx.field_a + ctx.field_b) * params.param_c",
+            params: {
+              param_c: 10
+            }
+          }
+
+  - name: Delete painless-pipeline
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: painless-pipeline
+      state: absent
