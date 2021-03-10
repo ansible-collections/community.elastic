@@ -77,7 +77,7 @@
         - grok: {
             field: "message",
             patterns:
-              - "{{ grok_expression }}"
+              - !unsafe "{{ grok_expression }}"
           }
         - date: {
             field: "timestamp",
