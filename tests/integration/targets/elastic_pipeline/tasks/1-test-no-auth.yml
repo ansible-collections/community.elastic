@@ -54,7 +54,7 @@
       description: "My rename pipelines"
       version: 1
       processors:
-        - rename": {
+        - rename: {
             field: "hostname",
             target_field: "host",
             ignore_missing: true
