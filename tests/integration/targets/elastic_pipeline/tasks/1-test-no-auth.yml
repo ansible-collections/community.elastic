@@ -2,6 +2,7 @@
 - vars:
     elastic_index_parameters: &elastic_index_parameters
       timeout: 30
+    grok_expression: !unsafe "%{IPORHOST:clientip} %{USER:ident} %{USER:auth} \\[%{HTTPDATE:timestamp}\\] \"%{WORD:verb} %{DATA:request} HTTP/%{NUMBER:httpversion}\" %{NUMBER:response:int} (?:-|%{NUMBER:bytes:int}) %{QS:referrer} %{QS:agent}"
 
   block:
 
@@ -76,7 +77,7 @@
         - grok: {
             field: "message",
             patterns:
-              - !unsafe "%{IPORHOST:clientip} %{USER:ident} %{USER:auth} \\[%{HTTPDATE:timestamp}\\] \"%{WORD:verb} %{DATA:request} HTTP/%{NUMBER:httpversion}\" %{NUMBER:response:int} (?:-|%{NUMBER:bytes:int}) %{QS:referrer} %{QS:agent}"
+              - "{{ grok_expression }}"
           }
         - date: {
             field: "timestamp",
