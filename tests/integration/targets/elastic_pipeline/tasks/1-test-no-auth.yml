@@ -45,3 +45,23 @@
       <<: *elastic_index_parameters
       name: painless-pipeline
       state: absent
+
+  - name: Create a rename pipeline
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: rename-pipeline
+      state: present
+      description: "My rename pipelines"
+      version: 1
+      processors:
+        - rename": {
+            field: "hostname",
+            target_field: "host",
+            ignore_missing: true
+          }
+
+  - name: Delete rename-pipeline
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: rename-pipeline
+      state: absent
