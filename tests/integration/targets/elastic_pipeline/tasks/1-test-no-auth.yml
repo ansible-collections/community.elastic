@@ -1,0 +1,97 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      timeout: 30
+
+  block:
+
+  - name: Create a pipeline
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: my-pipeline-id
+      state: present
+      description: "describe pipeline"
+      version: 1
+      processors:
+        - set: {
+          field: "foo",
+          value: "bar"
+        }
+
+  - name: Delete a pipeline
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: my-pipeline-id
+      state: absent
+
+  - name: Create a pipeline with painless sripting lang
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: painless-pipeline
+      state: present
+      description: "My painless pipelines"
+      version: 1
+      processors:
+        - script: {
+            lang: "painless",
+            source: "ctx.field_a_plus_b_times_c = (ctx.field_a + ctx.field_b) * params.param_c",
+            params: {
+              param_c: 10
+            }
+          }
+
+  - name: Delete painless-pipeline
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: painless-pipeline
+      state: absent
+
+  - name: Create a rename pipeline
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: rename-pipeline
+      state: present
+      description: "My rename pipelines"
+      version: 1
+      processors:
+        - rename: {
+            field: "hostname",
+            target_field: "host",
+            ignore_missing: true
+          }
+
+  # - name: Delete rename-pipeline
+  #   community.elastic.elastic_pipeline:
+  #     <<: *elastic_index_parameters
+  #     name: rename-pipeline
+  #     state: absent
+  #
+  # - name: Create a pipeline for Combined Log Format
+  #   community.elastic.elastic_pipeline:
+  #     <<: *elastic_index_parameters
+  #     name: combined-log-pipeline
+  #     state: present
+  #     description: "Ingest pipeline for Combined Log Format"
+  #     processors:
+  #       - grok: {
+  #           field: "message",
+  #           patterns:
+  #             - "%{IPORHOST\:clientip} %{USER\:ident} %{USER\:auth} \\\\[%{HTTPDATE\:timestamp}\\\\] \\"%{WORD\:verb} %{DATA:request} HTTP/%{NUMBER\:httpversion}\\" %{NUMBER\:response\:int} (?\:-|%{NUMBER\:bytes\:int}) %{QS\:referrer} %{QS\:agent}"
+  #         }
+  #       - date: {
+  #           field: "timestamp",
+  #           formats:
+  #             - "dd/MMM/YYYY:HH:mm:ss Z"
+  #         }
+  #       - geoip: {
+  #           field: "clientip"
+  #         }
+  #       - user_agent: {
+  #           field: "agent"
+  #         }
+  #
+  # - name: Delete combined-log-pipeline
+  #   community.elastic.elastic_pipeline:
+  #     <<: *elastic_index_parameters
+  #     name: combined-log-pipeline
+  #     state: absent
