@@ -104,6 +104,7 @@ jobs:
           - "2.7"
         elastic_module: ${{ fromJson(needs.integration_matrix.outputs.matrix) }}
         ansible_version:
+          - stable-2.12
           - stable-2.11
           - stable-2.10
           - devel
