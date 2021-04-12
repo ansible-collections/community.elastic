@@ -33,6 +33,9 @@
   - pause:
       seconds: 5
 
+  - name: Debug step
+    shell: curl -X GET "localhost:9200/_ilm/policy/"
+
   - name: Delete an ILM Policy
     community.elastic.elastic_index:
       name: mypolicy
