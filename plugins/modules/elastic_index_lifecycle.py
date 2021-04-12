@@ -83,7 +83,8 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     elastic_found,
     E_IMP_ERR,
     elastic_common_argument_spec,
-    ElasticHelpers
+    ElasticHelpers,
+    NotFoundError
 )
 
 phase_actions = {
