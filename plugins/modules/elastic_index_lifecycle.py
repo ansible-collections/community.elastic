@@ -86,6 +86,7 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     ElasticHelpers,
     NotFoundError
 )
+import json
 
 phase_actions = {
     "hot": ['set_priority',
@@ -146,7 +147,7 @@ def lifecycle_is_different(lifecycle_doc, module):
     This document compare the phases section of the policy document only
     '''
     is_different = False
-    dict1 = json.dumps(lifecycle['phases'], sort_keys=True)
+    dict1 = json.dumps(lifecycle_doc['phases'], sort_keys=True)
     dict2 = json.dumps(module.params['policy']['phases'], sort_keys=True)
     if dict1 != dict2:
         is_different = True
@@ -199,6 +200,7 @@ def main():
             pass  # for absent and present we check the existence,
         else:
             if state == 'present':
+                request_body = {"policy": policy}
                 if ilm_policy is not None:
                     if lifecycle_is_different(policy, module):
                         response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
@@ -206,7 +208,6 @@ def main():
                     else:
                         module.exit_json(changed=False, msg="The ILM Policy '{0}' is configured as specified.".format(name))
                 else:
-                    request_body = {"policy": policy}
                     response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
                     module.exit_json(changed=True, msg="The ILM Policy '{0}' was created.".format(name), **response)
             elif state == 'absent':

@@ -33,6 +33,7 @@
   - pause:
       seconds: 5
 
+  # TODO verification of mypolicy
   - name: Debug step
     shell: curl -X GET "localhost:9200/_ilm/policy/"
 
