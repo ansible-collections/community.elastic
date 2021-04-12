@@ -180,7 +180,6 @@ def main():
                          exception=E_IMP_ERR)
 
     name = module.params['name']
-    index = module.params['index']
     state = module.params['state']
     policy = module.params['policy']
 
