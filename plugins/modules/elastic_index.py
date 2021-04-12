@@ -156,7 +156,7 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        if module.check_mode:
+        if module.check_mode:  # TODO implement check mode
             pass  # for absent and present we check the existence, other states just return always changed
         else:
             if state == 'present':
