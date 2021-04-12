@@ -200,17 +200,17 @@ def main():
             if state == 'present':
                 if ilm_policy is not None:
                     if lifecycle_is_different(policy, module):
-                        response = dict(client.IlmClient.put_lifecycle(policy=name, body=request_body))
+                        response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
                         module.exit_json(changed=True, msg="The ILM Policy '{0}' was updated.".format(name), **response)
                     else:
                         module.exit_json(changed=False, msg="The ILM Policy '{0}' is configured as specified.".format(name))
                 else:
                     request_body = {"policy": policy}
-                    response = dict(client.IlmClient.put_lifecycle(policy=name, body=request_body))
+                    response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
                     module.exit_json(changed=True, msg="The ILM Policy '{0}' was created.".format(name), **response)
             elif state == 'absent':
                 if ilm_policy is not None:
-                    response = dict(client.IlmClient.delete_lifecycle(policy=name))
+                    response = dict(client.ilm.delete_lifecycle(policy=name))
                     module.exit_json(changed=True, msg="The ILM Policy '{0}' was deleted.".format(name), **response)
                 else:
                     module.exit_json(changed=False, msg="The ILM Policy '{0}' does not exist.".format(name))
