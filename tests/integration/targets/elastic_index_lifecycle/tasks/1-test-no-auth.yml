@@ -27,6 +27,12 @@
         - result.msg == "The ILM Policy 'mypolicy' was created."
         - result.changed == True
 
+  - name: Flush all data in the cluster
+    shell: curl -X POST "localhost:9200/_flush?pretty"
+
+  - pause:
+      seconds: 5
+
   - name: Delete an ILM Policy
     community.elastic.elastic_index:
       name: mypolicy
