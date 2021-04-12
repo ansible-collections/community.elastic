@@ -135,7 +135,7 @@ def get_lifecycle(client, name):
     Gets the lifecycle specified by name
     '''
     try:
-        policy_doc = client.ilm.get_lifecyle(policy=name)
+        policy_doc = client.ilm.get_lifecycle(policy=name)
         policy_odc = policy_doc[name]
     except NotFoundError:
         policy_doc = None
