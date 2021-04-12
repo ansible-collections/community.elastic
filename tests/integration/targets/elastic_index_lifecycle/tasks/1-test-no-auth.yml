@@ -5,22 +5,22 @@
 
   block:
 
-    - name: Create an ILM Policy
-      community.elastic.elastic_index_lifecycle:
-        name: mypolicy
-        policy:
-          phases:
-            warm:
-              min_age: "10d"
-              actions:
-                forcemerge:
-                  max_num_segments: 1
-            delete:
-              min_age: "30d"
-              actions:
-                delete: {}
-        <<: *elastic_index_parameters
-      register: result
+  - name: Create an ILM Policy
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      policy:
+        phases:
+          warm:
+            min_age: "10d"
+            actions:
+              forcemerge:
+                max_num_segments: 1
+          delete:
+            min_age: "30d"
+            actions:
+              delete: {}
+      <<: *elastic_index_parameters
+    register: result
 
   - assert:
       that:
