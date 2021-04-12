@@ -37,7 +37,7 @@
     shell: curl -X GET "localhost:9200/_ilm/policy/"
 
   - name: Delete an ILM Policy
-    community.elastic.elastic_index_lifecyle:
+    community.elastic.elastic_index_lifecycle:
       name: mypolicy
       state: absent
       <<: *elastic_index_parameters
