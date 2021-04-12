@@ -19,8 +19,8 @@
               min_age: "30d"
               actions:
                 delete: {}
-      <<: *elastic_index_parameters
-    register: result
+        <<: *elastic_index_parameters
+      register: result
 
   - assert:
       that:
