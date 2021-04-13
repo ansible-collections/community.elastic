@@ -156,7 +156,7 @@ def main():
         else:
             if state == 'present':
                 request_body = {"policy": policy}
-                if ilm_policy is not None:
+                if current_policy is not None:
                     if lifecycle_is_different(current_policy, module):
                         response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
                         module.exit_json(changed=True, msg="The ILM Policy '{0}' was updated.".format(name), **response)
@@ -166,7 +166,7 @@ def main():
                     response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
                     module.exit_json(changed=True, msg="The ILM Policy '{0}' was created.".format(name), **response)
             elif state == 'absent':
-                if ilm_policy is not None:
+                if current_policy is not None:
                     response = dict(client.ilm.delete_lifecycle(policy=name))
                     module.exit_json(changed=True, msg="The ILM Policy '{0}' was deleted.".format(name), **response)
                 else:
