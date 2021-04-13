@@ -89,23 +89,23 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 import json
 
 
-def get_lifecycle(client, name):
+def get_policy(client, name):
     '''
-    Gets the lifecycle specified by name
+    Gets the policy document specified by name
     '''
     try:
-        policy_doc = client.ilm.get_lifecycle(policy=name)[name]
+        policy_doc = client.ilm.get_lifecycle(policy=name)[name]['policy']
     except NotFoundError:
         policy_doc = None
     return policy_doc
 
 
-def lifecycle_is_different(lifecycle_doc, module):
+def lifecycle_is_different(current_policy, module):
     '''
     This document compare the phases section of the policy document only
     '''
     is_different = False
-    dict1 = json.dumps(lifecycle_doc['phases'], sort_keys=True)
+    dict1 = json.dumps(current_policy['phases'], sort_keys=True)
     dict2 = json.dumps(module.params['policy']['phases'], sort_keys=True)
     if dict1 != dict2:
         is_different = True
@@ -149,7 +149,7 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        current_policy = get_lifecycle(client, name)
+        current_policy = get_policy(client, name)
 
         if module.check_mode:  # TODO implement check mode
             pass  # for absent and present we check the existence,
