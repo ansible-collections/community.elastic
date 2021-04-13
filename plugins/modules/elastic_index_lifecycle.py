@@ -145,10 +145,6 @@ def main():
     state = module.params['state']
     policy = module.params['policy']
 
-    if state == "present":
-        if not validate_phases(policy['phases'], phase_actions):
-            module.fail_json(msg="Module validation failed. Check phases document of policy")
-
     try:
         elastic = ElasticHelpers(module)
         client = elastic.connect()
