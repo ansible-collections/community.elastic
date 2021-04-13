@@ -149,7 +149,7 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        ilm_policy = get_lifecycle(client, name)
+        current_policy = get_lifecycle(client, name)
 
         if module.check_mode:  # TODO implement check mode
             pass  # for absent and present we check the existence,
@@ -157,7 +157,7 @@ def main():
             if state == 'present':
                 request_body = {"policy": policy}
                 if ilm_policy is not None:
-                    if lifecycle_is_different(policy, module):
+                    if lifecycle_is_different(current_policy, module):
                         response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
                         module.exit_json(changed=True, msg="The ILM Policy '{0}' was updated.".format(name), **response)
                     else:
