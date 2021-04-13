@@ -49,6 +49,28 @@
         - result.msg == "The ILM Policy 'mypolicy' is configured as specified."
         - result.changed == False
 
+  - name: Update the policy
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      policy:
+        phases:
+          warm:
+            min_age: "10d"
+            actions:
+              forcemerge:
+                max_num_segments: 1
+          delete:
+            min_age: "45d"
+            actions:
+              delete: {}
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The ILM Policy 'mypolicy' was updated."
+        - result.changed == True
+
   - name: Flush all data in the cluster
     shell: curl -X POST "localhost:9200/_flush?pretty"
 
