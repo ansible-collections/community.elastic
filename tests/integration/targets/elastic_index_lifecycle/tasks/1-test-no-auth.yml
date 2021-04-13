@@ -81,4 +81,4 @@
   - assert:
       that:
         - result.msg == "The ILM Policy 'mypolicy' does not exist."
-        - result.changed == True
+        - result.changed == False
