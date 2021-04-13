@@ -104,7 +104,7 @@ def lifecycle_is_different(current_policy, module):
     '''
     This document compare the phases section of the policy document only
     '''
-    # This is a bit ugly.... find a better way to handle default values
+    # This is a bit ugly.... find a better way to handle default values... there will be more
     try:
         if current_policy['phases']['delete']['actions']['delete']['delete_searchable_snapshot']:
             if 'delete_searchable_snapshot' not in module.params['policy']['phases']['delete']['actions']['delete']:
@@ -114,7 +114,7 @@ def lifecycle_is_different(current_policy, module):
     is_different = False
     dict1 = json.dumps(current_policy['phases'], sort_keys=True)
     dict2 = json.dumps(module.params['policy']['phases'], sort_keys=True)
-    module.exit_json(msg="{0} {1}".format(str(dict1), str(dict2)))
+    #module.exit_json(msg="{0} {1}".format(str(dict1), str(dict2)))
     if dict1 != dict2:
         is_different = True
     return is_different
