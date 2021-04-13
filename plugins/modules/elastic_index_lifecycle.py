@@ -107,6 +107,7 @@ def lifecycle_is_different(current_policy, module):
     is_different = False
     dict1 = json.dumps(current_policy['phases'], sort_keys=True)
     dict2 = json.dumps(module.params['policy']['phases'], sort_keys=True)
+    module.exit_json(msg="{0} {1}".format(str(dict1). str(dict2)))
     if dict1 != dict2:
         is_different = True
     return is_different
