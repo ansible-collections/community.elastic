@@ -88,49 +88,6 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 )
 import json
 
-phase_actions = {
-    "hot": ['set_priority',
-            'unfollow',
-            'rollover',
-            'readonly',
-            'shrink',
-            'forcemerge'],
-    "warm": ['set_priority',
-             'unfollow',
-             'rollover',
-             'readonly',
-             'shrink',
-             'forcemerge'],
-    "cold": ['set_priority',
-             'unfollow',
-             'allocate',
-             'migrate',
-             'shrink',
-             'forcemerge'],
-    "frozen": ['searchable_snapshot'],
-    "delete": ['wait_for_snapshot',
-               'delete']
-}
-
-
-def validate_phases(phase_doc, phase_actions):
-    '''
-    @policy_doc - The specific phases document from the policy document
-    @phase_actions - Lookup dict containing allowable phases and actions.
-    '''
-    # is_valid = False
-    # if set(list(phase_doc.keys())) - set(list(phase_actions.keys())) == 0:
-    #     for phase in list(phase_actions.keys()):
-    #         if phase in list(phase_doc.keys()):
-    #             if set(list(phase_doc[phase].keys())) - set(phase_actions[phase]) > 0:
-    #                 is_valid = False
-    #             else:
-    #                 is_valid = True
-    # else:
-    #    is_valid = False
-    # return is_valid
-    return True
-
 
 def get_lifecycle(client, name):
     '''

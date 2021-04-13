@@ -27,6 +27,28 @@
         - result.msg == "The ILM Policy 'mypolicy' was created."
         - result.changed == True
 
+  - name: Run same ILM Policy Again
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      policy:
+        phases:
+          warm:
+            min_age: "10d"
+            actions:
+              forcemerge:
+                max_num_segments: 1
+          delete:
+            min_age: "30d"
+            actions:
+              delete: {}
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The ILM Policy 'mypolicy' is configured as specified."
+        - result.changed == False
+
   - name: Flush all data in the cluster
     shell: curl -X POST "localhost:9200/_flush?pretty"
 
@@ -47,4 +69,16 @@
   - assert:
       that:
         - result.msg == "The ILM Policy 'mypolicy' was deleted."
+        - result.changed == True
+
+  - name: Attempt delete ILM Policy Again
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      state: absent
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The ILM Policy 'mypolicy' does not exist."
         - result.changed == True
