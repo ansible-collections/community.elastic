@@ -159,26 +159,32 @@ def main():
 
         current_policy = get_policy(client, name)
 
-        if module.check_mode:  # TODO implement check mode
-            pass  # for absent and present we check the existence,
-        else:
-            if state == 'present':
-                request_body = {"policy": policy}
-                if current_policy is not None:
-                    if lifecycle_is_different(current_policy, module):
-                        response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
-                        module.exit_json(changed=True, msg="The ILM Policy '{0}' was updated.".format(name), **response)
+        if state == 'present':
+            request_body = {"policy": policy}
+            if current_policy is not None:
+                if lifecycle_is_different(current_policy, module):
+                    if module.check_mode:
+                        response = {"acknowledged": True}
                     else:
-                        module.exit_json(changed=False, msg="The ILM Policy '{0}' is configured as specified.".format(name))
+                        response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
+                    module.exit_json(changed=True, msg="The ILM Policy '{0}' was updated.".format(name), **response)
+                else:
+                    module.exit_json(changed=False, msg="The ILM Policy '{0}' is configured as specified.".format(name))
+            else:
+                if module.check_mode:
+                    response = {"acknowledged": True}
                 else:
                     response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
-                    module.exit_json(changed=True, msg="The ILM Policy '{0}' was created.".format(name), **response)
-            elif state == 'absent':
-                if current_policy is not None:
-                    response = dict(client.ilm.delete_lifecycle(policy=name))
-                    module.exit_json(changed=True, msg="The ILM Policy '{0}' was deleted.".format(name), **response)
+                module.exit_json(changed=True, msg="The ILM Policy '{0}' was created.".format(name), **response)
+        elif state == 'absent':
+            if current_policy is not None:
+                if module.check_mode:
+                    response = {"acknowledged": True}
                 else:
-                    module.exit_json(changed=False, msg="The ILM Policy '{0}' does not exist.".format(name))
+                    response = dict(client.ilm.delete_lifecycle(policy=name))
+                module.exit_json(changed=True, msg="The ILM Policy '{0}' was deleted.".format(name), **response)
+            else:
+                module.exit_json(changed=False, msg="The ILM Policy '{0}' does not exist.".format(name))
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
 
