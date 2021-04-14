@@ -1,0 +1,165 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      timeout: 30
+
+  block:
+
+  - name: Create an ILM Policy with Check Mode
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      policy:
+        phases:
+          warm:
+            min_age: "10d"
+            actions:
+              forcemerge:
+                max_num_segments: 1
+          delete:
+            min_age: "30d"
+            actions:
+              delete: {}
+      <<: *elastic_index_parameters
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The ILM Policy 'mypolicy' was created."
+        - result.changed == True
+
+  - name: Create an ILM Policy
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      policy:
+        phases:
+          warm:
+            min_age: "10d"
+            actions:
+              forcemerge:
+                max_num_segments: 1
+          delete:
+            min_age: "30d"
+            actions:
+              delete: {}
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The ILM Policy 'mypolicy' was created."
+        - result.changed == True
+
+  - name: Run same ILM Policy Again
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      policy:
+        phases:
+          warm:
+            min_age: "10d"
+            actions:
+              forcemerge:
+                max_num_segments: 1
+          delete:
+            min_age: "30d"
+            actions:
+              delete: {}
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The ILM Policy 'mypolicy' is configured as specified."
+        - result.changed == False
+
+  - name: Update the policy with check mode
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      policy:
+        phases:
+          warm:
+            min_age: "10d"
+            actions:
+              forcemerge:
+                max_num_segments: 1
+          delete:
+            min_age: "45d"
+            actions:
+              delete: {}
+      <<: *elastic_index_parameters
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The ILM Policy 'mypolicy' was updated."
+        - result.changed == True
+
+  - name: Update the policy
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      policy:
+        phases:
+          warm:
+            min_age: "10d"
+            actions:
+              forcemerge:
+                max_num_segments: 1
+          delete:
+            min_age: "45d"
+            actions:
+              delete: {}
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The ILM Policy 'mypolicy' was updated."
+        - result.changed == True
+
+  - name: Flush all data in the cluster
+    shell: curl -X POST "localhost:9200/_flush?pretty"
+
+  - pause:
+      seconds: 5
+
+  # TODO verification of mypolicy
+  - name: Debug step
+    shell: curl -X GET "localhost:9200/_ilm/policy/"
+
+  - name: Delete an ILM Policy with check mode
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      state: absent
+      <<: *elastic_index_parameters
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The ILM Policy 'mypolicy' was deleted."
+        - result.changed == True
+
+  - name: Delete an ILM Policy
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      state: absent
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The ILM Policy 'mypolicy' was deleted."
+        - result.changed == True
+
+  - name: Attempt delete ILM Policy Again
+    community.elastic.elastic_index_lifecycle:
+      name: mypolicy
+      state: absent
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The ILM Policy 'mypolicy' does not exist."
+        - result.changed == False
