@@ -244,14 +244,14 @@
         - "result.changed"
         - "'The pipeline complex-log-pipeline definition was updated' in result.msg"
 
-  - name: Delete combined-log-pipeline
+  - name: Delete complex-log-pipeline
     community.elastic.elastic_pipeline:
       <<: *elastic_index_parameters
-      name: combined-log-pipeline
+      name: complex-log-pipeline
       state: absent
     register: result
 
   - assert:
       that:
         - "result.changed"
-        - "result.msg == 'The pipeline combined-log-pipeline was removed.'"
+        - "result.msg == 'The pipeline complex-log-pipeline was removed.'"
