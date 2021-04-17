@@ -108,6 +108,7 @@ def get_pipeline(client, name):
     '''
     try:
         pipeline = client.ingest.get_pipeline(id=name)
+        pipeline = pipeline[name]
     except NotFoundError:
         pipeline = None
     return pipeline
