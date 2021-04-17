@@ -116,10 +116,12 @@ def get_pipeline(client, name):
 
 def pipeline_is_different(pipeline, module):
     is_different = False
-    if module.params['description'] != pipeline['description']:
-        is_different = True
-    elif module.params['version'] != pipeline['version']:
-        is_different = True
+    if 'description' in list(pipeline.keys()):
+        if module.params['description'] != pipeline['description']:
+            is_different = True
+    elif 'version' in list(pipeline.keys()):
+        if module.params['version'] != pipeline['version']:
+            is_different = True
     elif module.params['processors'] != pipeline['processors']:
         dict1 = json.dumps(module.params['processors'], sort_keys=True)
         dict2 = json.dumps(pipeline['processors'], sort_keys=True)
