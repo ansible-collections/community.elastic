@@ -66,8 +66,10 @@
       name: rename-pipeline
       state: absent
 
+  - shell: "docker ps"
+
   - name: Install required plugins
-    shell: "docker exec docker_es01 plugin install {{ item }}"
+    shell: "docker exec single-node-01 plugin install {{ item }}"
     with_items:
       - ingest-geoip
       - ingest-user-agent
