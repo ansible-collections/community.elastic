@@ -119,10 +119,10 @@ def pipeline_is_different(pipeline, module):
     if 'description' in list(pipeline.keys()):
         if module.params['description'] != pipeline['description']:
             is_different = True
-    elif 'version' in list(pipeline.keys()):
+    if 'version' in list(pipeline.keys()):
         if module.params['version'] != pipeline['version']:
             is_different = True
-    elif module.params['processors'] != pipeline['processors']:
+    if module.params['processors'] != pipeline['processors']:
         dict1 = json.dumps(module.params['processors'], sort_keys=True)
         dict2 = json.dumps(pipeline['processors'], sort_keys=True)
         if dict1 != dict2:
