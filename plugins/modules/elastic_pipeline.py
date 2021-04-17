@@ -108,6 +108,7 @@ def get_pipeline(client, name):
     '''
     try:
         pipeline = client.ingest.get_pipeline(id=name)
+        pipeline = pipeline[name]
     except NotFoundError:
         pipeline = None
     return pipeline
@@ -115,11 +116,13 @@ def get_pipeline(client, name):
 
 def pipeline_is_different(pipeline, module):
     is_different = False
-    if module.params['description'] != pipeline['description']:
-        is_different = True
-    elif module.params['version'] != pipeline['version']:
-        is_different = True
-    elif module.params['processors'] != pipeline['processors']:
+    if 'description' in list(pipeline.keys()):
+        if module.params['description'] != pipeline['description']:
+            is_different = True
+    if 'version' in list(pipeline.keys()):
+        if module.params['version'] != pipeline['version']:
+            is_different = True
+    if module.params['processors'] != pipeline['processors']:
         dict1 = json.dumps(module.params['processors'], sort_keys=True)
         dict2 = json.dumps(pipeline['processors'], sort_keys=True)
         if dict1 != dict2:
@@ -205,7 +208,7 @@ def main():
         else:
             if module.check_mode:
                 if state == "present":
-                    module.exit_json(changed=True, msg="The pipeline {0} was created.".format(name))
+                    module.exit_json(changed=True, msg="The pipeline {0} was successfully created.".format(name))
                 elif state == "absent":
                     module.exit_json(changed=False, msg="The pipeline {0} does not exist.".format(name))
             else:

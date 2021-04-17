@@ -5,6 +5,26 @@
 
   block:
 
+  - name: Create a pipeline - check mode
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: my-pipeline-id
+      state: present
+      description: "describe pipeline"
+      version: 1
+      processors:
+        - set: {
+          field: "foo",
+          value: "bar"
+        }
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The pipeline my-pipeline-id was successfully created.'"
+
   - name: Create a pipeline
     community.elastic.elastic_pipeline:
       <<: *elastic_index_parameters
@@ -17,12 +37,38 @@
           field: "foo",
           value: "bar"
         }
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The pipeline my-pipeline-id was successfully created.'"
+
+  - name: Delete a pipeline - check mode
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: my-pipeline-id
+      state: absent
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The pipeline my-pipeline-id was removed.'"
 
   - name: Delete a pipeline
     community.elastic.elastic_pipeline:
       <<: *elastic_index_parameters
       name: my-pipeline-id
       state: absent
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The pipeline my-pipeline-id was removed.'"
+
 
   - name: Create a pipeline with painless sripting lang
     community.elastic.elastic_pipeline:
@@ -39,12 +85,24 @@
               param_c: 10
             }
           }
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The pipeline painless-pipeline was successfully created.'"
 
   - name: Delete painless-pipeline
     community.elastic.elastic_pipeline:
       <<: *elastic_index_parameters
       name: painless-pipeline
       state: absent
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The pipeline painless-pipeline was removed.'"
 
   - name: Create a rename pipeline
     community.elastic.elastic_pipeline:
@@ -59,39 +117,141 @@
             target_field: "host",
             ignore_missing: true
           }
+    register: result
 
-  # - name: Delete rename-pipeline
-  #   community.elastic.elastic_pipeline:
-  #     <<: *elastic_index_parameters
-  #     name: rename-pipeline
-  #     state: absent
-  #
-  # - name: Create a pipeline for Combined Log Format
-  #   community.elastic.elastic_pipeline:
-  #     <<: *elastic_index_parameters
-  #     name: combined-log-pipeline
-  #     state: present
-  #     description: "Ingest pipeline for Combined Log Format"
-  #     processors:
-  #       - grok: {
-  #           field: "message",
-  #           patterns:
-  #             - "%{IPORHOST\:clientip} %{USER\:ident} %{USER\:auth} \\\\[%{HTTPDATE\:timestamp}\\\\] \\"%{WORD\:verb} %{DATA:request} HTTP/%{NUMBER\:httpversion}\\" %{NUMBER\:response\:int} (?\:-|%{NUMBER\:bytes\:int}) %{QS\:referrer} %{QS\:agent}"
-  #         }
-  #       - date: {
-  #           field: "timestamp",
-  #           formats:
-  #             - "dd/MMM/YYYY:HH:mm:ss Z"
-  #         }
-  #       - geoip: {
-  #           field: "clientip"
-  #         }
-  #       - user_agent: {
-  #           field: "agent"
-  #         }
-  #
-  # - name: Delete combined-log-pipeline
-  #   community.elastic.elastic_pipeline:
-  #     <<: *elastic_index_parameters
-  #     name: combined-log-pipeline
-  #     state: absent
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The pipeline rename-pipeline was successfully created.'"
+
+  - name: Delete rename-pipeline
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: rename-pipeline
+      state: absent
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The pipeline rename-pipeline was removed.'"
+
+  - name: Create a complex pipeline
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: complex-log-pipeline
+      state: present
+      description: "Complex pipeline"
+      processors:
+        - grok: {
+            field: "message",
+            patterns: ['%{IP:client} %{WORD:method} %{URIPATHPARAM:request} %{NUMBER:bytes:int} %{NUMBER:duration:double}']
+          }
+        - date: {
+            field: "timestamp",
+            formats: ["dd/MMM/YYYY:HH:mm:ss Z"]
+          }
+        - geoip: {
+            field: "clientip"
+          }
+        - user_agent: {
+            field: "agent"
+          }
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The pipeline complex-log-pipeline was successfully created.'"
+
+  - name: Create a complex pipeline - Run same config again
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: complex-log-pipeline
+      state: present
+      description: "Complex pipeline"
+      processors:
+        - grok: {
+            field: "message",
+            patterns: ['%{IP:client} %{WORD:method} %{URIPATHPARAM:request} %{NUMBER:bytes:int} %{NUMBER:duration:double}']
+          }
+        - date: {
+            field: "timestamp",
+            formats: ["dd/MMM/YYYY:HH:mm:ss Z"]
+          }
+        - geoip: {
+            field: "clientip"
+          }
+        - user_agent: {
+            field: "agent"
+          }
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == False"
+        - "result.msg == 'The pipeline complex-log-pipeline already exists and no updates were needed.'"
+
+  - name: Create a complex pipeline - Run update (remove user_agent field) with check mode
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: complex-log-pipeline
+      state: present
+      description: "Complex pipeline"
+      processors:
+        - grok: {
+            field: "message",
+            patterns: ['%{IP:client} %{WORD:method} %{URIPATHPARAM:request} %{NUMBER:bytes:int} %{NUMBER:duration:double}']
+          }
+        - date: {
+            field: "timestamp",
+            formats: ["dd/MMM/YYYY:HH:mm:ss Z"]
+          }
+        - geoip: {
+            field: "clientip"
+          }
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "'The pipeline complex-log-pipeline definition was updated' in result.msg"
+
+  - name: Create a complex pipeline - Run update (remove user_agent field)
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: complex-log-pipeline
+      state: present
+      description: "Complex pipeline"
+      processors:
+        - grok: {
+            field: "message",
+            patterns: ['%{IP:client} %{WORD:method} %{URIPATHPARAM:request} %{NUMBER:bytes:int} %{NUMBER:duration:double}']
+          }
+        - date: {
+            field: "timestamp",
+            formats: ["dd/MMM/YYYY:HH:mm:ss Z"]
+          }
+        - geoip: {
+            field: "clientip"
+          }
+    check_mode: no
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "'The pipeline complex-log-pipeline definition was updated' in result.msg"
+
+  - name: Delete complex-log-pipeline
+    community.elastic.elastic_pipeline:
+      <<: *elastic_index_parameters
+      name: complex-log-pipeline
+      state: absent
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The pipeline complex-log-pipeline was removed.'"
