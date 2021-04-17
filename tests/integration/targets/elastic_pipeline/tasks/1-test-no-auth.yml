@@ -69,7 +69,7 @@
   - shell: "docker ps"
 
   - name: Install required plugins
-    shell: "docker exec single-node-01 plugin install {{ item }}"
+    shell: "docker exec single-node-01 /usr/share/elasticsearch/bin/plugin install {{ item }}"
     with_items:
       - ingest-geoip
       - ingest-user-agent
