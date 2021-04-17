@@ -60,38 +60,38 @@
             ignore_missing: true
           }
 
-  # - name: Delete rename-pipeline
-  #   community.elastic.elastic_pipeline:
-  #     <<: *elastic_index_parameters
-  #     name: rename-pipeline
-  #     state: absent
-  #
-  # - name: Create a pipeline for Combined Log Format
-  #   community.elastic.elastic_pipeline:
-  #     <<: *elastic_index_parameters
-  #     name: combined-log-pipeline
-  #     state: present
-  #     description: "Ingest pipeline for Combined Log Format"
-  #     processors:
-  #       - grok: {
-  #           field: "message",
-  #           patterns:
-  #             - "%{IPORHOST\:clientip} %{USER\:ident} %{USER\:auth} \\\\[%{HTTPDATE\:timestamp}\\\\] \\"%{WORD\:verb} %{DATA:request} HTTP/%{NUMBER\:httpversion}\\" %{NUMBER\:response\:int} (?\:-|%{NUMBER\:bytes\:int}) %{QS\:referrer} %{QS\:agent}"
-  #         }
-  #       - date: {
-  #           field: "timestamp",
-  #           formats:
-  #             - "dd/MMM/YYYY:HH:mm:ss Z"
-  #         }
-  #       - geoip: {
-  #           field: "clientip"
-  #         }
-  #       - user_agent: {
-  #           field: "agent"
-  #         }
-  #
-  # - name: Delete combined-log-pipeline
-  #   community.elastic.elastic_pipeline:
-  #     <<: *elastic_index_parameters
-  #     name: combined-log-pipeline
-  #     state: absent
+   - name: Delete rename-pipeline
+     community.elastic.elastic_pipeline:
+       <<: *elastic_index_parameters
+       name: rename-pipeline
+       state: absent
+
+   - name: Create a pipeline for Combined Log Format
+     community.elastic.elastic_pipeline:
+       <<: *elastic_index_parameters
+       name: combined-log-pipeline
+       state: present
+       description: "Ingest pipeline for Combined Log Format"
+       processors:
+         - grok: {
+             field: "message",
+             patterns:
+               - '%{IPORHOST:clientip} %{USER:ident} %{USER:auth} [%{HTTPDATE:timestamp}] "%{WORD:verb} %{DATA:request} HTTP/%{NUMBER:httpversion}" %{NUMBER:response:int} (?\:-|%{NUMBER:bytes:int}) %{QS\:referrer} %{QS\:agent}'
+           }
+         - date: {
+             field: "timestamp",
+             formats:
+               - "dd/MMM/YYYY:HH:mm:ss Z"
+           }
+         - geoip: {
+             field: "clientip"
+           }
+         - user_agent: {
+             field: "agent"
+           }
+
+   - name: Delete combined-log-pipeline
+     community.elastic.elastic_pipeline:
+       <<: *elastic_index_parameters
+       name: combined-log-pipeline
+       state: absent
