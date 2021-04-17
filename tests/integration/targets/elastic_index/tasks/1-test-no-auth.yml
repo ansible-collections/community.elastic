@@ -11,6 +11,18 @@
       state: absent
       <<: *elastic_index_parameters
 
+  - name: Create an index called myindex - check_mode
+    community.elastic.elastic_index:
+      name: myindex
+      <<: *elastic_index_parameters
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex' was created."
+        - result.changed == True
+
   - name: Create an index called myindex
     community.elastic.elastic_index:
       name: myindex
@@ -20,6 +32,19 @@
   - assert:
       that:
         - result.msg == "The index 'myindex' was created."
+        - result.changed == True
+
+  - name: Delete an index called myindex - check_mode
+    community.elastic.elastic_index:
+      name: myindex
+      state: absent
+      <<: *elastic_index_parameters
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - result.msg == "The index 'myindex' was deleted."
         - result.changed == True
 
   - name: Delete an index called myindex

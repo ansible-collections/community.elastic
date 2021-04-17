@@ -19,6 +19,7 @@ description:
   - Perform some index maintenance operations.
   - Create indexes with settings and mapping documents.
   - No support for settings or mapping document updates.
+  - check_mode only relevant to present and absent states.
 
 author: Rhys Campbell (@rhysmeister)
 version_added: "0.0.1"
@@ -156,33 +157,36 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        if module.check_mode:  # TODO implement check mode
-            pass  # for absent and present we check the existence, other states just return always changed
-        else:
-            if state == 'present':
-                if client.indices.exists(name):
-                    module.exit_json(changed=False, msg="The index '{0}' already exists.".format(name))
+        if state == 'present':
+            if client.indices.exists(name):
+                module.exit_json(changed=False, msg="The index '{0}' already exists.".format(name))
+            else:
+                request_body = {"settings": settings, "mappings": mappings}
+                if module.check_mode:
+                    response = {"acknowledged": True}
                 else:
-                    request_body = {"settings": settings, "mappings": mappings}
                     response = dict(client.indices.create(index=name, body=request_body))
-                    module.exit_json(changed=True, msg="The index '{0}' was created.".format(name), **response)
-            elif state == 'absent':
-                if client.indices.exists(name):
-                    response = dict(client.indices.delete(name))
-                    module.exit_json(changed=True, msg="The index '{0}' was deleted.".format(name), **response)
+                module.exit_json(changed=True, msg="The index '{0}' was created.".format(name), **response)
+        elif state == 'absent':
+            if client.indices.exists(name):
+                if module.check_mode:
+                    response = {"acknowledged": True}
                 else:
-                    module.exit_json(changed=False, msg="The index '{0}' does not exist.".format(name))
-            elif state == "closed":
-                elastic.index_dynamic_method(module, client, 'close', name)
-            elif state == "opened":
-                elastic.index_dynamic_method(module, client, 'open', name)
-            elif state == "upgrade":
-                elastic.index_dynamic_method(module, client, 'upgrade', name)
-            elif state == "stats":
-                response = dict(client.indices.stats(name))
-                module.exit_json(changed=True, msg="Stats from index '{0}'.".format(name), **response)
-            else:  # Catch all for everything else. Need to make sure the state == method name
-                elastic.index_dynamic_method(module, client, state, name)
+                    response = dict(client.indices.delete(name))
+                module.exit_json(changed=True, msg="The index '{0}' was deleted.".format(name), **response)
+            else:
+                module.exit_json(changed=False, msg="The index '{0}' does not exist.".format(name))
+        elif state == "closed":
+            elastic.index_dynamic_method(module, client, 'close', name)
+        elif state == "opened":
+            elastic.index_dynamic_method(module, client, 'open', name)
+        elif state == "upgrade":
+            elastic.index_dynamic_method(module, client, 'upgrade', name)
+        elif state == "stats":
+            response = dict(client.indices.stats(name))
+            module.exit_json(changed=True, msg="Stats from index '{0}'.".format(name), **response)
+        else:  # Catch all for everything else. Need to make sure the state == method name
+            elastic.index_dynamic_method(module, client, state, name)
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
 
