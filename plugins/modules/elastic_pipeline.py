@@ -205,7 +205,7 @@ def main():
         else:
             if module.check_mode:
                 if state == "present":
-                    module.exit_json(changed=True, msg="The pipeline {0} was created.".format(name))
+                    module.exit_json(changed=True, msg="The pipeline {0} was successfully created.".format(name))
                 elif state == "absent":
                     module.exit_json(changed=False, msg="The pipeline {0} does not exist.".format(name))
             else:
