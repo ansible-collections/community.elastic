@@ -67,9 +67,7 @@
       state: absent
 
   - name: Install required plugins
-    community.general.elasticsearch_plugin:
-      name: "{{ item }}"
-      state: present
+    shell: "docker exec docker_es01 plugin install {{ item }}"
     with_items:
       - ingest-geoip
       - ingest-user-agent
