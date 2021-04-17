@@ -189,7 +189,7 @@
 
   - assert:
       that:
-        - "result.changed"
+        - "result.changed == False"
         - "result.msg == 'The pipeline complex-log-pipeline already exists and no updates were needed.'"
 
   - name: Create a complex pipeline - Run update (remove user_agent field) with check mode
