@@ -66,6 +66,14 @@
       name: rename-pipeline
       state: absent
 
+  - name: Install required plugins
+    community.general.elasticsearch_plugin:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - ingest-geoip
+      - ingest-user-agent
+
   - name: Create a pipeline for Combined Log Format
     community.elastic.elastic_pipeline:
       <<: *elastic_index_parameters
@@ -75,7 +83,7 @@
       processors:
         - grok: {
             field: "message",
-            patterns: ['%{IPORHOST:clientip} %{USER:ident} %{USER:auth} [%{HTTPDATE:timestamp}] "%{WORD:verb} %{DATA:request} HTTP/%{NUMBER:httpversion}" %{NUMBER:response:int} (?\:-|%{NUMBER:bytes:int})']
+            patterns: ['%{IPORHOST:clientip} %{USER:ident} %{USER:auth} \\[%{HTTPDATE:timestamp}\\] \"%{WORD:verb} %{DATA:request} HTTP/%{NUMBER:httpversion}\" %{NUMBER:response:int} (?:-|%{NUMBER:bytes:int}) %{QS:referrer} %{QS:agent}']
           }
         - date: {
             field: "timestamp",
