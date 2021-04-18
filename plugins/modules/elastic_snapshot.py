@@ -143,9 +143,9 @@ def create_snapshot(module, client, repository, name):
         "partial": module.params['partial']
         }
     try:
-        response = dict(client.snapshot.create_repository(repository=repository,
-                                                          snapshot=name,
-                                                          body=body))
+        response = dict(client.snapshot.create(repository=repository,
+                                               snapshot=name,
+                                               body=body))
         if not isinstance(response, dict):  # Valid response should be a dict
             module.fail_json(msg="Invalid response received: {0}.".format(str(response)))
     except Exception as excep:
@@ -201,7 +201,7 @@ def main():
         if repository is None:
             if state == "present":
                 if module.check_mode is False:
-                    response = put(module, client, repository, name)
+                    response = create_snapshot(module, client, repository, name)
                 else:
                     response = {"aknowledged": True}
                 module.exit_json(changed=True, msg="The snapshot {0} was successfully created: {1}".format(name, str(response)))
