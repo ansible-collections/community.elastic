@@ -8,7 +8,7 @@
   - name: Attempt to create a repo - check mode
     community.elastic.elastic_snapshot_repository:
       name: rhys
-      location: "/usr/lib/"
+      location: "/tmp"
       state: "present"
       <<: *elastic_index_parameters
     check_mode: yes
@@ -22,7 +22,7 @@
   - name: Attempt to create a repo
     community.elastic.elastic_snapshot_repository:
       name: rhys
-      location: "/usr/lib/"
+      location: "/tmp"
       state: "present"
       <<: *elastic_index_parameters
     register: result
@@ -35,7 +35,7 @@
   - name: Run create again
     community.elastic.elastic_snapshot_repository:
       name: rhys
-      location: "/usr/lib/"
+      location: "/tmp"
       state: "present"
     register: result
 
