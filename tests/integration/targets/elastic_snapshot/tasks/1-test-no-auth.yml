@@ -1,0 +1,121 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      timeout: 30
+
+  block:
+
+  - name: Attempt to create a repo
+    community.elastic.elastic_snapshot_repository:
+      name: rhys
+      location: "/tmp"
+      state: "present"
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "'The repository rhys was successfully created' in result.msg"
+
+  - name: Create a snapshot - check mode
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "present"
+      <<: *elastic_index_parameters
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was successfully created' in result.msg"
+
+  - name: Create a snapshot
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "present"
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was successfully created' in result.msg"
+
+  - name: Restore a snapshot - check mode
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "restore"
+      <<: *elastic_index_parameters
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was restored' in result.msg"
+
+  - name: Restore a snapshot
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "restore"
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was restored' in result.msg"
+
+  - name: Delete a snapshot - check mode
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "absent"
+      <<: *elastic_index_parameters
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was deleted' in result.msg"
+
+  - name: Delete a snapshot
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "absent"
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was deleted' in result.msg"
+
+  - name: Create an index
+    community.elastic.elastic_index:
+      name: "myindex1"
+      state: "present"
+      <<: *elastic_index_parameters
+
+  - name: Create a new snapshot of a specific index
+    community.elastic.elastic_snapshot:
+      name: "rhys_myindex1"
+      repository: "rhys"
+      indices:
+        - "myindex1"
+      state: "present"
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys_myindex1 was successfully created' in result.msg"
