@@ -1,0 +1,76 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      login_user: elastic
+      login_password: secret
+      auth_method: http_auth
+      timeout: 30
+
+  block:
+
+  - name: Attempt to create a repo
+    community.elastic.elastic_snapshot_repository:
+      name: rhys
+      location: "/tmp"
+      state: "present"
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "'The repository rhys was successfully created' in result.msg"
+
+  - name: Create a snapshot - check mode
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "present"
+      <<: *elastic_index_parameters
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was successfully created' in result.msg"
+
+  - name: Create a snapshot
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "present"
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was successfully created' in result.msg"
+
+  - name: Delete a snapshot - check mode
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "absent"
+      <<: *elastic_index_parameters
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was deleted' in result.msg"
+
+  - name: Delete a snapshot
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "absent"
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was deleted' in result.msg"
