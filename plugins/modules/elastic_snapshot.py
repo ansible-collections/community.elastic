@@ -197,7 +197,7 @@ def main():
         snapshot = get_snapshot(module, client, repository, name)
         response = None
 
-        if repository is None:
+        if snapshot is None:
             if state == "present":
                 if module.check_mode is False:
                     response = create_snapshot(module, client, repository, name)
@@ -208,7 +208,7 @@ def main():
                 module.exit_json(changed=False, msg="The snapshot {0} does not exist.".format(name))
         else:
             if state == "present":
-                module.exit_json(changed=False, msg="The snapshot {0} already exists. {1}".format(name, str(snapshot)))
+                module.exit_json(changed=False, msg="The snapshot {0} already exists.".format(name))
             elif state == "absent":
                 if module.check_mode is False:
                     response = client.snapshot.delete(repository=repository, snapshot=name)
