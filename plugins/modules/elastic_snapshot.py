@@ -166,6 +166,7 @@ def restore_snapshot(module, client, repository, name):
         response = dict(client.snapshot.restore(repository=repository,
                                                 snapshot=name,
                                                 body=body))
+        module.exit_json(msg=str(response))
         if not isinstance(response, dict):  # Valid response should be a dict
             module.fail_json(msg="Invalid response received: {0}.".format(str(response)))
         if response['shards']['failed'] > 0:
