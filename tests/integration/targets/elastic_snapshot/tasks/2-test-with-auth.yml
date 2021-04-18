@@ -114,6 +114,7 @@
       indices:
         - "myindex1"
       state: "present"
+      <<: *elastic_index_parameters
     register: result
 
   - assert:
