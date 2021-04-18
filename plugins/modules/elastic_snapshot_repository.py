@@ -65,7 +65,7 @@ EXAMPLES = r'''
     state: "present"
 
 - name: Delete a snapshot repository
-  community.elastic.elastic_snapshot_repository
+  community.elastic.elastic_snapshot_repository:
     name: "my_repository"
     state: "absent"
 '''
@@ -158,10 +158,10 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        repository =  get_snapshot_repository(module, client, name)
+        repository = get_snapshot_repository(module, client, name)
         response = None
 
-        if user is None:
+        if repository is None:
             if state == "present":
                 if module.check_mode is False:
                     response = put_repository(module, client, name)
