@@ -55,7 +55,7 @@
   - assert:
       that:
         - "result.changed"
-        - "result.msg == 'The repository rhys was deleted.'"
+        - "'The repository rhys was deleted' in result.msg"
 
   - name: Attempt to delete a repo
     community.elastic.elastic_snapshot_repository:
@@ -67,4 +67,4 @@
   - assert:
       that:
         - "result.changed"
-        - "result.msg == 'The repository rhys was deleted.'"
+        - "'The repository rhys was deleted' in result.msg"
