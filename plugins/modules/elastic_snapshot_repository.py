@@ -166,7 +166,8 @@ def main():
                 if module.check_mode is False:
                     response = put_repository(module, client, name)
                 else:
-                module.exit_json(changed=True, msg="The repository {0} was successfully created".format(name))
+                    response = {"aknowledged": True}
+                module.exit_json(changed=True, msg="The repository {0} was successfully created: {1}".format(name, str(response)))
             elif state == "absent":
                 module.exit_json(changed=False, msg="The repository {0} does not exist.".format(name))
         else:
@@ -175,9 +176,9 @@ def main():
             elif state == "absent":
                 if module.check_mode is False:
                     response = client.snapshot.delete_repository(repository=name)
-                    module.exit_json(changed=True, msg="The repository {0} was deleted.".format(name))
                 else:
-                    module.exit_json(changed=True, msg="The repository {0} was deleted.".format(name))
+                    response = {"aknowledged": True}
+                module.exit_json(changed=True, msg="The repository {0} was deleted: {1}".format(name, str(response)))
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
 
