@@ -170,7 +170,7 @@ def main():
                 module.exit_json(changed=False, msg="The repository {0} does not exist.".format(name))
         else:
             if state == "present":
-                module.exit_json(changed=True, msg="The repository {0} already exists.".format(name))
+                module.exit_json(changed=False, msg="The repository {0} already exists.".format(name))
             elif state == "absent":
                 if module.check_mode is False:
                     response = client.security.delete_repository(repository=name)

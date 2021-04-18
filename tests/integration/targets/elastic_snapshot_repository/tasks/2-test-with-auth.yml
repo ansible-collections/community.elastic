@@ -44,12 +44,13 @@
 
   - assert:
       that:
-        - "result.changed"
+        - "result.changed == False"
         - "result.msg == 'The repository rhys already exists.'"
 
   - name: Attempt to delete a repo - check mode
     community.elastic.elastic_snapshot_repository:
       name: rhys
+      state: "absent"
       <<: *elastic_index_parameters
     check_mode: yes
     register: result
@@ -62,6 +63,7 @@
   - name: Attempt to delete a repo
     community.elastic.elastic_snapshot_repository:
       name: rhys
+      state: "absent"
       <<: *elastic_index_parameters
     register: result
 
