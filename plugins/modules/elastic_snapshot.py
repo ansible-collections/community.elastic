@@ -153,6 +153,27 @@ def create_snapshot(module, client, repository, name):
     return response
 
 
+def restore_snapshot(module, client, repository, name):
+    '''
+    Restore an elastic snapshot
+    '''
+    body = {
+        "ignore_unavailable": module.params['ignore_unavailable'],
+        "partial": module.params['partial']
+    }
+    if module.params['indices'] is not None:
+        body['indices'] = module.params['indices']
+    try:
+        response = dict(client.snapshot.restore(repository=repository,
+                                                snapshot=name,
+                                                body=body))
+        if not isinstance(response, dict):  # Valid response should be a dict
+            module.fail_json(msg="Invalid response received: {0}.".format(str(response)))
+    except Exception as excep:
+        module.fail_json(msg=str(excep))
+    return response
+
+
 # ================
 # Module execution
 #
@@ -207,6 +228,8 @@ def main():
                 module.exit_json(changed=True, msg="The snapshot {0} was successfully created: {1}".format(name, str(response)))
             elif state == "absent":
                 module.exit_json(changed=False, msg="The snapshot {0} does not exist.".format(name))
+            elif state == "restore":
+                module.fail_json(msg="Cannot restore a snapshot that does not exist: {0}".format(name))
         else:
             if state == "present":
                 module.exit_json(changed=False, msg="The snapshot {0} already exists.".format(name))
@@ -216,6 +239,12 @@ def main():
                 else:
                     response = {"aknowledged": True}
                 module.exit_json(changed=True, msg="The snapshot {0} was deleted: {1}".format(name, str(response)))
+            elif state == "restore":
+                if module.check_mode is False:
+                    response = restore_snapshot(module, client, repository, name)
+                else:
+                    response = {"aknowledged": True}
+                module.exit_json(changed=True, msg="The snapshot {0} was restored: {1}".format(name, str(response)))
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
 

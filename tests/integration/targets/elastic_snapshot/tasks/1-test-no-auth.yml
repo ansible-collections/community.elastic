@@ -45,6 +45,33 @@
         - "result.changed == True"
         - "'The snapshot rhys was successfully created' in result.msg"
 
+  - name: Restore a snapshot - check mode
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "restore"
+      <<: *elastic_index_parameters
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was restored' in result.msg"
+
+  - name: Restore a snapshot
+    community.elastic.elastic_snapshot:
+      name: "rhys"
+      repository: "rhys"
+      state: "restore"
+      <<: *elastic_index_parameters
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == True"
+        - "'The snapshot rhys was restored' in result.msg"
+
   - name: Delete a snapshot - check mode
     community.elastic.elastic_snapshot:
       name: "rhys"
