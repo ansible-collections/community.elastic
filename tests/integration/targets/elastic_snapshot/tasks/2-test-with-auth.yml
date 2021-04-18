@@ -106,6 +106,7 @@
     community.elastic.elastic_index:
       name: "myindex1"
       state: "present"
+      <<: *elastic_index_parameters
 
   - name: Create a new snapshot of a specific index
     community.elastic.elastic_snapshot:
