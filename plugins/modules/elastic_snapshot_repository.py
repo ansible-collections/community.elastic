@@ -165,7 +165,8 @@ def main():
             if state == "present":
                 if module.check_mode is False:
                     response = put_repository(module, client, name)
-                module.exit_json(changed=True, msg="The repository {0} was successfully created: {1}".format(name, str(response)))
+                else:
+                module.exit_json(changed=True, msg="The repository {0} was successfully created".format(name))
             elif state == "absent":
                 module.exit_json(changed=False, msg="The repository {0} does not exist.".format(name))
         else:
@@ -173,7 +174,7 @@ def main():
                 module.exit_json(changed=False, msg="The repository {0} already exists.".format(name))
             elif state == "absent":
                 if module.check_mode is False:
-                    response = client.security.delete_repository(repository=name)
+                    response = client.snapshot.delete_repository(repository=name)
                     module.exit_json(changed=True, msg="The repository {0} was deleted.".format(name))
                 else:
                     module.exit_json(changed=True, msg="The repository {0} was deleted.".format(name))
