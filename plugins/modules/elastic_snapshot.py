@@ -136,11 +136,12 @@ def create_snapshot(module, client, repository, name):
     Creates a snapshot in the given repository
     '''
     body = {
-        "indices": module.params['indices'],
         "ignore_unavailable": module.params['ignore_unavailable'],
         "metadata": module.params['metadata'],
         "partial": module.params['partial']
     }
+    if module.params['indices'] is not None:
+        body['indices'] = module.params['indices']
     try:
         response = dict(client.snapshot.create(repository=repository,
                                                snapshot=name,
