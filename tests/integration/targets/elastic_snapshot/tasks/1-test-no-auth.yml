@@ -111,6 +111,7 @@
       indices:
         - "myindex1"
       state: "present"
+    register: result
 
   - assert:
       that:
