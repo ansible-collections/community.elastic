@@ -15,6 +15,8 @@ short_description: Manage Elasticsearch Snapshot Repositories.
 
 description:
   - Manage Elasticsearch Snapshot Repositories.
+  - Create and delete repostories.
+  - At present no update functionality.
 
 author: Rhys Campbell (@rhysmeister)
 version_added: "0.0.1"
@@ -25,7 +27,7 @@ extends_documentation_fragment:
 options:
   location:
     description:
-      -  Location of the shared filesystem used to store and retrieve snapshots.
+      - Location of the shared filesystem used to store and retrieve snapshots.
       - This location must be registered in the path.repo setting on all master and data nodes in the cluster.
     type: str
   type:
@@ -156,7 +158,7 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        repository = get_repository(module, client, name)
+        repository =  get_snapshot_repository(module, client, name)
         response = None
 
         if user is None:
