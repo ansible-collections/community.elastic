@@ -142,7 +142,6 @@ def create_snapshot(module, client, repository, name):
         "metadata": module.params['metadata'],
         "partial": module.params['partial']
         }
-    }
     try:
         response = dict(client.snapshot.create_repository(repository=repository,
                                                           snapshot=name,
