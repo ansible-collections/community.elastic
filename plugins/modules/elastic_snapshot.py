@@ -15,7 +15,7 @@ short_description: Manage Elasticsearch Snapshots.
 
 description:
   - Manage Elasticsearch Snapshots.
-  - Create, delete, restore and clone snapshots.
+  - Create, delete and restore snapshots.
 
 author: Rhys Campbell (@rhysmeister)
 version_added: "0.0.1"
@@ -49,7 +49,6 @@ options:
     choices:
       - present
       - absent
-      - clone
       - restore
     default: present
   metadata:
@@ -169,6 +168,8 @@ def restore_snapshot(module, client, repository, name):
                                                 body=body))
         if not isinstance(response, dict):  # Valid response should be a dict
             module.fail_json(msg="Invalid response received: {0}.".format(str(response)))
+        if response['shards']['failed'] > 0:
+            module.fail_json(msg="The restore process encountered failures: {0}".format(str(response)))
     except Exception as excep:
         module.fail_json(msg=str(excep))
     return response
@@ -183,7 +184,6 @@ def main():
     state_choices = [
         "present",
         "absent",
-        "clone",
         "restore"
     ]
 
@@ -224,7 +224,7 @@ def main():
                 if module.check_mode is False:
                     response = create_snapshot(module, client, repository, name)
                 else:
-                    response = {"aknowledged": True}
+                    response = {"acknowledged": True}
                 module.exit_json(changed=True, msg="The snapshot {0} was successfully created: {1}".format(name, str(response)))
             elif state == "absent":
                 module.exit_json(changed=False, msg="The snapshot {0} does not exist.".format(name))
@@ -237,13 +237,13 @@ def main():
                 if module.check_mode is False:
                     response = client.snapshot.delete(repository=repository, snapshot=name)
                 else:
-                    response = {"aknowledged": True}
+                    response = {"acknowledged": True}
                 module.exit_json(changed=True, msg="The snapshot {0} was deleted: {1}".format(name, str(response)))
             elif state == "restore":
                 if module.check_mode is False:
                     response = restore_snapshot(module, client, repository, name)
                 else:
-                    response = {"aknowledged": True}
+                    response = {"acknowledged": True}
                 module.exit_json(changed=True, msg="The snapshot {0} was restored: {1}".format(name, str(response)))
     except Exception as excep:
         module.fail_json(msg='Elastic error: %s' % to_native(excep))
