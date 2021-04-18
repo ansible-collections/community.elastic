@@ -31,7 +31,6 @@ options:
       - If this argument is provided, the snapshot only includes the specified data streams and clusters.
     type: list
     elements: str
-    default: None
   ignore_unavailable:
     description:
       - If false, the request returns an error for any data stream or index that is missing or closed.
@@ -141,7 +140,7 @@ def create_snapshot(module, client, repository, name):
         "ignore_unavailable": module.params['ignore_unavailable'],
         "metadata": module.params['metadata'],
         "partial": module.params['partial']
-        }
+    }
     try:
         response = dict(client.snapshot.create(repository=repository,
                                                snapshot=name,
@@ -168,7 +167,7 @@ def main():
 
     argument_spec = elastic_common_argument_spec()
     argument_spec.update(
-        indices=dict(type='str'),
+        indices=dict(type='list', elements='str'),
         ignore_unavailable=dict(type='bool', default=False),
         repository=dict(type='str', required=True),
         state=dict(type='str', choices=state_choices, default='present'),
