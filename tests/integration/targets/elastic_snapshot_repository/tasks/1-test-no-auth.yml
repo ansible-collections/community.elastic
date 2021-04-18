@@ -37,6 +37,7 @@
       name: rhys
       location: "/tmp"
       state: "present"
+      <<: *elastic_index_parameters
     register: result
 
   - assert:
