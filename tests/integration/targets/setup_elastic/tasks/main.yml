@@ -1,7 +1,7 @@
 ---
-- name: Ensure docker python module is available
+- name: Ensure required python moules are installed
   pip:
-    name: docker
+    name: docker six
 
 - name: Ensure any existing docker containers are removed
   community.docker.docker_container:
