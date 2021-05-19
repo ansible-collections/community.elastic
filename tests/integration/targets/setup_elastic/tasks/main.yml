@@ -1,4 +1,8 @@
 ---
+- name: Ensure docker python module is available
+  pip:
+    name: docker
+
 - name: Ensure any existing docker containers are removed
   community.docker.docker_container:
     name: "{{ item }}"
