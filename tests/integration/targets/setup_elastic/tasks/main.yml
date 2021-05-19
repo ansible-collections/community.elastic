@@ -1,7 +1,10 @@
 ---
 - name: Ensure required python moules are installed
   pip:
-    name: docker six
+    name: "{{ item }}"
+  with_items:
+    - docker
+    - six
 
 - name: Ensure any existing docker containers are removed
   community.docker.docker_container:
