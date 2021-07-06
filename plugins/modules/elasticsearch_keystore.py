@@ -39,6 +39,11 @@ options:
         default: "no"
         choices: [ "yes", "no" ]
         description: "When used with state=present, existing entries with the same name will be replaced."
+    create_keystore:
+        required: false
+        default: "yes"
+        choices: [ "yes", "no" ]
+        description: "Whether to create the keystore if one doesn't already exist."
 '''
 
 EXAMPLES = r'''
@@ -60,6 +65,13 @@ EXAMPLES = r'''
   community.elastic.elasticsearch_keystore:
     name: es_pass
     state: absent
+
+# Don't create keystore
+- name: Add a key
+  community.elastic.elasticsearch_keystore:
+    name: es_pass
+    value: "{{ vaulted_es_pass }}"
+    create_keystore: no
 '''
 
 RETURN = r'''
@@ -94,8 +106,7 @@ def run_module():
         state=dict(type='str', default='present',
                    choices=['absent', 'present']),
         force=dict(type='bool', required=False, default=False),
-        keystore=dict(type='str', Required=False,
-                      default='/etc/elasticsearch/elasticsearch.keystore')
+        create_keystore=dict(type='bool', required=False, default=True)
     )
 
     result = dict(
@@ -118,11 +129,21 @@ def run_module():
     msg = ''
     changed = result['changed']
     value = module.params['value']
-    keystore = module.params['keystore']
+    create = module.params['create_keystore']
 
     keystore_cmd = module.get_bin_path('elasticsearch-keystore', required=True, opt_dirs=['/usr/share/elasticsearch/bin'])
     rc, current_keys, err = module.run_command(
         "%s list" % (keystore_cmd))
+    if rc == 65:
+        if create:
+            if module.check_mode:
+                changed = True
+            else:
+                rc, current_keys, err = module.run_command(
+                "%s create" % (keystore_cmd))
+        else:
+            module.fail_json(
+                msg="Keystore not found and create_keystore=no.", rc=rc, err=err)
     if rc != 0:
         module.fail_json(
             msg="Failed executing elasticsearch-keystore command.", rc=rc, err=err)
