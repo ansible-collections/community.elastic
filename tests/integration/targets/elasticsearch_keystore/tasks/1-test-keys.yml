@@ -1,0 +1,39 @@
+---
+- block:
+
+  - name: Attempt to add a new key
+    community.elastic.elasticsearch_keystore:
+      name: "es_pass"
+      value: "password"
+      state: present
+      force: no
+    register: key_add
+
+  - name: Attempt to replace existing key
+    community.elastic.elasticsearch_keystore:
+      name: "es_pass"
+      value: "password"
+      state: present
+      force: no
+    register: key_replace
+
+  - name: Attempt to force replace existing key
+    community.elastic.elasticsearch_keystore:
+      name: "es_pass"
+      value: "password"
+      state: present
+      force: yes
+    register: key_force_replace
+
+  - name: Attempt to delete key
+    community.elastic.elasticsearch_keystore:
+      name: "es_pass"
+      state: absent
+    register: key_delete
+
+  - assert:
+      that:
+        - "key_add is changed"
+        - "key_replace is not changed"
+        - "key_force_replace is changed"
+        - "key_delete is changed"
