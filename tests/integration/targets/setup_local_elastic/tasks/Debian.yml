@@ -4,16 +4,17 @@
     name: "{{ debian_packages }}"
   become: yes
 
-- name: Import a pgp key
-  ansible.builtin.apt_key:
-    state: present
-    key: "{{ elastic_gpg_key_url }}"
-  become: yes
+#- name: Import a pgp key
+#  ansible.builtin.apt_key:
+#    state: present
+#    key: "{{ elastic_gpg_key_url }}"
+#  become: yes
 
 - name: Add ES apt repository
   ansible.builtin.apt_repository:
     repo: "deb https://artifacts.elastic.co/packages/{{ elastic_version }}/apt stable main"
     state: present
+    allow_unauthenticated: yes
   become: yes
 
 - name: Install elasticsearch
