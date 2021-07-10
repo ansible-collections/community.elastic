@@ -14,10 +14,10 @@
   ansible.builtin.apt_repository:
     repo: "deb https://artifacts.elastic.co/packages/{{ elastic_version }}/apt stable main"
     state: present
-    allow_unauthenticated: yes
   become: yes
 
 - name: Install elasticsearch
   apt:
     name: elasticsearch
+    allow_unauthenticated: yes
   become: yes
