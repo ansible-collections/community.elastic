@@ -1,4 +1,6 @@
 ---
+- shell: sudo apt-get install -y python-apt
+
 - name: Install required packages
   apt:
     name: "{{ debian_packages }}"
