@@ -1,8 +1,4 @@
 ---
-- name: Install required packages
-  yum:
-    name: "{{ redhat_packages }}"
-
 - name: Import a pgp key
   ansible.builtin.rpm_key:
     state: present
