@@ -1,0 +1,22 @@
+---
+- name: Install required packages
+  yum:
+    name: "{{ redhat_packages }}"
+
+- name: Import a pgp key
+  ansible.builtin.rpm_key:
+    state: present
+    key: "{{ elastic_gpg_key_url }}"
+
+- name: Add ES yum repository
+  ansible.builtin.yum_repository:
+    name: elasticsearch
+    description: Elasticsearch repository for 7.x packages
+    baseurl: "https://artifacts.elastic.co/packages/{{ elastic_version }}/yum"
+    gpgcheck: yes
+    gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    enabled: yes
+
+- name: Install elasticsearch
+  yum:
+    name: elasticsearch

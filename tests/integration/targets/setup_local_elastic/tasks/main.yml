@@ -1,0 +1,14 @@
+---
+ - name: Import Tasks for Redhat
+   import_tasks: RedHat.yml
+   when: ansible_os_family == "RedHat"
+
+ - name: Import Tasks for Debian
+   import_tasks: Debian.yml
+   when: ansible_os_family == "Debian"
+
+ - name: Ensure elasticsearch service is running
+   service:
+     name: elasticsearch
+     state: running
+     enabled: yes
