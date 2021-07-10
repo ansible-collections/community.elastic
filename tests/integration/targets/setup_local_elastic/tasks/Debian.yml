@@ -6,6 +6,7 @@
 - name: Import a pgp key
   ansible.builtin.apt_key:
     state: present
+    id: 0xD27D666CD88E42B4
     key: "{{ elastic_gpg_key_url }}"
 
 - name: Add ES apt repository
