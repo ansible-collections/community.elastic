@@ -2,18 +2,22 @@
 - name: Install required packages
   apt:
     name: "{{ debian_packages }}"
+  become: yes
 
 - name: Import a pgp key
   ansible.builtin.apt_key:
     state: present
     id: 0xD27D666CD88E42B4
     key: "{{ elastic_gpg_key_url }}"
+  become: yes
 
 - name: Add ES apt repository
   ansible.builtin.apt_repository:
     repo: "deb https://artifacts.elastic.co/packages/{{ elastic_version }}/apt stable main"
     state: present
+  become: yes
 
 - name: Install elasticsearch
   apt:
     name: elasticsearch
+  become: yes
