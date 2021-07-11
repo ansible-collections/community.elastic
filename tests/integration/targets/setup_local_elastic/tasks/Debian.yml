@@ -1,25 +1,22 @@
 ---
-- shell: sudo apt-get install -y python3-apt
-
 - name: Install required packages
   apt:
     name: "{{ debian_packages }}"
-  become: yes
 
 #- name: Import a pgp key
 #  ansible.builtin.apt_key:
 #    state: present
 #    key: "{{ elastic_gpg_key_url }}"
-#  become: yes
+#    id: 0xD27D666CD88E42B4
+
+- name: Import the key
+  shell: "wget -qO - {{ elastic_gpg_key_url }} | sudo apt-key add -"
 
 - name: Add ES apt repository
   ansible.builtin.apt_repository:
     repo: "deb https://artifacts.elastic.co/packages/{{ elastic_version }}/apt stable main"
     state: present
-  become: yes
 
 - name: Install elasticsearch
   apt:
     name: elasticsearch
-    allow_unauthenticated: yes
-  become: yes

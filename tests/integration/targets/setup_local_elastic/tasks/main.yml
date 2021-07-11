@@ -10,5 +10,5 @@
  - name: Ensure elasticsearch service is running
    service:
      name: elasticsearch
-     state: running
+     state: started
      enabled: yes
