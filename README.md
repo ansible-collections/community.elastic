@@ -24,20 +24,20 @@ These modules are tested on Debian and RHEL based distributions.
 
 ### Modules
 
-- `elastic_bulk.py`: Perform actions with documents using the Bulk API.
-- `elastic_cluster_health.py`: Validate cluster health.
-- `elastic_cluster_settings.py`: Manage Elastic Search Cluster Settings.
-- `elastic_index.py`:  Manage Elasticsearch indexes.
-- `elastic_index_info.py`: Returns info about Elasticsearch indexes.
-- `elastic_index_lifecycle.py`: Manage Elasticsearch Index Lifecyles.
-- `elastic_pipeline.py`: Manage Elasticsearch Pipelines.
-- `elastic_reindex.py`: Copies documents from a source to a destination.
-- `elastic_role.py`: Manage Elasticsearch user roles.
-- `elastic_rollup.py`: Manage Elasticsearch Rollup Jobs.
-- `elastic_snapshot.py`: Manage Elasticsearch Snapshots.
-- `elastic_snapshot_repository.py`: Manage Elasticsearch Snapshot Repositories.
-- `elastic_transform.py`: Manage Elasticsearch Transform Jobs.
-- `elastic_user.py`: Manage Elasticsearch users.
+- `elastic_bulk`: Perform actions with documents using the Bulk API.
+- `elastic_cluster_health`: Validate cluster health.
+- `elastic_cluster_settings`: Manage Elastic Search Cluster Settings.
+- `elastic_index`:  Manage Elasticsearch indexes.
+- `elastic_index_info`: Returns info about Elasticsearch indexes.
+- `elastic_index_lifecycle`: Manage Elasticsearch Index Lifecyles.
+- `elastic_pipeline`: Manage Elasticsearch Pipelines.
+- `elastic_reindex`: Copies documents from a source to a destination.
+- `elastic_role`: Manage Elasticsearch user roles.
+- `elastic_rollup`: Manage Elasticsearch Rollup Jobs.
+- `elastic_snapshot`: Manage Elasticsearch Snapshots.
+- `elastic_snapshot_repository`: Manage Elasticsearch Snapshot Repositories.
+- `elastic_transform`: Manage Elasticsearch Transform Jobs.
+- `elastic_user`: Manage Elasticsearch users.
 
 ## Running the integration tests
 
