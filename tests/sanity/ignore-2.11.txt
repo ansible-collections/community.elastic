@@ -1,0 +1,1 @@
+plugins/modules/elastic_index_info.py invalid-ansiblemodule-schema
