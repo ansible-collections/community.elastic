@@ -8,7 +8,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: elasticsearch_keystore
+module: elastic_keystore
 
 short_description: Manage entries in the Elasticsearch keystore
 
@@ -51,26 +51,26 @@ options:
 EXAMPLES = r'''
 # Add a new key
 - name: Add a key
-  community.elastic.elasticsearch_keystore:
+  community.elastic.elastic_keystore:
     name: es_pass
     value: "{{ vaulted_es_pass }}"
 
 # Add a new key or replace existing key
 - name: Add or overwrite key
-  community.elastic.elasticsearch_keystore:
+  community.elastic.elastic_keystore:
     name: es_pass
     value: "{{ vaulted_es_pass }}"
     force: yes
 
 # Delete a key
 - name: Delete key
-  community.elastic.elasticsearch_keystore:
+  community.elastic.elastic_keystore:
     name: es_pass
     state: absent
 
 # Don't create keystore
 - name: Add a key
-  community.elastic.elasticsearch_keystore:
+  community.elastic.elastic_keystore:
     name: es_pass
     value: "{{ vaulted_es_pass }}"
     create_keystore: no
