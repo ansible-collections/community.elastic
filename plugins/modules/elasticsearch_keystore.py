@@ -16,9 +16,10 @@ author:
     - Bradford Dabbs (@bndabbs)
 version_added: "0.0.1"
 
-description: Add and remove entries in the Elasticsearch keystore. Existing
-entries will not be decrypted, so the module will only compares based on the
-name.
+description: >-
+  Add and remove entries in the Elasticsearch keystore. Existing
+  entries will not be decrypted, so the module will only compares based on the
+  name.
 
 options:
     name:
@@ -139,8 +140,7 @@ def run_module():
             if module.check_mode:
                 changed = True
             else:
-                rc, current_keys, err = module.run_command(
-                "%s create" % (keystore_cmd))
+                rc, current_keys, err = module.run_command("%s create" % (keystore_cmd))
         else:
             module.fail_json(
                 msg="Keystore not found and create_keystore=no.", rc=rc, err=err)
@@ -181,7 +181,7 @@ def run_module():
                 msg = "Key %s is already present. Not overwriting as force=no." % (name)
                 changed = False
             else:
-                rc, _, err = module.run_command(
+                rc, out, err = module.run_command(
                     "%s add -f -s -x %s" % (keystore_cmd, name), data=value)
                 if rc == 0:
                     changed = True
@@ -190,8 +190,7 @@ def run_module():
                     module.fail_json(
                         msg="Failed to add %s to the keystore" % (name), rc=rc, err=err)
         else:
-            rc, _, err = module.run_command(
-                "%s add -x %s" % (keystore_cmd, name), data=value)
+            rc, out, err = module.run_command("%s add -x %s" % (keystore_cmd, name), data=value)
             if rc == 0:
                 changed = True
                 msg = "Added %s to keystore" % (name)
@@ -201,8 +200,7 @@ def run_module():
 
     if state == 'absent':
         if key_exists:
-            rc, _, err = module.run_command(
-                "%s remove %s" % (keystore_cmd, name))
+            rc, out, err = module.run_command("%s remove %s" % (keystore_cmd, name))
             if rc == 0:
                 changed = True
                 msg = "Removed %s from keystore" % (name)
