@@ -39,7 +39,7 @@ options:
     force:
         type: bool
         required: false
-        default: true
+        default: false
         description: "When used with state=present, existing entries with the same name will be replaced."
     create_keystore:
         type: bool
