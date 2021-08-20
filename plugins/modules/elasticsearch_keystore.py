@@ -31,19 +31,20 @@ options:
         required: false
         type: str
     state:
+        type: str
         required: false
         default: "present"
         choices: [ present, absent ]
         description: "Whether the entry should exist or not, taking action if the state is different from what is stated."
     force:
+        type: bool
         required: false
-        default: "no"
-        choices: [ "yes", "no" ]
+        default: true
         description: "When used with state=present, existing entries with the same name will be replaced."
     create_keystore:
+        type: bool
         required: false
-        default: "yes"
-        choices: [ "yes", "no" ]
+        default: true
         description: "Whether to create the keystore if one doesn't already exist."
 '''
 
