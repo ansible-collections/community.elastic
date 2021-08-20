@@ -2,7 +2,7 @@
 - block:
 
   - name: Attempt to add a new key
-    community.elastic.elasticsearch_keystore:
+    community.elastic.elastic_keystore:
       name: "es_pass"
       value: "password"
       state: present
@@ -10,7 +10,7 @@
     register: key_add
 
   - name: Attempt to replace existing key
-    community.elastic.elasticsearch_keystore:
+    community.elastic.elastic_keystore:
       name: "es_pass"
       value: "password"
       state: present
@@ -18,7 +18,7 @@
     register: key_replace
 
   - name: Attempt to force replace existing key
-    community.elastic.elasticsearch_keystore:
+    community.elastic.elastic_keystore:
       name: "es_pass"
       value: "password"
       state: present
@@ -26,7 +26,7 @@
     register: key_force_replace
 
   - name: Attempt to delete key
-    community.elastic.elasticsearch_keystore:
+    community.elastic.elastic_keystore:
       name: "es_pass"
       state: absent
     register: key_delete

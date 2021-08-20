@@ -150,7 +150,7 @@ jobs:
       - name: Run integration tests on Python ${{ matrix.python_version }} | ${{ matrix.ansible_version }}
         run: ansible-test integration $ANSIBLE_TEST_OPTIONS -v --color --retry-on-error --python ${{ matrix.python_version }} --continue-on-error --diff --coverage ${{ matrix.elastic_module }}
         env:
-          ANSIBLE_TEST_OPTIONS: "${{ matrix.elastic_module == 'elasticsearch_keystore' && '--docker default' || '' }}"
+          ANSIBLE_TEST_OPTIONS: "${{ matrix.elastic_module == 'elastic_keystore' && '--docker default' || '' }}"
 
       - name: Upload Coverage data
         run: tests/coverage.sh
