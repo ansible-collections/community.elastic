@@ -73,7 +73,7 @@ def main():
 
     module = AnsibleModule(
         argument_spec=argument_spec,
-        supports_check_mode=False,
+        supports_check_mode=True,
         required_together=[['login_user', 'login_password']],
     )
 

@@ -1,0 +1,10 @@
+---
+elastic_version: "7.x"
+elastic_gpg_key_url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+debian_packages:
+  - "apt-transport-https"
+  - "wget"
+  - "sudo"
+  - "gnupg2"
+redhat_packages:
+  - "sudo"

@@ -6,6 +6,17 @@
     - docker
     - six
 
+#- name: Ensure docker-compose is available
+#  package:
+#    name:
+#      - docker
+#      - docker-compose
+
+#- name: Ensure docker is started
+#  service:
+#    name: docker
+#    state: started
+
 - name: Ensure any existing docker containers are removed
   community.docker.docker_container:
     name: "{{ item }}"

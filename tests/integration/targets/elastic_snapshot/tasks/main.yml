@@ -1,5 +1,5 @@
 ---
-  - import_tasks: 1-test-no-auth.yml
+  - include_tasks: 1-test-no-auth.yml
 
   - name: Run handlers to remove previous es instances
     meta: flush_handlers
@@ -11,4 +11,4 @@
   - import_role:
       name: setup_elastic
 
-  - import_tasks: 2-test-with-auth.yml
+  - include_tasks: 2-test-with-auth.yml

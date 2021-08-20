@@ -101,7 +101,7 @@ jobs:
       matrix:
         python_version:
           - "3.6"
-          - "2.7"
+          # - "2.7" Removed pending re-org of the ES Cluster tests
         elastic_module: ${{ fromJson(needs.integration_matrix.outputs.matrix) }}
         ansible_version:
           - stable-2.11
@@ -148,7 +148,9 @@ jobs:
           command: ansible-galaxy collection install community.docker -p ansible_collections/
 
       - name: Run integration tests on Python ${{ matrix.python_version }} | ${{ matrix.ansible_version }}
-        run: ansible-test integration -v --color --retry-on-error --python ${{ matrix.python_version }} --continue-on-error --diff --coverage ${{ matrix.elastic_module }}
+        run: ansible-test integration $ANSIBLE_TEST_OPTIONS -v --color --retry-on-error --python ${{ matrix.python_version }} --continue-on-error --diff --coverage ${{ matrix.elastic_module }}
+        env:
+          ANSIBLE_TEST_OPTIONS: "${{ matrix.elastic_module == 'elastic_keystore' && '--docker default' || '' }}"
 
       - name: Upload Coverage data
         run: tests/coverage.sh
