@@ -91,17 +91,17 @@ pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pi
 * Run integration tests for the elastic_user module.
 
 ```bash
-ansible-test integration --docker default -v --color --python 3.6 elastic_user
+ansible-test integration -v --color --python 3.6 elastic_user
 ```
 
 * Run integration tests for the elastic_cluster_health module.
 
 ```bash
-ansible-test integration --docker default -v --color --python 3.6 elastic_cluster_health
+ansible-test integration -v --color --python 3.6 elastic_cluster_health
 ```
 
 * Run tests for everything in the collection.
 
 ```bash
-ansible-test integration --docker default -v --color --python 3.6
+ansible-test integration -v --color --python 3.6
 ```
