@@ -88,6 +88,8 @@ cd elastic
 pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
 ```
 
+Please note that most of these integration tests are intended to run directly in GitHUb Actions and running them locally may make changes to the executing computer.
+
 * Run integration tests for the elastic_user module.
 
 ```bash
