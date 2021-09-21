@@ -1,8 +1,8 @@
 ---
 - name: Install python apt library
-  pip:
-    name: apt
-    state: present
+  shell: apt install python3-apt -y && touch python3_apt.success
+  args:
+    creates: python3_apt.success
 
 - name: Install required packages
   apt:
