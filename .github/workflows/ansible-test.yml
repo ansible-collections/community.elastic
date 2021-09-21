@@ -99,14 +99,14 @@ jobs:
         working-directory: ansible_collections/community/elastic
     strategy:
       matrix:
-        python_version:
-          - "3.9"
-          # - "2.7" Removed pending re-org of the ES Cluster tests
         elastic_module: ${{ fromJson(needs.integration_matrix.outputs.matrix) }}
-        ansible_version:
-          - stable-2.11
-          - stable-2.10
-          - devel
+        version_combinations:
+          - ansible_version: stable-2.11
+            python_version: 3.6
+          - ansible_version: stable-2.10
+            python_version: 3.6
+          - ansible_version: devel
+            python_version: 3.9
     steps:
 
       - name: Check out code
@@ -114,10 +114,10 @@ jobs:
         with:
           path: ansible_collections/community/elastic
 
-      - name: Set up Python ${{ matrix.python_version }}
+      - name: Set up Python ${{ matrix.version_combinations.python_version }}
         uses: actions/setup-python@v1
         with:
-          python-version: ${{ matrix.python_version }}
+          python-version: ${{ matrix.version_combinations.python_version }}
 
       - name: Install python packages
         uses: nick-invision/retry@v2
@@ -126,12 +126,12 @@ jobs:
           max_attempts: 3
           command: pip install docker elasticsearch requests coverage
 
-      - name: Install ansible-base (${{ matrix.ansible_version }})
+      - name: Install ansible-base (${{ matrix.version_combinations.ansible_version }})
         uses: nick-invision/retry@v2
         with:
           timeout_minutes: 3
           max_attempts: 3
-          command: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible_version }}.tar.gz --disable-pip-version-check
+          command: pip install https://github.com/ansible/ansible/archive/${{ matrix.version_combinations.ansible_version }}.tar.gz --disable-pip-version-check
 
       - name: Install community.general
         uses: nick-invision/retry@v2
@@ -147,8 +147,8 @@ jobs:
           max_attempts: 3
           command: ansible-galaxy collection install community.docker -p ansible_collections/
 
-      - name: Run integration tests on Python ${{ matrix.python_version }} | ${{ matrix.ansible_version }}
-        run: ansible-test integration $ANSIBLE_TEST_OPTIONS -v --color --retry-on-error --python ${{ matrix.python_version }} --continue-on-error --diff --coverage ${{ matrix.elastic_module }}
+      - name: Run integration tests on Python ${{ matrix.version_combinations.python_version }} | ${{ matrix.version_combinations.ansible_version }}
+        run: ansible-test integration $ANSIBLE_TEST_OPTIONS -v --color --retry-on-error --python ${{ matrix.version_combinations.python_version }} --continue-on-error --diff --coverage ${{ matrix.version_combinations.elastic_module }}
         env:
           ANSIBLE_TEST_OPTIONS: "${{ matrix.elastic_module == 'elastic_keystore' && '--docker default' || '' }}"
 
