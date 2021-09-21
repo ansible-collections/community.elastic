@@ -17,10 +17,10 @@ jobs:
         with:
           path: ansible_collections/community/elastic
 
-      - name: Set up Python 3.10
+      - name: Set up Python 3.9
         uses: actions/setup-python@v1
         with:
-          python-version: 3.10
+          python-version: 3.9
 
       - name: Install ansible-base (devel)
         uses: nick-invision/retry@v2
@@ -100,7 +100,7 @@ jobs:
     strategy:
       matrix:
         python_version:
-          - "3.10"
+          - "3.9"
           # - "2.7" Removed pending re-org of the ES Cluster tests
         elastic_module: ${{ fromJson(needs.integration_matrix.outputs.matrix) }}
         ansible_version:
