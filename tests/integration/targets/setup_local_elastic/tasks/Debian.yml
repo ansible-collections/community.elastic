@@ -1,4 +1,9 @@
 ---
+- name: Install python apt library
+  pip:
+    name: apt
+    state: present
+
 - name: Install required packages
   apt:
     name: "{{ debian_packages }}"
