@@ -6,6 +6,5 @@ debian_packages:
   - "wget"
   - "sudo"
   - "gnupg2"
-  - "python3-apt"
 redhat_packages:
   - "sudo"
