@@ -10,9 +10,7 @@ This Ansible collection provides modules to work with Elasticsearch instances an
 
 Not yet available.
 
-```bash
 ~~ansible-galaxy colleciton install community.elastic~~
-```
 
 # Installing the latest development version
 
