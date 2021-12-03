@@ -1,4 +1,9 @@
 ---
+ - name: Upgrade pip
+   pip: 
+     name: pip
+     state: latest
+
  - name: Import Tasks for Redhat
    import_tasks: RedHat.yml
    when: ansible_os_family == "RedHat"

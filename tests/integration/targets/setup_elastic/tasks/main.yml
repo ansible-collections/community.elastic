@@ -1,4 +1,9 @@
 ---
+- name: Update pip
+  pip: 
+    name: pip
+    state: latest
+
 - name: Ensure required python moules are installed
   pip:
     name: "{{ item }}"
