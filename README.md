@@ -39,6 +39,32 @@ These modules are tested on Debian and RHEL based distributions.
 - `elastic_transform`: Manage Elasticsearch Transform Jobs.
 - `elastic_user`: Manage Elasticsearch users.
 
+# Module common option
+
+The follow common module options are setable via shell variables...
+
+- AUTH_METHOD
+- AUTH_SCHEME
+- CAFILE
+- CONNECTION_OPTIONS
+- LOGIN_USER
+- LOGIN_PASSWORD
+- LOGIN_HOSTS
+- LOGIN_PORT
+- MASTER_TIMEOUT
+- TIMEOUT
+
+For example the following could be set in the shell...
+
+```bash
+export LOGIN_HOSTS="localhost";
+export LOGIN_PORT=12345;
+export LOGIN_USER="searchuser";
+export LOGIN_PASSWORD="secret";
+```
+
+Be sure to protect the sensitive details above as appropriate.
+
 ## Running the integration tests
 
 * Requirements
