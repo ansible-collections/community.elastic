@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.six.moves import configparser
-from ansible.module_utils.basic import env_fallback
 
 import traceback
 import sys
@@ -27,16 +26,16 @@ def elastic_common_argument_spec():
     Returns a dict containing common options shared across the elastic modules
     """
     options = dict(
-        auth_method=dict(type='str', choices=[None, 'http_auth'], default=None, fallback=(env_fallback, ["AUTH_METHOD"])),
-        auth_scheme=dict(type='str', choices=['http', 'https'], default='http', fallback=(env_fallback, ["AUTH_SCHEME"])),
-        cafile=dict(type='str', default=None, fallback=(env_fallback, ["CAFILE"])),
-        connection_options=dict(type='list', elements='dict', default=[], fallback=(env_fallback, ["CONNECTION_OPTIONS"])),
-        login_user=dict(type='str', required=False, fallback=(env_fallback, ["LOGIN_USER"])),
-        login_password=dict(type='str', required=False, no_log=True, fallback=(env_fallback, ["LOGIN_PASSWORD"])),
-        login_hosts=dict(type='list', elements='str', required=False, default=['localhost'], fallback=(env_fallback, ["LOGIN_HOSTS"])),
-        login_port=dict(type='int', required=False, default=9200, fallback=(env_fallback, ["LOGIN_PORT"])),
-        master_timeout=dict(type='int', default=30, fallback=(env_fallback, ["MASTER_TIMEOUT"])),
-        timeout=dict(type='int', default=30, fallback=(env_fallback, ["TIMEOUT"])),
+        auth_method=dict(type='str', choices=[None, 'http_auth'], default=None),
+        auth_scheme=dict(type='str', choices=['http', 'https'], default='http'),
+        cafile=dict(type='str', default=None),
+        connection_options=dict(type='list', elements='dict', default=[]),
+        login_user=dict(type='str', required=False),
+        login_password=dict(type='str', required=False, no_log=True),
+        login_hosts=dict(type='list', elements='str', required=False, default=['localhost']),
+        login_port=dict(type='int', required=False, default=9200),
+        master_timeout=dict(type='int', default=30),
+        timeout=dict(type='int', default=30),
     )
     return options
 
