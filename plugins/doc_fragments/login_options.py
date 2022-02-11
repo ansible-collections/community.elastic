@@ -55,11 +55,6 @@ options:
     required: no
     type: int
     default: 9200
-  master_timeout:
-    description:
-      - Timeout in seconds for connection to a master node.
-    type: int
-    default: 30
   timeout:
     description:
       - Response timeout in seconds.
