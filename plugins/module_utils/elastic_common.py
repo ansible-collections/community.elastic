@@ -71,9 +71,9 @@ class ElasticHelpers():
     def connect(self):
         auth = self.build_auth(self.module)
         hosts = list(map(lambda host: "{0}://{1}:{2}/".format(self.module.params['auth_scheme'],
-                                                                host,
-                                                                self.module.params['login_port']),
-                                                                self.module.params['login_hosts']))
+                                                              host,
+                                                              self.module.params['login_port']),
+                                                              self.module.params['login_hosts']))
         elastic = Elasticsearch(hosts,
                                 timeout=self.module.params['timeout'],
                                 *self.module.params['connection_options'],
