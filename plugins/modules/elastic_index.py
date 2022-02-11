@@ -158,7 +158,7 @@ def main():
         client = elastic.connect()
 
         if state == 'present':
-            if client.indices.exists(name):
+            if client.indices.exists(index=name):
                 module.exit_json(changed=False, msg="The index '{0}' already exists.".format(name))
             else:
                 request_body = {"settings": settings, "mappings": mappings}
@@ -168,11 +168,11 @@ def main():
                     response = dict(client.indices.create(index=name, body=request_body))
                 module.exit_json(changed=True, msg="The index '{0}' was created.".format(name), **response)
         elif state == 'absent':
-            if client.indices.exists(name):
+            if client.indices.exists(index=name):
                 if module.check_mode:
                     response = {"acknowledged": True}
                 else:
-                    response = dict(client.indices.delete(name))
+                    response = dict(client.indices.delete(index=name))
                 module.exit_json(changed=True, msg="The index '{0}' was deleted.".format(name), **response)
             else:
                 module.exit_json(changed=False, msg="The index '{0}' does not exist.".format(name))
@@ -183,7 +183,7 @@ def main():
         elif state == "upgrade":
             elastic.index_dynamic_method(module, client, 'upgrade', name)
         elif state == "stats":
-            response = dict(client.indices.stats(name))
+            response = dict(client.indices.stats(index=name))
             module.exit_json(changed=True, msg="Stats from index '{0}'.".format(name), **response)
         else:  # Catch all for everything else. Need to make sure the state == method name
             elastic.index_dynamic_method(module, client, state, name)

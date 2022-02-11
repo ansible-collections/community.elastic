@@ -70,8 +70,8 @@ class ElasticHelpers():
     def connect(self):
         auth = self.build_auth(self.module)
         hosts = list(map(lambda host: "{0}://{1}:{2}/".format(self.module.params['auth_scheme'],
-                                                              host, 
-                                                              self.module.params['login_port']), 
+                                                              host,
+                                                              self.module.params['login_port']),
                                                               self.module.params['login_hosts']))
         elastic = Elasticsearch(hosts,
                                 timeout=self.module.params['timeout'],
@@ -91,7 +91,7 @@ class ElasticHelpers():
         @method - The indicies method to call
         @name - The index name.
         '''
-        if not client.indices.exists(name):
+        if not client.indices.exists(index=name):
             module.fail_json(msg='Cannot perform {0} action on an index that does not exist'.format(method))
         else:
             class_method = getattr(client.indices, method)
