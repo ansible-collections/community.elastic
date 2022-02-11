@@ -51,7 +51,6 @@ The follow common module options are setable via shell variables...
 - LOGIN_PASSWORD
 - LOGIN_HOSTS
 - LOGIN_PORT
-- MASTER_TIMEOUT
 - TIMEOUT
 
 For example the following could be set in the shell...
@@ -119,17 +118,17 @@ Please note that most of these integration tests are intended to run directly in
 * Run integration tests for the elastic_user module.
 
 ```bash
-ansible-test integration -v --color --python 3.6 elastic_user
+ansible-test integration -v --color yes --python 3.6 elastic_user
 ```
 
 * Run integration tests for the elastic_cluster_health module.
 
 ```bash
-ansible-test integration -v --color --python 3.6 elastic_cluster_health
+ansible-test integration -v --color yes --python 3.6 elastic_cluster_health
 ```
 
 * Run tests for everything in the collection.
 
 ```bash
-ansible-test integration -v --color --python 3.6
+ansible-test integration -v --color yes --python 3.6
 ```

@@ -127,7 +127,7 @@ jobs:
         with:
           timeout_minutes: 3
           max_attempts: 3
-          command: pip install docker elasticsearch requests coverage
+          command: pip install docker elasticsearch==7.* requests coverage
 
       - name: Install ansible-base (${{ matrix.version_combinations.ansible_version }})
         uses: nick-invision/retry@v2

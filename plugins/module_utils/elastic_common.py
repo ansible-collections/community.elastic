@@ -35,8 +35,8 @@ def elastic_common_argument_spec():
         login_password=dict(type='str', required=False, no_log=True, fallback=(env_fallback, ["LOGIN_PASSWORD"])),
         login_hosts=dict(type='list', elements='str', required=False, default=['localhost'], fallback=(env_fallback, ["LOGIN_HOSTS"])),
         login_port=dict(type='int', required=False, default=9200, fallback=(env_fallback, ["LOGIN_PORT"])),
-        master_timeout=dict(type='int', default=30, fallback=(env_fallback, ["MASTER_TIMEOUT"])),
         timeout=dict(type='int', default=30, fallback=(env_fallback, ["TIMEOUT"])),
+        compatible_with=dict(type='int', default=7),
     )
     return options
 
@@ -70,9 +70,11 @@ class ElasticHelpers():
 
     def connect(self):
         auth = self.build_auth(self.module)
-        hosts = list(map(lambda host: "{0}:{1}".format(host, self.module.params['login_port']), self.module.params['login_hosts']))
+        hosts = list(map(lambda host: "{0}://{1}:{2}/".format(self.module.params['auth_scheme'],
+                                                              host,
+                                                              self.module.params['login_port']),
+                         self.module.params['login_hosts']))
         elastic = Elasticsearch(hosts,
-                                master_timeout=self.module.params['master_timeout'],
                                 timeout=self.module.params['timeout'],
                                 *self.module.params['connection_options'],
                                 **auth)
@@ -90,7 +92,7 @@ class ElasticHelpers():
         @method - The indicies method to call
         @name - The index name.
         '''
-        if not client.indices.exists(name):
+        if not client.indices.exists(index=name):
             module.fail_json(msg='Cannot perform {0} action on an index that does not exist'.format(method))
         else:
             class_method = getattr(client.indices, method)

@@ -55,16 +55,16 @@ options:
     required: no
     type: int
     default: 9200
-  master_timeout:
-    description:
-      - Timeout in seconds for connection to a master node.
-    type: int
-    default: 30
   timeout:
     description:
       - Response timeout in seconds.
     type: int
     default: 30
+  compatible_with:
+    description:
+      - Version of Elasticsearch Compatibility to set in the request headers.
+    type: int
+    default: 7
 notes:
   - Requires the elasticsearch Python module.
 
