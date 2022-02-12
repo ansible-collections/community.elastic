@@ -14,6 +14,12 @@ Not yet available.
 
 # Installing the latest development version
 
+At the moment please ensure you are using version 7 of the elasticsearch driver. [8+ is not currently supported](https://github.com/ansible-collections/community.elastic/issues/58).
+
+```bash
+pip install elasticsearch==7.*
+```
+
 ```bash
 ansible-galaxy collection install https://github.com/ansible-collections/community.elastic/releases/download/latest/community-elastic-latest.tar.gz
 ```
