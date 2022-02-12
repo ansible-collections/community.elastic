@@ -36,7 +36,6 @@ def elastic_common_argument_spec():
         login_hosts=dict(type='list', elements='str', required=False, default=['localhost'], fallback=(env_fallback, ["LOGIN_HOSTS"])),
         login_port=dict(type='int', required=False, default=9200, fallback=(env_fallback, ["LOGIN_PORT"])),
         timeout=dict(type='int', default=30, fallback=(env_fallback, ["TIMEOUT"])),
-        compatible_with=dict(type='int', default=7),
     )
     return options
 
