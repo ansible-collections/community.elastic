@@ -14,6 +14,12 @@ Not yet available.
 
 # Installing the latest development version
 
+At the moment please ensure you are using version 7 of the elasticsearch driver. [8+ is not currently supported](https://github.com/ansible-collections/community.elastic/issues/58).
+
+```bash
+pip install elasticsearch==7.*
+```
+
 ```bash
 ansible-galaxy collection install https://github.com/ansible-collections/community.elastic/releases/download/latest/community-elastic-latest.tar.gz
 ```
@@ -38,31 +44,6 @@ These modules are tested on Debian and RHEL based distributions.
 - `elastic_snapshot_repository`: Manage Elasticsearch Snapshot Repositories.
 - `elastic_transform`: Manage Elasticsearch Transform Jobs.
 - `elastic_user`: Manage Elasticsearch users.
-
-# Module common option
-
-The follow common module options are setable via shell variables...
-
-- AUTH_METHOD
-- AUTH_SCHEME
-- CAFILE
-- CONNECTION_OPTIONS
-- LOGIN_USER
-- LOGIN_PASSWORD
-- LOGIN_HOSTS
-- LOGIN_PORT
-- TIMEOUT
-
-For example the following could be set in the shell...
-
-```bash
-export LOGIN_HOSTS="localhost";
-export LOGIN_PORT=12345;
-export LOGIN_USER="searchuser";
-export LOGIN_PASSWORD="secret";
-```
-
-Be sure to protect the sensitive details above as appropriate.
 
 ## Running the integration tests
 
