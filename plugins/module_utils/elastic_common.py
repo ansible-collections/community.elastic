@@ -34,7 +34,6 @@ def elastic_common_argument_spec():
         login_password=dict(type='str', required=False, no_log=True),
         login_hosts=dict(type='list', elements='str', required=False, default=['localhost']),
         login_port=dict(type='int', required=False, default=9200),
-        master_timeout=dict(type='int', default=30),
         timeout=dict(type='int', default=30),
     )
     return options
