@@ -60,6 +60,11 @@ options:
       - Response timeout in seconds.
     type: int
     default: 30
+  compatible_with:
+    description:
+      - Version of Elasticsearch Compatibility to set in the request headers.
+    type: int
+    default: 7
 notes:
   - Requires the elasticsearch Python module.
 
