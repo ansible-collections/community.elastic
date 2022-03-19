@@ -61,7 +61,6 @@ options:
       - https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html
     type: str
     choices:
-      - null
       - status
       - number_of_nodes
       - number_of_data_nodes
@@ -159,7 +158,6 @@ def cast_to_be(to_be):
 def main():
 
     wait_for_choices = [
-        None,
         'status',
         'number_of_nodes',
         'number_of_data_nodes',
