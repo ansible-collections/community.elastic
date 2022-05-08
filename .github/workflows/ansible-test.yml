@@ -10,6 +10,11 @@ jobs:
     defaults:
       run:
         working-directory: ansible_collections/community/elastic
+    strategy:
+      matrix:
+        ansible_version:
+          - stable-2.13
+          - devel
     steps:
 
       - name: Check out code
@@ -22,12 +27,12 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Install ansible-base (devel)
+      - name: Install ansible-base (${{ matrix.ansible_version }})
         uses: nick-invision/retry@v2
         with:
           timeout_minutes: 3
           max_attempts: 3
-          command: pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
+          command: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible_version }}.tar.gz --disable-pip-version-check
 
       - name: Run sanity tests
         run: ansible-test sanity --docker -v --color
@@ -107,6 +112,8 @@ jobs:
             python_version: 3.6
           - ansible_version: stable-2.12
             python_version: 3.8
+          - ansible_version: stable-2.13
+            python_version: 3.9
           - ansible_version: devel
             python_version: 3.9
 
