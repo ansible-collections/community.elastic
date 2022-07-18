@@ -265,13 +265,13 @@
     name: admin
     cluster:
       - all
-    indicies:
-      names:
-       - index1
-       - index2
-       - index3
-      privileges:
-       - all
+    indices:
+      - names:
+          - index1
+          - index2
+          - index3
+        privileges:
+          - all
     applications:
       - application: myapp1
         privileges:
