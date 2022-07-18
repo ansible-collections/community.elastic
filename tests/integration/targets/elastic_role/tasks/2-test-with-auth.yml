@@ -293,7 +293,7 @@
 - assert:
     that:
       - "elastic.changed"
-      - "The role admin was successfully created: {'role': {'created': True}}"
+      - "'The role admin was successfully created' in elastic.msg"
 
 - name: Create a role called admin - run again, no change
   community.elastic.elastic_role:
