@@ -259,3 +259,73 @@
     that:
       - "elastic.changed"
       - "'The role root was successfully updated' in elastic.msg"
+
+- name: Create a role called admin
+  community.elastic.elastic_role:
+    name: admin
+    cluster:
+      - all
+    indices:
+      - names:
+          - index1
+          - index2
+          - index3
+        privileges:
+          - all
+    applications:
+      - application: myapp1
+        privileges:
+          - admin
+          - read
+        resources: "*"
+      - application: myapp2
+        privileges:
+          - admin
+        resources: "*"
+    run_as:
+      - other_user
+      - reporting_user
+    metadata:
+      comment: "System admin role"
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "'The role admin was successfully created' in elastic.msg"
+
+# - name: Create a role called admin - run again, no change
+#   community.elastic.elastic_role:
+#     name: admin
+#     cluster:
+#       - all
+#     indices:
+#       - names:
+#           - index1
+#           - index2
+#           - index3
+#         privileges:
+#           - all
+#     applications:
+#       - application: myapp1
+#         privileges:
+#           - admin
+#           - read
+#         resources: "*"
+#       - application: myapp2
+#         privileges:
+#           - admin
+#         resources: "*"
+#     run_as:
+#       - other_user
+#       - reporting_user
+#     metadata:
+#       comment: "System admin role"
+#     <<: *elastic_index_parameters
+#   register: elastic
+
+# - assert:
+#     that:
+#       - "elastic.changed == False"
+#       - "'The role admin already exists as configured.' in elastic.msg"

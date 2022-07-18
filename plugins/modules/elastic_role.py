@@ -97,7 +97,6 @@ EXAMPLES = r'''
       - reporting_user
     metadata:
       comment: "System admin role"
-
 '''
 
 RETURN = r'''
