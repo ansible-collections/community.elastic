@@ -3,7 +3,7 @@ on:
   pull_request:
   schedule:
     - cron: "0 3 * * *"
-  workflow_dispatch: # Put here!!
+
 jobs:
   sanity:
     runs-on: ubuntu-20.04
@@ -161,7 +161,6 @@ jobs:
         run: ansible-test integration $ANSIBLE_TEST_OPTIONS -v --color --retry-on-error --python ${{ matrix.version_combinations.python_version }} --continue-on-error --diff --coverage ${{ matrix.elastic_module }}
         env:
           ANSIBLE_TEST_OPTIONS: "${{ matrix.elastic_module == 'elastic_keystore' && '--docker default' || '' }}"
-
 
       - name: Upload Coverage data
         run: tests/coverage.sh
