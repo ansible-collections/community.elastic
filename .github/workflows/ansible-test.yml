@@ -3,7 +3,7 @@ on:
   pull_request:
   schedule:
     - cron: "0 3 * * *"
-
+  workflow_dispatch: # Put here!!
 jobs:
   sanity:
     runs-on: ubuntu-20.04
