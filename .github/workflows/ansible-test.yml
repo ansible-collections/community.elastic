@@ -162,5 +162,6 @@ jobs:
         env:
           ANSIBLE_TEST_OPTIONS: "${{ matrix.elastic_module == 'elastic_keystore' && '--docker default' || '' }}"
 
+
       - name: Upload Coverage data
         run: tests/coverage.sh
