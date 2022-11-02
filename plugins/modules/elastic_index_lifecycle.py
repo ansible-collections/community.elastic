@@ -40,6 +40,7 @@ options:
     description:
       - The ILM Policy Document.
     type: dict
+    default: {}
   wait_for_active_shards:
     description:
       - A number controlling to how many active shards to wait for.

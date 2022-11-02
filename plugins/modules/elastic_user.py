@@ -40,6 +40,7 @@ options:
     description:
       - Arbitrary metadata that you want to associate with the user.
     type: dict
+    default: {}
   password:
     description:
       -  The user's password.
