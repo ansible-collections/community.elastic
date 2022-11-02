@@ -74,6 +74,7 @@ options:
       - Username of the user.
     type: str
     required: yes
+    default: {}
 
 '''
 

@@ -52,10 +52,12 @@ options:
     description:
       - Index settings document.
     type: dict
+    default: {}
   mappings:
     description:
       - Index mappings document.
     type: dict
+    default: {}
   wait_for_active_shards:
     description:
       - A number controlling to how many active shards to wait for.
