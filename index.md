@@ -1,0 +1,17 @@
+# Elastic Ansible Collection Documentation
+## Modules
+- [elastic_index_lifecycle](elastic_index_lifecycle.html)
+- [elastic_snapshot_repository](elastic_snapshot_repository.html)
+- [elastic_pipeline](elastic_pipeline.html)
+- [elastic_cluster_health](elastic_cluster_health.html)
+- [elastic_cluster_settings](elastic_cluster_settings.html)
+- [elastic_rollup](elastic_rollup.html)
+- [elastic_index_info](elastic_index_info.html)
+- [elastic_keystore](elastic_keystore.html)
+- [elastic_snapshot](elastic_snapshot.html)
+- [elastic_reindex](elastic_reindex.html)
+- [elastic_bulk](elastic_bulk.html)
+- [elastic_user](elastic_user.html)
+- [elastic_index](elastic_index.html)
+- [elastic_role](elastic_role.html)
+- [elastic_transform](elastic_transform.html)
