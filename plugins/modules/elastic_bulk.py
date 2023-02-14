@@ -101,8 +101,7 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     ElasticHelpers,
     helpers
 )
-import time
-import json
+
 import uuid
 import io
 

@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
-from ansible.module_utils.basic import AnsibleModule, missing_required_lib
-from ansible.module_utils.six.moves import configparser
+from ansible.module_utils.basic import AnsibleModule, missing_required_lib  # pylint: disable=unused-import
 
 import traceback
 import sys
@@ -13,8 +12,8 @@ helpers = None
 
 try:
     from elasticsearch import Elasticsearch
-    from elasticsearch.exceptions import NotFoundError
-    from elasticsearch import helpers
+    from elasticsearch.exceptions import NotFoundError  # pylint: disable=unused-import
+    from elasticsearch import helpers  # pylint: disable=unused-import
     elastic_found = True
 except ImportError:
     E_IMP_ERR = traceback.format_exc()
