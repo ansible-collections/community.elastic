@@ -3,7 +3,6 @@ __metaclass__ = type
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib  # pylint: disable=unused-import
 
 import traceback
-import sys
 
 elastic_found = False
 E_IMP_ERR = None
