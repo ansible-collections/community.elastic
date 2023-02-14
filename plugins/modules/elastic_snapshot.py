@@ -103,7 +103,6 @@ RETURN = r'''
 '''
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
-import json
 
 
 from ansible_collections.community.elastic.plugins.module_utils.elastic_common import (

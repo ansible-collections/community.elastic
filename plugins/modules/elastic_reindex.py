@@ -99,7 +99,6 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     elastic_common_argument_spec,
     ElasticHelpers
 )
-import time
 
 
 # ================
