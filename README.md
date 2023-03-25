@@ -111,5 +111,5 @@ ansible-test integration -v --color yes --python 3.6 elastic_cluster_health
 * Run tests for everything in the collection.
 
 ```bash
-ansible-test integration -v --color yes --python 3.6
+ansible-test integration -v --color yes --python 3.6 
 ```
