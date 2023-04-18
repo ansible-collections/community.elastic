@@ -11,7 +11,7 @@ options:
       - Authentication Method.
     type: str
     choices:
-       - None
+       - ""
        - http_auth
   auth_scheme:
     description:
