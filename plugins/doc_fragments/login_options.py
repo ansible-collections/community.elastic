@@ -13,6 +13,7 @@ options:
     choices:
        - ''
        - http_auth
+    default: ''
   auth_scheme:
     description:
       - Authentication scheme.
