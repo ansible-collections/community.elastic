@@ -24,7 +24,7 @@ def elastic_common_argument_spec():
     Returns a dict containing common options shared across the elastic modules
     """
     options = dict(
-        auth_method=dict(type='str', choices=[None, 'http_auth'], default=None),
+        auth_method=dict(type='str', choices=['', 'http_auth'], default=''),
         auth_scheme=dict(type='str', choices=['http', 'https'], default='http'),
         cafile=dict(type='str', default=None),
         connection_options=dict(type='list', elements='dict', default=[]),
@@ -50,7 +50,7 @@ class ElasticHelpers():
         Build the auth list for elastic according to the passed in parameters
         '''
         auth = {}
-        if module.params['auth_method'] is not None:
+        if module.params['auth_method'] != '':
             if module.params['auth_method'] == 'http_auth':
                 auth["http_auth"] = (module.params['login_user'],
                                      module.params['login_password'])
