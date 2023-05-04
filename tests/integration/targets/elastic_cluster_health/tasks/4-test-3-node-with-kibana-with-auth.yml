@@ -140,6 +140,9 @@
     shell: docker-compose -f 3-node-with-kibana-no-auth.yml stop es02
     args:
       chdir: "{{role_path}}/docker"
+    environment:
+      ELASTICSEARCH_VERSION: "{{ elasticsearch_version }}"
+      KIBANA_VERSION: "{{ kibana_version }}"
 
   - name: Get status after es02 is killed
     community.elastic.elastic_cluster_health:
@@ -180,6 +183,9 @@
     shell: docker-compose -f 3-node-with-kibana-no-auth.yml restart es02
     args:
       chdir: "{{role_path}}/docker"
+    environment:
+      ELASTICSEARCH_VERSION: "{{ elasticsearch_version }}"
+      KIBANA_VERSION: "{{ kibana_version }}"
 
   - name: Wait for es02 to rejoin the cluster
     community.elastic.elastic_cluster_health:

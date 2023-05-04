@@ -1,0 +1,3 @@
+# Replace the values of variables
+elasticsearch_version: <elasticsearch_version_of_your_environment>
+kibana_version: <kibana_version_of_your_environment>

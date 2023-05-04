@@ -95,6 +95,10 @@ pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pi
 
 Please note that most of these integration tests are intended to run directly in GitHUb Actions and running them locally may make changes to the executing computer. You can use the docker flag to avoid that but many of these tests won't work in those conditions.
 
+* Set elasticsearch and kibana version to integration_config.yml
+Please set elasticsearch_version and kibana_version to tests/integration/integration_config.yml.
+Refference: tests/integration/integration_config.yml.template
+
 * Run integration tests for the elastic_user module.
 
 ```bash
@@ -110,5 +114,5 @@ ansible-test integration -v --color yes --python 3.6 elastic_cluster_health
 * Run tests for everything in the collection.
 
 ```bash
-ansible-test integration -v --color yes --python 3.6 
+ansible-test integration -v --color yes --python 3.6
 ```
