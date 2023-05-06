@@ -1,7 +1,4 @@
 ---
-# docker image versions
-  elasticsearch_version: "7.10.1"
-  kibana_version: "7.10.1"
   elastic_ports:
     - 9200
     - 9201
