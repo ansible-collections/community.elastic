@@ -1,6 +1,6 @@
 namespace: community
 name: elastic
-version: 0.0.1
+version: 1.0.0
 readme: README.md
 authors:
   - Rhys Campbell (https://github.com/rhysmeister)

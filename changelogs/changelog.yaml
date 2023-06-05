@@ -1,0 +1,7 @@
+releases:
+  0.0.1:
+    changes:
+      release_summary: "Dummy release"
+  1.0.0:
+    changes:
+      release_summary: "Release to Galaxy"
