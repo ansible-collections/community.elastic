@@ -25,7 +25,7 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: "3.10"
 
       - name: Install ansible-base (${{ matrix.ansible_version }})
         uses: nick-invision/retry@v2
@@ -107,15 +107,15 @@ jobs:
         elastic_module: ${{ fromJson(needs.integration_matrix.outputs.matrix) }}
         ansible_version_combinations:
           - ansible_version: stable-2.10
-            python_version: 3.6
+            python_version: "3.6"
           - ansible_version: stable-2.11
-            python_version: 3.6
+            python_version: "3.6"
           - ansible_version: stable-2.12
-            python_version: 3.8
+            python_version: "3.8"
           - ansible_version: stable-2.13
-            python_version: 3.9
+            python_version: "3.9"
           - ansible_version: devel
-            python_version: 3.10
+            python_version: "3.10"
         elasticsearch_version_combinations:
           - elasticsearch_version: 7.10.1
             kibana_version: 7.10.1
