@@ -87,8 +87,8 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        if client.indices.exists(name):
-            response = dict(client.indices.get(name))
+        if client.indices.exists(index=name):
+            response = dict(client.indices.get(index=name))
             module.exit_json(changed=False, msg="Info about index {0}.".format(name), **response)
         else:
             module.exit_json(changed=False, msg="The index {0} does not exist.".format(name))

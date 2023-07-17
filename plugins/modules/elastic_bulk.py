@@ -116,7 +116,6 @@ def process_document_for_bulk(module, index, action, document):
     bulk_doc = {
         '_op_type': action,
         '_index': index,
-        '_type': '_doc'
     }
     if _id is not None:
         bulk_doc['_id'] = _id
@@ -134,7 +133,7 @@ def get_data_from_file(file_name):
     return data
 
 
-def bulk_json_data(json_file, _index, doc_type):
+def bulk_json_data(json_file, _index):
     '''
     generator to push bulk data from a JSON
     file into an Elasticsearch index
@@ -148,7 +147,6 @@ def bulk_json_data(json_file, _index, doc_type):
         if '{"index"' not in doc:
             yield {
                 "_index": _index,
-                "_type": doc_type,
                 "_id": uuid.uuid4(),
                 "_source": doc
             }
@@ -235,7 +233,7 @@ def main():
                     else:
                         module.fail_json(msg="delete key should be a list")
         elif src is not None:
-            bulk_actions = bulk_json_data(src, index, "document")
+            bulk_actions = bulk_json_data(src, index)
         else:
             module.fail_json(msg="Must supply one of actions or src when executing this module.")
 

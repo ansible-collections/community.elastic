@@ -298,7 +298,7 @@ def main():
                     module.exit_json(changed=True, msg="The rollup job {0} was removed.".format(name))
                 elif state == "started":
                     if job_status["job_state"] == "stopped":
-                        client.rollup.start_job(name)
+                        client.rollup.start_job(id=name)
                         module.exit_json(changed=True, msg="The rollup job {0} was started.".format(name))
                     elif job_status["job_state"] == "started":
                         module.exit_json(changed=False, msg="The rollup job {0} is already in a started state".format(name))
@@ -306,7 +306,7 @@ def main():
                         module.fail_jsob(msg="Job {0} was in a unexpected state: {1}.".format(name, state))
                 elif state == "stopped":
                     if job_status["job_state"] == "started":
-                        client.rollup.stop_job(name)
+                        client.rollup.stop_job(id=name)
                         module.exit_json(changed=True, msg="The rollup job {0} was stopped.".format(name))
                     elif job_status["job_state"] == "stopped":
                         module.exit_json(changed=False, msg="The rollup job {0} is already in a stopped state".format(name))

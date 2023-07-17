@@ -8,11 +8,14 @@ elastic_found = False
 E_IMP_ERR = None
 NotFoundError = None
 helpers = None
+__version__ = None
 
 try:
     from elasticsearch import Elasticsearch
     from elasticsearch.exceptions import NotFoundError  # pylint: disable=unused-import
     from elasticsearch import helpers  # pylint: disable=unused-import
+    from elasticsearch import __version__  # pylint: disable=unused-import
+
     elastic_found = True
 except ImportError:
     E_IMP_ERR = traceback.format_exc()
@@ -55,7 +58,6 @@ class ElasticHelpers():
                 auth["http_auth"] = (module.params['login_user'],
                                      module.params['login_password'])
 
-                auth["http_scheme"] = module.params['auth_scheme']
                 if module.params['cafile'] is not None:
                     from ssl import create_default_context
                     context = create_default_context(module.params['cafile'])
@@ -92,5 +94,5 @@ class ElasticHelpers():
             module.fail_json(msg='Cannot perform {0} action on an index that does not exist'.format(method))
         else:
             class_method = getattr(client.indices, method)
-            response = class_method(name)
+            response = class_method(index=name)
             module.exit_json(changed=True, msg="The '{0}' action was performed on the index '{1}'.".format(method, name), **response)

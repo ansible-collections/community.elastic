@@ -85,7 +85,8 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     E_IMP_ERR,
     elastic_common_argument_spec,
     ElasticHelpers,
-    NotFoundError
+    NotFoundError,
+    __version__
 )
 import json
 
@@ -95,7 +96,8 @@ def get_policy(client, name):
     Gets the policy document specified by name
     '''
     try:
-        policy_doc = client.ilm.get_lifecycle(policy=name)[name]['policy']
+        name_arg = {('policy', 'name')[__version__ >= (8, 0, 0)]: name}
+        policy_doc = client.ilm.get_lifecycle(**name_arg)[name]['policy']
     except NotFoundError:
         policy_doc = None
     return policy_doc
@@ -167,7 +169,8 @@ def main():
                     if module.check_mode:
                         response = {"acknowledged": True}
                     else:
-                        response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
+                        name_arg = {('policy', 'name')[__version__ >= (8, 0, 0)]: name, 'body': request_body}
+                        response = dict(client.ilm.put_lifecycle(**name_arg))
                     module.exit_json(changed=True, msg="The ILM Policy '{0}' was updated.".format(name), **response)
                 else:
                     module.exit_json(changed=False, msg="The ILM Policy '{0}' is configured as specified.".format(name))
@@ -175,14 +178,16 @@ def main():
                 if module.check_mode:
                     response = {"acknowledged": True}
                 else:
-                    response = dict(client.ilm.put_lifecycle(policy=name, body=request_body))
+                    name_arg = {('policy', 'name')[__version__ >= (8, 0, 0)]: name, 'body': request_body}
+                    response = dict(client.ilm.put_lifecycle(**name_arg))
                 module.exit_json(changed=True, msg="The ILM Policy '{0}' was created.".format(name), **response)
         elif state == 'absent':
             if current_policy is not None:
                 if module.check_mode:
                     response = {"acknowledged": True}
                 else:
-                    response = dict(client.ilm.delete_lifecycle(policy=name))
+                    name_arg = {('policy', 'name')[__version__ >= (8, 0, 0)]: name}
+                    response = dict(client.ilm.delete_lifecycle(**name_arg))
                 module.exit_json(changed=True, msg="The ILM Policy '{0}' was deleted.".format(name), **response)
             else:
                 module.exit_json(changed=False, msg="The ILM Policy '{0}' does not exist.".format(name))
