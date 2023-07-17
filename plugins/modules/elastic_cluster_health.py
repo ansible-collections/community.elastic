@@ -35,7 +35,7 @@ options:
     type: str
     choices:
       - cluster
-      - indicies
+      - indices
       - shards
     default: cluster
   local:
@@ -175,7 +175,7 @@ def main():
 
     argument_spec = elastic_common_argument_spec()
     argument_spec.update(
-        level=dict(type='str', choices=['cluster', 'indicies', 'shards'], default='cluster'),
+        level=dict(type='str', choices=['cluster', 'indices', 'shards'], default='cluster'),
         local=dict(type='bool', default=False),
         status=dict(type='str', choices=['green', 'yellow', 'red'], default='green'),
         wait_for=dict(type='str', choices=wait_for_choices, default=None),

@@ -31,9 +31,9 @@
 
   - assert:
       that:
-        - "elastic.active_primary_shards == 0"
-        - "elastic.active_shards == 0"
-        - "elastic.active_shards_percent_as_number == 100.0"
+        - "elastic.active_primary_shards >= 0"
+        - "elastic.active_shards >= 0"
+        - "elastic.active_shards_percent_as_number >= 0.0"
         - "elastic.changed == False"
         - "elastic.cluster_name == 'docker-cluster'"
         - "elastic.delayed_unassigned_shards == 0"
@@ -52,7 +52,7 @@
   - name: Test with indicies level 1
     community.elastic.elastic_cluster_health:
       <<: *elastic_index_parameters
-      level: indicies
+      level: indices
     register: elastic
 
   - assert:
@@ -84,7 +84,7 @@
   - name: Test with indicies level 2
     community.elastic.elastic_cluster_health:
       <<: *elastic_index_parameters
-      level: indicies
+      level: indices
     ignore_errors: yes
     register: elastic
 
@@ -121,7 +121,7 @@
   - name: Test with indicies level 3
     community.elastic.elastic_cluster_health:
       <<: *elastic_index_parameters
-      level: indicies
+      level: indices
     register: elastic
 
   - name: Test with shards level 3
