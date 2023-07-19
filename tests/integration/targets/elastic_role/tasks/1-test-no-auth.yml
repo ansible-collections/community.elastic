@@ -22,4 +22,9 @@
   - assert:
       that:
         - "elastic.changed == False"
-        - "'Security must be explicitly enabled when using' in elastic.msg"
+        - "'{{es_msg}}' in elastic.msg"
+    vars:
+      es_msg:
+        "{{'no handler found for uri [/_security/role/myrole] and method [GET]'
+           if elasticsearch_version is version('8.0.0', '>=')
+           else 'Invalid index name [_security]'}}"

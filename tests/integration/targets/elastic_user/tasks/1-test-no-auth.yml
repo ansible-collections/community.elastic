@@ -5,7 +5,7 @@
 
   block:
 
-  - name: Attempt ot create a role when auth is not enabled
+  - name: Attempt to create a user when auth is not enabled
     community.elastic.elastic_user:
       name: rhys
       password: secret
@@ -22,4 +22,9 @@
   - assert:
       that:
         - "elastic.changed == False"
-        - "'Security must be explicitly enabled when using' in elastic.msg"
+        - "'{{es_msg}}' in elastic.msg"
+    vars:
+      es_msg:
+        "{{'no handler found for uri [/_security/user/rhys] and method [GET]'
+           if elasticsearch_version is version('8.0.0', '>=')
+           else 'Invalid index name [_security]'}}"

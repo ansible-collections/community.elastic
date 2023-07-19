@@ -59,6 +59,12 @@
         - result.msg == "The index 'myindex2' was created."
         - result.changed == True
 
+  - name: Flush myindex1 to take account new documents
+    community.elastic.elastic_index:
+      <<: *elastic_index_parameters
+      name: myindex1
+      state: flush
+
   - name: Copy documents from myindex1 to myindex2 (with auth)
     community.elastic.elastic_reindex:
       <<: *elastic_index_parameters

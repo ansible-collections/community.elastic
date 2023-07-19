@@ -145,6 +145,10 @@ jobs:
         elasticsearch_version_combinations:
           - elasticsearch_version: 7.10.1
             kibana_version: 7.10.1
+            elasticsearch_python_lib: elasticsearch==7.*
+          - elasticsearch_version: 8.8.2
+            kibana_version: 8.8.2
+            elasticsearch_python_lib: elasticsearch==8.*
 
     steps:
 
@@ -163,7 +167,7 @@ jobs:
         with:
           timeout_minutes: 3
           max_attempts: 3
-          command: pip install docker elasticsearch==7.* requests coverage
+          command: pip install docker ${{ matrix.elasticsearch_version_combinations.elasticsearch_python_lib }} requests coverage
 
       - name: Install ansible-base (${{ matrix.ansible_version_combinations.ansible_version }})
         uses: nick-invision/retry@v2

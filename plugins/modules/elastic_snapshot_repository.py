@@ -82,7 +82,8 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     E_IMP_ERR,
     elastic_common_argument_spec,
     ElasticHelpers,
-    NotFoundError
+    NotFoundError,
+    __version__
 )
 
 
@@ -91,7 +92,8 @@ def get_snapshot_repository(module, client, name):
     Uses the get snapshot api to return information about the given snapshot
     '''
     try:
-        response = dict(client.snapshot.get_repository(repository=name))
+        name_arg = {('repository', 'name')[__version__ >= (8, 0, 0)]: name}
+        response = dict(client.snapshot.get_repository(**name_arg))
     except NotFoundError as excep:
         response = None
     except Exception as excep:
@@ -110,9 +112,14 @@ def put_repository(module, client, name):
         }
     }
     try:
-        response = dict(client.snapshot.create_repository(repository=name,
-                                                          body=body,
-                                                          verify=module.params['verify']))
+        name_arg = {('repository', 'name')[__version__ >= (8, 0, 0)]: name}
+        if __version__ >= (8, 0, 0):
+            response = dict(client.snapshot.create_repository(name=name,
+                                                              type=body['type'],
+                                                              settings=body['settings']))
+        else:
+            response = dict(client.snapshot.create_repository(repository=name,
+                                                              body=body))
         if not isinstance(response, dict):  # Valid response should be a dict
             module.fail_json(msg="Invalid response received: {0}.".format(str(response)))
     except Exception as excep:
@@ -174,7 +181,8 @@ def main():
                 module.exit_json(changed=False, msg="The repository {0} already exists.".format(name))
             elif state == "absent":
                 if module.check_mode is False:
-                    response = client.snapshot.delete_repository(repository=name)
+                    name_arg = {('repository', 'name')[__version__ >= (8, 0, 0)]: name}
+                    response = client.snapshot.delete_repository(**name_arg)
                 else:
                     response = {"aknowledged": True}
                 module.exit_json(changed=True, msg="The repository {0} was deleted: {1}".format(name, str(response)))

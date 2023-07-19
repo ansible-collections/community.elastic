@@ -97,7 +97,8 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     elastic_found,
     E_IMP_ERR,
     elastic_common_argument_spec,
-    ElasticHelpers
+    ElasticHelpers,
+    __version__
 )
 
 
@@ -136,7 +137,12 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        result = dict(client.reindex({"source": {"index": source}, "dest": {"index": dest}}, wait_for_completion=wait_for_completion))
+        reindex_arg = {"source": {"index": source}, "dest": {"index": dest}}
+        if __version__ >= (8, 0, 0):
+            reindex_arg['wait_for_completion'] = wait_for_completion
+            result = dict(client.reindex(**reindex_arg))
+        else:
+            result = dict(client.reindex(reindex_arg, wait_for_completion=wait_for_completion))
         if isinstance(result, dict) and 'task' in list(result.keys()):
             msg = "The copy task from {0} to {1} has been started.".format(source, dest)
             module.exit_json(changed=True,
