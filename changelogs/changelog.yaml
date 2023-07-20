@@ -5,3 +5,10 @@ releases:
   1.0.0:
     changes:
       release_summary: "Release to Galaxy"
+  1.1.0:
+    release_summary: |
+      This collection now supports elastic 8.
+    changes:
+      minor_changes:
+        - 58 Include support for elastic 8 as well as support 
+          for version 8 of the elastic python driver.
