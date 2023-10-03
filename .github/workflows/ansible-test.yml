@@ -132,14 +132,12 @@ jobs:
       matrix:
         elastic_module: ${{ fromJson(needs.integration_matrix.outputs.matrix) }}
         ansible_version_combinations:
-          - ansible_version: stable-2.10
-            python_version: "3.6"
-          - ansible_version: stable-2.11
-            python_version: "3.6"
-          - ansible_version: stable-2.12
-            python_version: "3.8"
           - ansible_version: stable-2.13
             python_version: "3.9"
+          - ansible_version: stable-2.14
+            python_version: "3.10"
+          - ansible_version: stable-2.15
+            python_version: "3.10"
           - ansible_version: milestone
             python_version: "3.11"
         elasticsearch_version_combinations:
