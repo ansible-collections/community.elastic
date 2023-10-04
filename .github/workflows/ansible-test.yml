@@ -30,6 +30,7 @@ jobs:
           - stable-2.13
           - stable-2.14
           - stable-2.15
+          - stable-2.16
         # - devel
           - milestone
     # Ansible-test on various stable branches does not yet work well with cgroups v2.
@@ -138,6 +139,8 @@ jobs:
             python_version: "3.10"
           - ansible_version: stable-2.15
             python_version: "3.10"
+          - ansible_version: stable-2.16
+            python_version: "3.11"
           - ansible_version: milestone
             python_version: "3.11"
         elasticsearch_version_combinations:
