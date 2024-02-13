@@ -331,8 +331,7 @@ def main():
                         "rollup_index": rollup_index
                     }
                     response = client.rollup.put_job(id=name,
-                                                     body=body,
-                                                     headers=None)
+                                                     body=body)
                     module.exit_json(changed=True, msg="The rollup job {0} was successfully created.".format(name))
                 elif state == "absent":
                     module.exit_json(changed=False, msg="The rollup job {0} does not exist.".format(name))
