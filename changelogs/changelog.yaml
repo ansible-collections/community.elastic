@@ -10,5 +10,11 @@ releases:
       This collection now supports elastic 8.
     changes:
       minor_changes:
-        - 58 Include support for elastic 8 as well as support 
+        - 58 Include support for elastic 8 as well as support
           for version 8 of the elastic python driver.
+  1.1.1:
+    release_summary: |
+      This collection now supports elastic 8.
+    changes:
+      bugfixes:
+        - 91 - elastic_rollup - Remove headers field from api request.
