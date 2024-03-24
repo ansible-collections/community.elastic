@@ -37,6 +37,7 @@ These modules are tested on Debian and RHEL based distributions.
 - `elastic_index`:  Manage Elasticsearch indexes.
 - `elastic_index_info`: Returns info about Elasticsearch indexes.
 - `elastic_index_lifecycle`: Manage Elasticsearch Index Lifecyles.
+- `elastic_keystore`: Manage entries in the Elasticsearch keystore.
 - `elastic_pipeline`: Manage Elasticsearch Pipelines.
 - `elastic_reindex`: Copies documents from a source to a destination.
 - `elastic_role`: Manage Elasticsearch user roles.
