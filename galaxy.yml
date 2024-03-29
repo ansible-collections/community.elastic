@@ -1,10 +1,10 @@
 namespace: community
 name: elastic
-version: 1.1.1
+version: 1.1.2
 readme: README.md
 authors:
   - Rhys Campbell (https://github.com/rhysmeister)
-description: null
+description: "This Ansible collection provides modules to work with Elasticsearch instances and clusters."
 license_file: COPYING
 tags:
   - elastic
