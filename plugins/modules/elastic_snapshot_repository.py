@@ -115,8 +115,7 @@ def put_repository(module, client, name):
         name_arg = {('repository', 'name')[__version__ >= (8, 0, 0)]: name}
         if __version__ >= (8, 0, 0):
             response = dict(client.snapshot.create_repository(name=name,
-                                                              type=body['type'],
-                                                              settings=body['settings']))
+                                                              body=body))
         else:
             response = dict(client.snapshot.create_repository(repository=name,
                                                               body=body))
