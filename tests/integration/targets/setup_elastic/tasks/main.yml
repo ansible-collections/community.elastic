@@ -13,14 +13,17 @@
       - docker-compose
   become: true
 
-- name: Unmask docker
-  shell: sudo systemctl unmask docker
+- name: Unmask docker and start service
+  shell: |
+    sudo systemctl unmask docker
+    sudo systemctl start docker
 
-- name: Ensure docker is started
-  service:
-    name: docker
-    state: started
-  become: true
+# https://forums.docker.com/t/failed-to-start-docker-service-unit-is-masked/67413/2
+#- name: Ensure docker is started
+#  service:
+#    name: docker
+#    state: started
+#  become: true
 
 - name: Ensure any existing docker containers are removed
   community.docker.docker_container:
