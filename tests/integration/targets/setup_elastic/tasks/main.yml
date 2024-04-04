@@ -16,7 +16,8 @@
 - name: Unmask docker and start service
   shell: |
     sudo systemctl unmask docker
-    sudo systemctl start docker
+    sudo dockerd --debug
+    sudo systemctl start docker || true
 
 # https://forums.docker.com/t/failed-to-start-docker-service-unit-is-masked/67413/2
 #- name: Ensure docker is started
