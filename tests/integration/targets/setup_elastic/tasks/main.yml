@@ -13,10 +13,10 @@
       - docker-compose
   become: true
 
-#- name: Ensure docker is started
-#  service:
-#    name: docker
-#    state: started
+- name: Ensure docker is started
+  service:
+    name: docker
+    state: started
 
 - name: Ensure any existing docker containers are removed
   community.docker.docker_container:
