@@ -17,6 +17,7 @@
   service:
     name: docker
     state: started
+  become: true
 
 - name: Ensure any existing docker containers are removed
   community.docker.docker_container:
