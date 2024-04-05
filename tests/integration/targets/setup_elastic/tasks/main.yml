@@ -9,10 +9,14 @@
 - name: Ensure docker-compose is available
   package:
     name:
-      - docker
-      - docker-ce
+      - docker.io
       - docker-compose
+      - docker-compose-v2
+      - docker-doc
+      - podman-docker
   become: true
+
+      
 
 - name: Unmask docker and start service
   shell: |
