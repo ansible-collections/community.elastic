@@ -10,6 +10,7 @@
   package:
     name:
       - docker
+      - docker-ce
       - docker-compose
   become: true
 
