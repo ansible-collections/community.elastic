@@ -13,7 +13,6 @@
       - docker-compose
       - docker-compose-v2
       - docker-doc
-      - podman-docker
   become: true
 
       
