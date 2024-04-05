@@ -6,16 +6,28 @@
     - docker
     - six
 
-#- name: Ensure docker-compose is available
-#  package:
-#    name:
-#      - docker
-#      - docker-compose
+- name: Ensure docker-compose is available
+  package:
+    name:
+      - docker.io
+      - docker-compose
+      - docker-compose-v2
+      - docker-doc
+  become: true
 
+      
+
+- name: Unmask docker and start service
+  shell: |
+    sudo systemctl unmask docker
+    sudo systemctl start docker || systemctl status docker.service
+
+# https://forums.docker.com/t/failed-to-start-docker-service-unit-is-masked/67413/2
 #- name: Ensure docker is started
 #  service:
 #    name: docker
 #    state: started
+#  become: true
 
 - name: Ensure any existing docker containers are removed
   community.docker.docker_container:
