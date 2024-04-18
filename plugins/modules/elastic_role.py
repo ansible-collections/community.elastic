@@ -75,7 +75,7 @@ EXAMPLES = r'''
     name: admin
     cluster:
       - all
-    indicies:
+    indices:
       names:
        - index1
        - index2
