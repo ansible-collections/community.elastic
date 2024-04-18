@@ -24,3 +24,9 @@ releases:
     changes:
       bugfixes:
         - 95 - elastic_snapshot_repository - Updates call to create_respository function to match new api.
+  1.1.3:
+    release_summary: |
+      This is a maintenance release.
+    changes:
+      minor_changes:
+        - 100 - elastic_role - Fix typo in examples block.  
