@@ -75,6 +75,72 @@
       - "elastic.changed"
       - elastic.msg == 'The role myrole was deleted.'
 
+- name: Create a simple role with verify_cert=False
+  community.elastic.elastic_role:
+    name: myrole
+    state: present
+    connection_options:
+      verify_cert: false
+    indices:
+      - names:
+          - "index1"
+          - "index2"
+        privileges:
+          - "all"
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "'The role myrole was successfully created' in elastic.msg"
+
+- name: Delete the role with verify_cert=False
+  community.elastic.elastic_role:
+    name: myrole
+    state: absent
+    connection_options:
+      verify_cert: false
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed"
+      - elastic.msg == 'The role myrole was deleted.'
+
+- name: Create a simple role cafile
+  community.elastic.elastic_role:
+    name: myrole
+    state: present
+    cafile: "cacert-example.pem"
+    indices:
+      - names:
+          - "index1"
+          - "index2"
+        privileges:
+          - "all"
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed"
+      - "'The role myrole was successfully created' in elastic.msg"
+
+- name: Delete the role with cafile
+  community.elastic.elastic_role:
+    name: myrole
+    state: absent
+    cafile: "cacert-example.pem"
+    <<: *elastic_index_parameters
+  register: elastic
+
+- assert:
+    that:
+      - "elastic.changed"
+      - elastic.msg == 'The role myrole was deleted.'
+
 - name: Add a new role with check mode
   community.elastic.elastic_role:
     name: myrole

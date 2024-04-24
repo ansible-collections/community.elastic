@@ -97,6 +97,8 @@ EXAMPLES = r'''
       - reporting_user
     metadata:
       comment: "System admin role"
+    connection_options:
+      verify_certs: false
 '''
 
 RETURN = r'''

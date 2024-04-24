@@ -30,7 +30,7 @@ def elastic_common_argument_spec():
         auth_method=dict(type='str', choices=['', 'http_auth'], default=''),
         auth_scheme=dict(type='str', choices=['http', 'https'], default='http'),
         cafile=dict(type='str', default=None),
-        connection_options=dict(type='list', elements='dict', default=[]),
+        connection_options=dict(type='dict'),
         login_user=dict(type='str', required=False),
         login_password=dict(type='str', required=False, no_log=True),
         login_hosts=dict(type='list', elements='str', required=False, default=['localhost']),
@@ -58,9 +58,18 @@ class ElasticHelpers():
                 auth["http_auth"] = (module.params['login_user'],
                                      module.params['login_password'])
 
+                from ssl import create_default_context
+                context = create_default_context()
+                set_context = False
+                if (self.module.params['connection_options']
+                     and self.module.params['connection_options'].get('verify_certs') is False):
+                    context.check_hostname = False
+                    #  verify_mode=ssl.CERT_NONE not needed because of verify_certs.
+                    set_context = True
                 if module.params['cafile'] is not None:
-                    from ssl import create_default_context
-                    context = create_default_context(module.params['cafile'])
+                    context.load_verify_locations(cafile=module.params['cafile'])
+                    set_context = True
+                if set_context:
                     auth["ssl_context"] = context
             else:
                 module.fail_json("Invalid or unsupported auth_method provided")
@@ -72,10 +81,12 @@ class ElasticHelpers():
                                                               host,
                                                               self.module.params['login_port']),
                          self.module.params['login_hosts']))
+        kwargs = auth.copy()
+        if self.module.params['connection_options']:
+            kwargs.update(self.module.params['connection_options'])
         elastic = Elasticsearch(hosts,
                                 timeout=self.module.params['timeout'],
-                                *self.module.params['connection_options'],
-                                **auth)
+                                **kwargs)
         return elastic
 
     def query(self, client, index, query):

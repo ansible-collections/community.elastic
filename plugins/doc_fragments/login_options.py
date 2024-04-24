@@ -29,7 +29,7 @@ options:
   connection_options:
     description:
       - Additional connection options for Elasticsearch
-    type: list
+    type: dict
     elements: dict
     default: []
   login_user:
