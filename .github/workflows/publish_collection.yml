@@ -31,27 +31,27 @@ jobs:
       - name: Rename the build artifact
         run: mv community-elastic-*.tar.gz community-elastic-latest.tar.gz
 
-#      - name: Upload community-elastic-latest.tar.gz as an artifact
-#        uses: actions/upload-artifact@v1
-#        with:
-#          name: community-elastic-latest
-#          path: ansible_collections/community/elastic/community-elastic-latest.tar.gz
-#
-#      # Moving the tag leaves an orphan artifact. Just changing the artifact doesn't move the tag.
-#      - name: Delete latest tag and release
-#        uses: dev-drprasad/delete-tag-and-release@v1.0.1
-#        with:
-#          delete_release: true
-#          tag_name: latest
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#
-#      - name: Upload files to release
-#        uses: svenstaro/upload-release-action@v2
-#        with:
-#          repo_token: ${{ secrets.GITHUB_TOKEN }}
-#          file: ansible_collections/community/elastic/community-elastic-latest.tar.gz
-#          asset_name: community-elastic-latest.tar.gz
-#          body: "Development release"
-#          tag: latest
-#          overwrite: true
+      - name: Upload community-elastic-latest.tar.gz as an artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: community-elastic-latest
+          path: ansible_collections/community/elastic/community-elastic-latest.tar.gz
+
+      # Moving the tag leaves an orphan artifact. Just changing the artifact doesn't move the tag.
+      - name: Delete latest tag and release
+        uses: dev-drprasad/delete-tag-and-release@v1.0.1
+        with:
+          delete_release: true
+          tag_name: latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload files to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ansible_collections/community/elastic/community-elastic-latest.tar.gz
+          asset_name: community-elastic-latest.tar.gz
+          body: "Development release"
+          tag: latest
+          overwrite: true
