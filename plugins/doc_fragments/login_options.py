@@ -13,6 +13,7 @@ options:
     choices:
        - ''
        - http_auth
+       - api_key
     default: ''
   auth_scheme:
     description:
@@ -57,6 +58,11 @@ options:
     required: no
     type: int
     default: 9200
+  api_key:
+    description:
+      - The ApiKey to authenticate with the server.
+    required: no
+    type: str
   timeout:
     description:
       - Response timeout in seconds.
