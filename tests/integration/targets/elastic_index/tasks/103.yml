@@ -34,10 +34,7 @@
       name: myapikeyindex
       auth_method: "api_key"
       api_key: "{{ api_key_response.json.api_key }}"
-      auth_scheme: "https"
-      connection_options:
-        - verify_certs: False
-        - ssl_show_warn: False
+      auth_scheme: "http"
     check_mode: yes
     register: result
 
