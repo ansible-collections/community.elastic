@@ -3,6 +3,7 @@
     elastic_user: elastic
     elastic_password: secret
     elastic_port: 9200
+    elastic_api_key_name: "test-api-key"
 
   block:
 
