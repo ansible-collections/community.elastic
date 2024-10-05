@@ -5,7 +5,7 @@
     elastic_port: 9200
     elastic_api_key_name: "test-api-key"
 
-  block:
+  tasks:
 
     - name: Get Elasticsearch version
       ansible.builtin.uri:
@@ -18,6 +18,8 @@
           Content-Type: "application/json"
       register: es_version_response
 
+    - name: Check if Elasticsearch version is greater than 7
+      when: es_version_response.json.version.number[0] | int > 7
       block:
 
         - name: Create an API key for Elasticsearch
@@ -55,5 +57,3 @@
             that:
               - result.msg == "The index 'myapikeyindex' was created."
               - result.changed == True
-
-      when: es_version_response.json.version.number[0] | int > 7
