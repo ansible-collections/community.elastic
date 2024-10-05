@@ -7,6 +7,13 @@
 
   block:
 
+  - name: Enable api keys (should only be needed for 7, 8 defaults to enabled)
+    community.elastic.elastic_cluster_settings:
+      login_user: "{{ elastic_user }}"
+      login_password: "{{ elastic_password }}"
+      settings:
+        xpack.security.authc.api_key.enabled: "true"
+
   - name: Create an API key for Elasticsearch
     ansible.builtin.uri:
       url: "http://localhost:{{ elastic_port }}/_security/api_key"
@@ -32,6 +39,7 @@
   - name: Create an index using the api key
     community.elastic.elastic_index:
       name: myapikeyindex
+      auth_method: "api_key"
       api_key: "{{ api_key_response.content.api_key }}"
     check_mode: yes
     register: result
