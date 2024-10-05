@@ -81,9 +81,11 @@ class ElasticHelpers():
                                                               host,
                                                               self.module.params['login_port']),
                          self.module.params['login_hosts']))
+        # TODO - Change data type to dict?
+        connection_options = {k: v for d in self.module.params['connection_options'] for k, v in d.items()}
         elastic = Elasticsearch(hosts,
                                 timeout=self.module.params['timeout'],
-                                *self.module.params['connection_options'],
+                                **connection_options,
                                 **auth)
         return elastic
 
