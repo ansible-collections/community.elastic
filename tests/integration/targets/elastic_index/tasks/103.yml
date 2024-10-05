@@ -27,13 +27,13 @@
 
   - assert:
       that:
-        - api_key_response.content.name == "test-api-key"
+        - api_key_response.json.name == "test-api-key"
 
   - name: Create an index using the api key
     community.elastic.elastic_index:
       name: myapikeyindex
       auth_method: "api_key"
-      api_key: "{{ api_key_response.content.api_key }}"
+      api_key: "{{ api_key_response.json.api_key }}"
     check_mode: yes
     register: result
 
