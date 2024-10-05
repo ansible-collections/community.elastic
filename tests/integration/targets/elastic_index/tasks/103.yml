@@ -7,38 +7,51 @@
 
   block:
 
-  - name: Create an API key for Elasticsearch
-    ansible.builtin.uri:
-      url: "http://localhost:{{ elastic_port }}/_security/api_key"
-      method: POST
-      user: "{{ elastic_user }}"
-      password: "{{ elastic_password }}"
-      body_format: json
-      body: |
-        {
-          "name": "{{ elastic_api_key_name }}",
-          "expiration": "1d", 
-          "role_descriptors": {}
-        }
-      headers:
-        Content-Type: "application/json"
-      return_content: yes
-    register: api_key_response
+    - name: Get Elasticsearch version
+      uri:
+        url: http://localhost:9200  # Replace with your Elasticsearch host if necessary
+        method: GET
+        return_content: yes
+        headers:
+          Content-Type: "application/json"
+      register: es_version_response
 
-  - assert:
-      that:
-        - api_key_response.json.name == "test-api-key"
+      block:
 
-  - name: Create an index using the api key
-    community.elastic.elastic_index:
-      name: myapikeyindex
-      auth_method: "api_key"
-      api_key: "{{ api_key_response.json.api_key }}"
-      auth_scheme: "http"
-    check_mode: yes
-    register: result
+        - name: Create an API key for Elasticsearch
+          ansible.builtin.uri:
+            url: "http://localhost:{{ elastic_port }}/_security/api_key"
+            method: POST
+            user: "{{ elastic_user }}"
+            password: "{{ elastic_password }}"
+            body_format: json
+            body: |
+              {
+                "name": "{{ elastic_api_key_name }}",
+                "expiration": "1d", 
+                "role_descriptors": {}
+              }
+            headers:
+              Content-Type: "application/json"
+            return_content: yes
+          register: api_key_response
 
-  - assert:
-      that:
-        - result.msg == "The index 'myapikeyindex' was created."
-        - result.changed == True
+        - assert:
+            that:
+              - api_key_response.json.name == "test-api-key"
+
+        - name: Create an index using the api key
+          community.elastic.elastic_index:
+            name: myapikeyindex
+            auth_method: "api_key"
+            api_key: "{{ api_key_response.json.api_key }}"
+            auth_scheme: "http"
+          check_mode: yes
+          register: result
+
+        - assert:
+            that:
+              - result.msg == "The index 'myapikeyindex' was created."
+              - result.changed == True
+
+      when: es_version_response.json.version.number[0] | int > 7
