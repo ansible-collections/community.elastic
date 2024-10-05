@@ -23,7 +23,7 @@
       headers:
         Content-Type: "application/json"
       return_content: yes
-      register: api_key_response
+    register: api_key_response
 
   - name: Output key
     debug:
