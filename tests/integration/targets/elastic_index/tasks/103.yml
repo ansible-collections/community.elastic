@@ -11,6 +11,7 @@
     community.elastic.elastic_cluster_settings:
       login_user: "{{ elastic_user }}"
       login_password: "{{ elastic_password }}"
+      auth_method: "http_auth"
       settings:
         xpack.security.authc.api_key.enabled: "true"
 
