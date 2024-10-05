@@ -8,9 +8,11 @@
   block:
 
     - name: Get Elasticsearch version
-      uri:
-        url: http://localhost:9200  # Replace with your Elasticsearch host if necessary
+      ansible.builtin.uri:
+        url: http://localhost:9200
         method: GET
+        user: "{{ elastic_user }}"
+        password: "{{ elastic_password }}"
         return_content: yes
         headers:
           Content-Type: "application/json"
