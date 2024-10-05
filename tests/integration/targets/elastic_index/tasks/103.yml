@@ -1,0 +1,36 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      elastic_user: elastic
+      elastic_password: secret
+      elastic_port: 9200
+
+  block:
+
+  - name: Delete an index called myindex
+    community.elastic.elastic_index:
+      name: myindex
+      state: absent
+      <<: *elastic_index_parameters
+
+  - name: Create an API key for Elasticsearch
+    ansible.builtin.uri:
+      url: "http://localhost:{{ elastic_port }}/_security/api_key"
+      method: POST
+      user: "{{ elastic_user }}"
+      password: "{{ elastic_password }}"
+      body_format: json
+      body: |
+        {
+          "name": "{{ elastic_api_key_name }}",
+          "expiration": "1d", 
+          "role_descriptors": {}
+        }
+      headers:
+        Content-Type: "application/json"
+      return_content: yes
+      register: api_key_response
+
+  - name: Output key
+    debug:
+      var: api_key_response
