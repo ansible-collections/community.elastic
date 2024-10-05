@@ -14,3 +14,4 @@
   - import_tasks: 2-test-with-auth.yml
 
   - import_tasks: 103.yml
+    when: elastic_version != "7.x"

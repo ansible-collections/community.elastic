@@ -3,7 +3,6 @@ __metaclass__ = type
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib  # pylint: disable=unused-import
 
 import traceback
-import base64
 
 
 elastic_found = False
@@ -64,10 +63,8 @@ class ElasticHelpers():
             auth["http_auth"] = (module.params['login_user'],
                                  module.params['login_password'])
         elif module.params['auth_method'] == 'api_key':
-            # api key authentication.
-            #auth["api_key"] = module.params['api_key']
-            base64_api_key = base64.b64encode(module.params['api_key'].encode('utf-8')).decode('utf-8')
-            auth["headers"] = {"Authorization": base64_api_key}
+            # api key authentication. Won't work for v7 of the driver
+            auth["api_key"] = module.params['api_key']
         else:
             module.fail_json("Invalid or unsupported auth_method provided")
 
