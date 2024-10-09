@@ -58,9 +58,12 @@ options:
     required: no
     type: int
     default: 9200
-  api_key:
+  api_key_encoded:
     description:
-      - The ApiKey to authenticate with the server.
+      - API key credentials which is the Base64-encoding of the UTF-8\
+        representation of the id and api_key joined by a colon (:).
+      - Supported from Elastic 8+.
+      - See [Create API Key](https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-create-api-key.html) documentation for specifics.
     required: no
     type: str
   timeout:

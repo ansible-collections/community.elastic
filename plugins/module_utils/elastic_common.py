@@ -31,7 +31,7 @@ def elastic_common_argument_spec():
         auth_method=dict(type='str', choices=['', 'http_auth', 'api_key'], default=''),
         auth_scheme=dict(type='str', choices=['http', 'https'], default='http'),
         cafile=dict(type='str', default=None),
-        api_key=dict(type='str', default=None, no_log=True),
+        api_key_encoded=dict(type='str', default=None, no_log=True),
         connection_options=dict(type='list', elements='dict', default=[]),
         login_user=dict(type='str', required=False),
         login_password=dict(type='str', required=False, no_log=True),
@@ -64,7 +64,7 @@ class ElasticHelpers():
                                  module.params['login_password'])
         elif module.params['auth_method'] == 'api_key':
             # api key authentication. Won't work for v7 of the driver
-            auth["api_key"] = module.params['api_key']
+            auth["api_key_encoded"] = module.params['api_key_encoded']
         else:
             module.fail_json("Invalid or unsupported auth_method provided")
 
