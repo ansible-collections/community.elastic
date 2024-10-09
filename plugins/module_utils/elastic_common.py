@@ -64,7 +64,9 @@ class ElasticHelpers():
                                  module.params['login_password'])
         elif module.params['auth_method'] == 'api_key':
             # api key authentication. Won't work for v7 of the driver
-            auth["api_key_encoded"] = module.params['api_key_encoded']
+            # The api_key is actually the base64 encoded version of
+            # the id and api_key separated by a colon.
+            auth["api_key"] = module.params['api_key_encoded']
         else:
             module.fail_json("Invalid or unsupported auth_method provided")
 
