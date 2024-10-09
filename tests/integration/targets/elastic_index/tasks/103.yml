@@ -1,0 +1,59 @@
+---
+- vars:
+    elastic_user: elastic
+    elastic_password: secret
+    elastic_port: 9200
+    elastic_api_key_name: "test-api-key"
+
+  block:
+
+    - name: Get Elasticsearch version
+      ansible.builtin.uri:
+        url: http://localhost:9200
+        method: GET
+        user: "{{ elastic_user }}"
+        password: "{{ elastic_password }}"
+        return_content: yes
+        headers:
+          Content-Type: "application/json"
+      register: es_version_response
+
+    - name: Create an API key for Elasticsearch
+      ansible.builtin.uri:
+        url: "http://localhost:{{ elastic_port }}/_security/api_key"
+        method: POST
+        user: "{{ elastic_user }}"
+        password: "{{ elastic_password }}"
+        body_format: json
+        body: |
+          {
+            "name": "{{ elastic_api_key_name }}",
+            "expiration": "1d", 
+            "role_descriptors": {}
+          }
+        headers:
+          Content-Type: "application/json"
+        return_content: yes
+      register: api_key_response
+      when: es_version_response.json.version.number[0] | int > 7
+
+    - assert:
+        that:
+          - api_key_response.json.name == "test-api-key"
+      when: es_version_response.json.version.number[0] | int > 7
+
+    - name: Create an index using the api key
+      community.elastic.elastic_index:
+        name: myapikeyindex
+        auth_method: "api_key"
+        api_key_encoded: "{{ api_key_response.json.encoded }}"
+        auth_scheme: "http"
+      check_mode: yes
+      register: result
+      when: es_version_response.json.version.number[0] | int > 7
+
+    - assert:
+        that:
+          - result.msg == "The index 'myapikeyindex' was created."
+          - result.changed == True
+      when: es_version_response.json.version.number[0] | int > 7
