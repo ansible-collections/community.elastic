@@ -29,4 +29,13 @@ releases:
       This is a maintenance release.
     changes:
       minor_changes:
-        - 100 - elastic_role - Fix typo in examples block.  
+        - 100 - elastic_role - Fix typo in examples block.
+  1.2.0:
+    release_summary: |
+      This is a maintenance release.
+    minor_changes:
+        - 103 - All modules - Adds api key authentication via new parameter
+          api_key_encoded. Should be supplied as a base64-encoded string of the id and api_key joined by a colon e.g. <id>:<api_key>.
+          See the elastic documentation for [api_key](https://www.elastic.co/guide/en/elasticsearch/reference/current/security-api-create-api-key.html)
+          for further details.
+    
