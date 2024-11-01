@@ -73,7 +73,7 @@ class ElasticHelpers():
         # CA file has been provided. Add it to auth dict
         if module.params['cafile'] is not None:
             from ssl import create_default_context
-            context = create_default_context(module.params['cafile'])
+            context = create_default_context(cafile=module.params['cafile'])
             auth["ssl_context"] = context
 
         return auth
