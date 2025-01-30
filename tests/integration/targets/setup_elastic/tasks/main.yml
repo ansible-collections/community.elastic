@@ -6,13 +6,20 @@
     - docker
     - six
 
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
 - name: Ensure docker-compose is available
   package:
     name:
-      - docker-compose-plugin
+      - docker.io
+      - docker-compose
+      - docker-compose-v2
+      - docker-doc
   become: true
-
-      
 
 - name: Unmask docker and start service
   shell: |
