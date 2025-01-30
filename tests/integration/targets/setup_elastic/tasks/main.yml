@@ -9,10 +9,7 @@
 - name: Ensure docker-compose is available
   package:
     name:
-      - docker.io
-      - docker-compose
-      - docker-compose-v2
-      - docker-doc
+      - docker-compose-plugin
   become: true
 
       
