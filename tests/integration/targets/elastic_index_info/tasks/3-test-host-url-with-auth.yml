@@ -6,6 +6,7 @@
       auth_method: http_auth
       login_hosts:
         - http://localhost:9200/
+        - localhost
       timeout: 30
 
   block:
