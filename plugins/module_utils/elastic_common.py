@@ -3,13 +3,17 @@ __metaclass__ = type
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib  # pylint: disable=unused-import
 
 import traceback
-import urllib.parse
 
 elastic_found = False
 E_IMP_ERR = None
 NotFoundError = None
 helpers = None
 __version__ = None
+
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 try:
     from elasticsearch import Elasticsearch
@@ -55,7 +59,7 @@ class ElasticHelpers():
         Given a host, build a connection url using default
         fragments if the host isnot already a valid url.
         '''
-        host_url = urllib.parse.urlparse(host)
+        host_url = urlparse(host)
         if host_url.scheme and host_url.netloc:
             return host
 

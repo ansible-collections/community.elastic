@@ -1,0 +1,40 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      login_user: elastic
+      login_password: secret
+      auth_method: http_auth
+      login_hosts:
+        - http://localhost:9200/
+      timeout: 30
+
+  block:
+    - name: Delete an index called myindex
+      community.elastic.elastic_index:
+        name: myindex
+        state: absent
+        <<: *elastic_index_parameters
+
+    - name: Create an index called myindex
+      community.elastic.elastic_index:
+        name: myindex
+        <<: *elastic_index_parameters
+      register: result
+
+    - assert:
+        that:
+          - result.msg == "The index 'myindex' was created."
+          - result.changed == True
+
+    - name: Get info for myindex
+      community.elastic.elastic_index_info:
+        name: myindex
+        <<: *elastic_index_parameters
+      register: result
+
+    - assert:
+        that:
+          - result.msg == "Info about index myindex."
+          - result.changed == False
+          - result.myindex is defined
+          - result.myindex.settings is defined
