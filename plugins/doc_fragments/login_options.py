@@ -48,6 +48,8 @@ options:
   login_hosts:
     description:
       - The Elastic hosts to connect to.
+      - Can accept hostnames or URLs. If a hostname then values\
+        login_port and login_scheme will be used to construct a URL.
     required: no
     type: list
     elements: str

@@ -4,12 +4,16 @@ from ansible.module_utils.basic import AnsibleModule, missing_required_lib  # py
 
 import traceback
 
-
 elastic_found = False
 E_IMP_ERR = None
 NotFoundError = None
 helpers = None
 __version__ = None
+
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 try:
     from elasticsearch import Elasticsearch
@@ -50,6 +54,21 @@ class ElasticHelpers():
     def __init__(self, module):
         self.module = module
 
+    def build_connection_url(self, host):
+        '''
+        Given a host, build a connection url using default
+        fragments if the host isnot already a valid url.
+        '''
+        host_url = urlparse(host)
+        if host_url.scheme and host_url.netloc:
+            return host
+
+        return "{0}://{1}:{2}/".format(
+            self.module.params['auth_scheme'],
+            host,
+            self.module.params['login_port']
+        )
+
     def build_auth(self, module):
         '''
         Build the auth list for elastic according to the passed in parameters
@@ -80,10 +99,7 @@ class ElasticHelpers():
 
     def connect(self):
         auth = self.build_auth(self.module)
-        hosts = list(map(lambda host: "{0}://{1}:{2}/".format(self.module.params['auth_scheme'],
-                                                              host,
-                                                              self.module.params['login_port']),
-                         self.module.params['login_hosts']))
+        hosts = [self.build_connection_url(host) for host in self.module.params['login_hosts']]
         elastic = Elasticsearch(hosts,
                                 timeout=self.module.params['timeout'],
                                 *self.module.params['connection_options'],
