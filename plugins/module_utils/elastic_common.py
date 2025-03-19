@@ -99,11 +99,13 @@ class ElasticHelpers():
 
     def connect(self):
         auth = self.build_auth(self.module)
+        # python2.7 compatible syntax - double dict expansion not allowed
+        options = dict(self.module.params['connection_options'])
+        options.update(auth)
         hosts = [self.build_connection_url(host) for host in self.module.params['login_hosts']]
         elastic = Elasticsearch(hosts,
                                 timeout=self.module.params['timeout'],
-                                **self.module.params['connection_options'],
-                                **auth)
+                                **options)
         return elastic
 
     def query(self, client, index, query):
