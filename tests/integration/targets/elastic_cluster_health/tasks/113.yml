@@ -44,7 +44,7 @@
         connection_options:
           verify_certs: false
           http_compress: true
-          request_timeout: 99
+          node_class: "requests"
       register: elastic
 
     - assert:
@@ -60,7 +60,7 @@
         connection_options:
           verify_certs: false
           http_compress: true
-          request_timeout: 99
+          node_class: "requests"
           max_retries: 5
       register: elastic
 
@@ -77,7 +77,7 @@
         connection_options:
           verify_certs: false
           http_compress: true
-          request_timeout: 99
+          node_class: "requests"
           max_retries: 5
           node_selector_class: "round_robin"
       register: elastic
