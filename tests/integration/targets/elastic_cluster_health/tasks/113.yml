@@ -8,12 +8,10 @@
 
   block:
 
-    - name: Test with single connection_option value
+    - name: Test with shards level 3
       community.elastic.elastic_cluster_health:
-        status: red
-        wait_for: 'number_of_nodes'
-        to_be: "3"
-        timeout: 90
+        <<: *elastic_index_parameters
+        level: shards
         connection_options:
           verify_certs: false
       register: elastic
