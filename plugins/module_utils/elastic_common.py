@@ -102,7 +102,7 @@ class ElasticHelpers():
         hosts = [self.build_connection_url(host) for host in self.module.params['login_hosts']]
         elastic = Elasticsearch(hosts,
                                 timeout=self.module.params['timeout'],
-                                *self.module.params['connection_options'],
+                                **self.module.params['connection_options'],
                                 **auth)
         return elastic
 
