@@ -25,6 +25,8 @@
 
   - import_tasks: 3-test-with-auth.yml
 
+  - import_tasks: 113.yml
+
   # TODO
   #- name: Run handlers to remove previous es instances
   #  meta: flush_handlers

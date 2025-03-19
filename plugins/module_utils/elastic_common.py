@@ -36,7 +36,7 @@ def elastic_common_argument_spec():
         auth_scheme=dict(type='str', choices=['http', 'https'], default='http'),
         cafile=dict(type='str', default=None),
         api_key_encoded=dict(type='str', default=None, no_log=True),
-        connection_options=dict(type='list', elements='dict', default=[]),
+        connection_options=dict(type='dict', default={}),
         login_user=dict(type='str', required=False),
         login_password=dict(type='str', required=False, no_log=True),
         login_hosts=dict(type='list', elements='str', required=False, default=['localhost']),

@@ -1,0 +1,25 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      login_user: elastic
+      login_password: secret
+      auth_method: http_auth
+      timeout: 90
+
+  block:
+
+    - name: Test with single connection_option value
+      community.elastic.elastic_cluster_health:
+        status: red
+        wait_for: 'number_of_nodes'
+        to_be: "3"
+        timeout: 90
+        connection_options:
+          verify_certs: false
+      register: elastic
+
+    - assert:
+        that:
+          - "elastic.msg == 'Elasticsearch health is good. The variable number_of_nodes has reached the value 3.'"
+          - "elastic.iterations >= 1"
+          - "elastic.changed == False"
