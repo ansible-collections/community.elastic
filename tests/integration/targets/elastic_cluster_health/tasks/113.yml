@@ -8,12 +8,78 @@
 
   block:
 
-    - name: Test with shards level 3
+    - name: Test with shards level 3 - 1 option
       community.elastic.elastic_cluster_health:
         <<: *elastic_index_parameters
         level: shards
         connection_options:
           verify_certs: false
+      register: elastic
+
+    - assert:
+        that:
+          - "elastic.msg == 'Elasticsearch health is good.'"
+          - "elastic.iterations >= 1"
+          - "elastic.changed == False"
+
+    - name: Test with shards level 3 - 2 options
+      community.elastic.elastic_cluster_health:
+        <<: *elastic_index_parameters
+        level: shards
+        connection_options:
+          verify_certs: false
+          http_compress: true
+      register: elastic
+
+    - assert:
+        that:
+          - "elastic.msg == 'Elasticsearch health is good.'"
+          - "elastic.iterations >= 1"
+          - "elastic.changed == False"
+
+    - name: Test with shards level 3 - 3 options
+      community.elastic.elastic_cluster_health:
+        <<: *elastic_index_parameters
+        level: shards
+        connection_options:
+          verify_certs: false
+          http_compress: true
+          request_timeout: 99
+      register: elastic
+
+    - assert:
+        that:
+          - "elastic.msg == 'Elasticsearch health is good.'"
+          - "elastic.iterations >= 1"
+          - "elastic.changed == False"
+
+    - name: Test with shards level 3 - 4 options
+      community.elastic.elastic_cluster_health:
+        <<: *elastic_index_parameters
+        level: shards
+        connection_options:
+          verify_certs: false
+          http_compress: true
+          request_timeout: 99
+          max_retries: 5
+      register: elastic
+
+    - assert:
+        that:
+          - "elastic.msg == 'Elasticsearch health is good.'"
+          - "elastic.iterations >= 1"
+          - "elastic.changed == False"
+
+    - name: Test with shards level 3 - 5 options
+      community.elastic.elastic_cluster_health:
+        <<: *elastic_index_parameters
+        level: shards
+        connection_options:
+          verify_certs: false
+          http_compress: true
+          request_timeout: 99
+          max_retries: 5
+          node_selector_class: "round_robin"
       register: elastic
 
     - assert:
