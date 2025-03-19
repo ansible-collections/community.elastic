@@ -30,9 +30,8 @@ options:
   connection_options:
     description:
       - Additional connection options for Elasticsearch
-    type: list
-    elements: dict
-    default: []
+    type: dict
+    default: {}
   login_user:
     description:
       - The Elastic user to login with.
