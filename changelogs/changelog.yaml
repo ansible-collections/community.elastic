@@ -46,4 +46,11 @@ releases:
         This allows for the specification of the connection URL manually 
         for the hosts in the case they are different or require a connection 
         string not supported currently (eg. path).
+  1.2.2:
+    release_summary: |
+      This is a maintenance release.
+    bugfixes:
+      - 113 connection_options to dict (#114). This parameter 
+        was incorrectly specified as a list od dicts rather
+        than a dict. This did not work at all and is now corrected.
     
