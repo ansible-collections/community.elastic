@@ -24,21 +24,6 @@
     update_cache: true
   become: true
 
-- name: Add Docker's official GPG key
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-    dest: /etc/apt/keyrings/docker.gpg
-    mode: '0644'
-  become: true
-
-- name: Add Docker APT repository
-  apt_repository:
-    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release | lower }} stable"
-    filename: docker
-    state: present
-  become: true
-
 - name: Create keyring directory if not exists
   file:
     path: /etc/apt/keyrings
@@ -46,11 +31,18 @@
     mode: '0755'
   become: true
 
-- name: Download Docker GPG key to keyring
-  get_url:
+- name: Add Docker's official GPG key
+  apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
-    dest: /etc/apt/keyrings/docker.gpg
-    mode: '0644'
+    state: present
+    file: /etc/apt/keyrings/docker.gpg
+  become: true
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release | lower }} stable"
+    filename: docker
+    state: present
   become: true
 
 - name: Update apt and install Docker and Compose V2
