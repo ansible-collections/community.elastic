@@ -24,19 +24,11 @@
     update_cache: true
   become: true
 
-- name: Create keyring directory if not exists
-  file:
-    path: /etc/apt/keyrings
-    state: directory
-    mode: '0755'
-  become: true
-
 - name: Add Docker's official GPG key
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-    file: /etc/apt/keyrings/docker.gpg
-  become: true
+  ansible.builtin.shell: |
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 - name: Add Docker APT repository
   apt_repository:
