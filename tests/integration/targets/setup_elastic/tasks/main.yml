@@ -86,7 +86,7 @@
   set_fact:
     elastic_ports:
       - 9200
-  when: docker_compose_file is undefined or "'single-node' in docker_compose_file"
+  when: docker_compose_file is undefined or 'single-node' in docker_compose_file
 
 - name: Wait for ports to become available
   wait_for:
