@@ -24,10 +24,12 @@
     update_cache: true
   become: true
 
-- name: Add Docker’s official GPG key
+- name: Add Docker's official GPG key
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
+    dest: /etc/apt/keyrings/docker.gpg
+    mode: '0644'
   become: true
 
 - name: Add Docker APT repository
