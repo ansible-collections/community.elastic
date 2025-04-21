@@ -16,8 +16,7 @@
   package:
     name:
       - docker.io
-      - docker-compose
-      - docker-compose-v2
+      - docker-compose-plugin
       - docker-doc
   become: true
 
