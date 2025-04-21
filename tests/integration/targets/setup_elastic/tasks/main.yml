@@ -32,7 +32,7 @@
 
 - name: Add Docker APT repository
   apt_repository:
-    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release | lower }} stable"
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release | lower }} stable"
     filename: docker
     state: present
   become: true
