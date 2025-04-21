@@ -137,7 +137,7 @@
   #    state: stopped
 
   - name: Stop es02 container
-    shell: docker-compose -f 3-node-with-kibana-no-auth.yml stop es02
+    shell: docker compose -f 3-node-with-kibana-no-auth.yml stop es02
     args:
       chdir: "{{role_path}}/docker"
     environment:
@@ -168,7 +168,7 @@
   #      - 9201:9201
   #    network_mode: bridge
   #    networks:
-  #      - name: docker_elastic  # docker-compose adds docker_ prefix
+  #      - name: docker_elastic  # docker compose adds docker_ prefix
   #    ulimits:
   #      - 'memlock:-1:-1'
   #    env:
@@ -180,7 +180,7 @@
   #      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
 
   - name: Start es02 container again - Doesn't work "No containers to restart"
-    shell: docker-compose -f 3-node-with-kibana-no-auth.yml restart es02
+    shell: docker compose -f 3-node-with-kibana-no-auth.yml restart es02
     args:
       chdir: "{{role_path}}/docker"
     environment:
