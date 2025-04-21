@@ -12,12 +12,55 @@
     upgrade: yes
     update_cache: yes
 
-- name: Ensure docker-compose is available
-  package:
+- name: Install required packages for APT over HTTPS
+  apt:
     name:
-      - docker.io
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+    update_cache: true
+  become: true
+
+- name: Add Docker’s official GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  become: true
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release | lower }} stable"
+    filename: docker
+    state: present
+  become: true
+
+- name: Create keyring directory if not exists
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Download Docker GPG key to keyring
+  get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.gpg
+    mode: '0644'
+  become: true
+
+- name: Update apt and install Docker and Compose V2
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
       - docker-compose-plugin
-      - docker-doc
+    state: present
+    update_cache: true
   become: true
 
 - name: Unmask docker and start service
