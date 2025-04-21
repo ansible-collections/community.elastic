@@ -73,8 +73,8 @@
     state: absent
   with_items: "{{ docker_volumes }}"
 
-- name: Run docker-compose file
-  shell: docker-compose -f {{ docker_compose_file | default('single-node-elastic.yml') }} up --detach
+- name: Run docker compose file
+  shell: docker compose -f {{ docker_compose_file | default('single-node-elastic.yml') }} up --detach
   args:
     chdir: "{{role_path}}/docker"
   environment:
