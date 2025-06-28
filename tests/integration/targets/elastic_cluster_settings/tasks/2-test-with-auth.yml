@@ -6,8 +6,6 @@
       auth_method: http_auth
       timeout: 90
 
-
-
   block:
 
       - name: Basic module test - single node auth 1
