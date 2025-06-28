@@ -6,126 +6,117 @@
       auth_method: http_auth
       timeout: 90
 
+
+
   block:
 
-  - name: Basic module test - single node with auth
-    community.elastic.elastic_cluster_health:
-      <<: *elastic_index_parameters
-      poll: 99
-    ignore_errors: yes
-    register: elastic
+      - name: Basic module test - single node auth 1
+        community.elastic.elastic_cluster_settings:
+          <<: *elastic_index_parameters
+          settings:
+            action.auto_create_index: "true"
+        register: elastic
 
-  - assert:
-      that:
-        - "elastic.msg == 'Elasticsearch health is good.'"
-        - "elastic.changed == False"
-        - "elastic.status == 'green'"
-        - "elastic.iterations <= 3"
+      - assert:
+          that:
+            - "elastic.msg == 'There are no cluster configuration changes to perform.'"
+            - "elastic.changed == False"
+
+      - name: Basic module test - single node auth 2
+        community.elastic.elastic_cluster_settings:
+          <<: *elastic_index_parameters
+          settings:
+            action.auto_create_index: "false"
+        register: elastic
+
+      - assert:
+          that:
+            - "elastic.msg == 'The cluster configuration has been updated.'"
+            - "elastic.changed == True"
+            - 'elastic.cluster_cfg_changes == {"action.auto_create_index": {"new_value": "false", "old_value": "true"}}'
+
+      - name: Basic module test - single node auth 3
+        community.elastic.elastic_cluster_settings:
+          <<: *elastic_index_parameters
+          settings:
+            action.auto_create_index: "false"
+        register: elastic
+
+      - assert:
+          that:
+            - "elastic.msg == 'There are no cluster configuration changes to perform.'"
+            - "elastic.changed == False"
+
+      - name: Test check_mode
+        community.elastic.elastic_cluster_settings:
+          <<: *elastic_index_parameters
+          settings:
+            action.auto_create_index: "true"
+        check_mode: yes
+        register: elastic
+
+      - assert:
+          that:
+            - "elastic.msg == 'The cluster configuration has been updated.'"
+            - "elastic.changed == True"
+            - 'elastic.cluster_cfg_changes == {"action.auto_create_index": {"new_value": "true", "old_value": "false"}}'
+
+      - name: Update setting after check mode test
+        community.elastic.elastic_cluster_settings:
+          <<: *elastic_index_parameters
+          settings:
+            action.auto_create_index: "true"
+        check_mode: no
+        register: elastic
+
+      - assert:
+          that:
+            - "elastic.msg == 'The cluster configuration has been updated.'"
+            - "elastic.changed == True"
+            - 'elastic.cluster_cfg_changes == {"action.auto_create_index": {"new_value": "true", "old_value": "false"}}'
+
+      - name: Update a bunch of cluster settings
+        community.elastic.elastic_cluster_settings:
+          <<: *elastic_index_parameters
+          settings:
+            action.auto_create_index: "false"
+            cluster.auto_shrink_voting_configuration: "false"
+            cluster.indices.close.enable: "false"
+        register: elastic
+
+      - assert:
+          that:
+            - "elastic.msg == 'The cluster configuration has been updated.'"
+            - "elastic.changed == True"
+            - 'elastic.cluster_cfg_changes == {"action.auto_create_index": {"new_value": "false", "old_value": "true"}, "cluster.auto_shrink_voting_configuration": {"new_value": "false", "old_value": "true"}, "cluster.indices.close.enable": {"new_value": "false", "old_value": "true"}}'
+
+      - name: Reset settings to default
+        community.elastic.elastic_cluster_settings:
+          <<: *elastic_index_parameters
+          settings:
+            action.auto_create_index: null
+            action.destructive_requires_name: null
+            cluster.auto_shrink_voting_configuration: null
+            cluster.indices.close.enable: null
+        register: elastic
+
+      - assert:
+          that:
+            - "elastic.msg == 'The cluster configuration has been updated.'"
+            - "elastic.changed == True"
 
 
-  - name: Basic module test - single node with auth
-    community.elastic.elastic_cluster_health:
-      <<: *elastic_index_parameters
-      status: yellow
-    register: elastic
+      - name: Run again - should be no effective change
+        community.elastic.elastic_cluster_settings:
+          <<: *elastic_index_parameters
+          settings:
+            action.auto_create_index: null
+            action.destructive_requires_name: null
+            cluster.auto_shrink_voting_configuration: null
+            cluster.indices.close.enable: null
+        register: elastic
 
-  - assert:
-      that:
-        - "elastic.active_primary_shards >= 0"
-        - "elastic.active_shards >= 0"
-        - "elastic.active_shards_percent_as_number >= 0.0"
-        - "elastic.changed == False"
-        - "elastic.cluster_name == 'docker-cluster'"
-        - "elastic.delayed_unassigned_shards == 0"
-        - "elastic.initializing_shards == 0"
-        - "elastic.msg == 'Elasticsearch health is good.'"
-        - "elastic.number_of_data_nodes == 1"
-        - "elastic.number_of_in_flight_fetch == 0"
-        - "elastic.number_of_nodes == 1"
-        - "elastic.number_of_pending_tasks >= 0"
-        - "elastic.relocating_shards == 0"
-        - "elastic.status == 'green'"
-        - "elastic.task_max_waiting_in_queue_millis >= 0"
-        - "elastic.timed_out == false"
-        - "elastic.unassigned_shards == 0"
-
-  - name: Test with indicies level 1
-    community.elastic.elastic_cluster_health:
-      <<: *elastic_index_parameters
-      level: indices
-    register: elastic
-
-  - assert:
-      that:
-        - "elastic.changed == False"
-        - "elastic.status == 'green'"
-        - "elastic.msg == 'Elasticsearch health is good.'"
-
-  - name: Test with shards level 1
-    community.elastic.elastic_cluster_health:
-      <<: *elastic_index_parameters
-      level: shards
-    register: elastic
-
-  - assert:
-      that:
-        - "elastic.changed == False"
-        - "elastic.status == 'green'"
-        - "elastic.msg == 'Elasticsearch health is good.'"
-
-  - name: Create an index with too many replicas
-    community.elastic.elastic_index:
-      <<: *elastic_index_parameters
-      name: myindex
-      settings:
-        number_of_shards: 1
-        number_of_replicas: 5
-
-  - name: Test with indicies level 2
-    community.elastic.elastic_cluster_health:
-      <<: *elastic_index_parameters
-      level: indices
-    ignore_errors: yes
-    register: elastic
-
-  - assert:
-      that:
-        - "elastic.changed == False"
-        - "elastic.failed"
-        - "elastic.iterations == 3"
-        - "elastic.msg == 'Timed out waiting for elastic health to converge.'"
-        - "elastic.status == 'yellow'"
-
-
-  - name: Test with shards level 2
-    community.elastic.elastic_cluster_health:
-      <<: *elastic_index_parameters
-      level: shards
-    ignore_errors: yes
-    register: elastic
-
-  - assert:
-      that:
-        - "elastic.changed == False"
-        - "elastic.failed"
-        - "elastic.iterations == 3"
-        - "elastic.msg == 'Timed out waiting for elastic health to converge.'"
-        - "elastic.status == 'yellow'"
-
-  - name: Delete index to return cluster to a green status
-    community.elastic.elastic_index:
-      <<: *elastic_index_parameters
-      name: myindex
-      state: absent
-
-  - name: Test with indicies level 3
-    community.elastic.elastic_cluster_health:
-      <<: *elastic_index_parameters
-      level: indices
-    register: elastic
-
-  - name: Test with shards level 3
-    community.elastic.elastic_cluster_health:
-      <<: *elastic_index_parameters
-      level: shards
-    register: elastic
+      - assert:
+          that:
+            - "elastic.msg == 'There are no cluster configuration changes to perform.'"
+            - "elastic.changed == False"
