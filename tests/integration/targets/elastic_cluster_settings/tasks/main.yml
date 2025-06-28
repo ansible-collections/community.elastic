@@ -12,4 +12,3 @@
       name: setup_elastic
 
   - import_tasks: 2-test-with-auth.yml
-
