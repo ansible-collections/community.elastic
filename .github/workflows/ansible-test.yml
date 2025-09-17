@@ -137,7 +137,7 @@ jobs:
           - ansible_version: stable-2.16
             python_version: "3.11"
           - ansible_version: milestone
-            python_version: "3.11"
+            python_version: "3.13"
         elasticsearch_version_combinations:
           - elasticsearch_version: 7.10.1
             kibana_version: 7.10.1
