@@ -6,7 +6,7 @@
 
   - name: Set docker-compose file
     set_fact:
-      docker_compose_file: 3-node-with-kibana-no-auth.yml
+      docker_compose_file: 3-node-with-dashboards-no-auth.yml
 
   - import_role:
       name: setup_elastic
@@ -18,7 +18,7 @@
 
   - name: Set docker-compose file
     set_fact:
-      docker_compose_file: single-node-elastic-with-auth.yml
+      docker_compose_file: single-node-opensearch-with-auth.yml
 
   - import_role:
       name: setup_elastic

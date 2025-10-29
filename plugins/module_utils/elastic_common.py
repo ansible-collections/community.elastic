@@ -16,7 +16,7 @@ except ImportError:
     from urlparse import urlparse
 
 try:
-    from elasticsearch import Elasticsearch
+    from opensearchpy import OpenSearch
     from elasticsearch.exceptions import NotFoundError  # pylint: disable=unused-import
     from elasticsearch import helpers  # pylint: disable=unused-import
     from elasticsearch import __version__  # pylint: disable=unused-import
@@ -103,9 +103,7 @@ class ElasticHelpers():
         options = dict(self.module.params['connection_options'])
         options.update(auth)
         hosts = [self.build_connection_url(host) for host in self.module.params['login_hosts']]
-        elastic = Elasticsearch(hosts,
-                                timeout=self.module.params['timeout'],
-                                **options)
+        elastic = OpenSearch(hosts, **options)
         return elastic
 
     def query(self, client, index, query):

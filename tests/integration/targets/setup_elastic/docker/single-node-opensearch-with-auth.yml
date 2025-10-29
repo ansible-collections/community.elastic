@@ -1,0 +1,30 @@
+version: '2.2'
+services:
+  node01:
+    image: "opensearchproject/opensearch:3.3.0"
+    container_name: single-node-auth-01
+    environment:
+      - discovery.seed_hosts=node01
+      - cluster.initial_cluster_manager_nodes=node01
+      - node.name=node01
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=P@szw0rd1!
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - single-node-auth-01:/usr/share/opensearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - opensearch
+
+volumes:
+  single-node-auth-01:
+    driver: local
+
+networks:
+  opensearch:
+    driver: bridge

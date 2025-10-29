@@ -5,6 +5,10 @@
       login_password: secret
       auth_method: http_auth
       timeout: 90
+      login_hosts: https://admin:P@szw0rd1!@localhost:9200
+      connection_options:
+        verify_certs: false
+        use_ssl: true
 
   block:
 
