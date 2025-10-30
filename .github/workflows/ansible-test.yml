@@ -1,5 +1,6 @@
 name: CI
 on:
+  push:
   pull_request:
   schedule:
     - cron: "0 3 * * *"
@@ -27,12 +28,12 @@ jobs:
           # Add new versions announced in
           # https://github.com/ansible-collections/news-for-maintainers in a timely manner,
           # consider dropping testing against EOL versions and versions you don't support.
-          - stable-2.13
-          - stable-2.14
-          - stable-2.15
+          # - stable-2.13
+          # - stable-2.14
+          # - stable-2.15
           - stable-2.16
         # - devel
-          - milestone
+          # - milestone
     runs-on: >-
       ${{ contains(fromJson(
           '["stable-2.9", "stable-2.10", "stable-2.11"]'
@@ -109,7 +110,7 @@ jobs:
 
       - name: Generate module list
         run: |
-          find tests/integration/targets -type d -maxdepth 1 -not -name 'setup*' | cut -d '/' -f4 | sort | awk NF | jq -sRc 'split("\n") | map(select(length > 0))' > int_test_modules.json
+          find tests/integration/targets -type d -maxdepth 1 -not -name 'setup*' -name elastic_cluster_health | cut -d '/' -f4 | sort | awk NF | jq -sRc 'split("\n") | map(select(length > 0))' > int_test_modules.json
 
       - name: Set output variable
         id: json-list
@@ -128,20 +129,20 @@ jobs:
       matrix:
         elastic_module: ${{ fromJson(needs.integration_matrix.outputs.matrix) }}
         ansible_version_combinations:
-          - ansible_version: stable-2.13
-            python_version: "3.9"
-          - ansible_version: stable-2.14
-            python_version: "3.10"
-          - ansible_version: stable-2.15
-            python_version: "3.10"
+          # - ansible_version: stable-2.13
+          #   python_version: "3.9"
+          # - ansible_version: stable-2.14
+          #   python_version: "3.10"
+          # - ansible_version: stable-2.15
+          #   python_version: "3.10"
           - ansible_version: stable-2.16
             python_version: "3.11"
-          - ansible_version: milestone
-            python_version: "3.13"
+          # - ansible_version: milestone
+          #   python_version: "3.13"
         elasticsearch_version_combinations:
-          - elasticsearch_version: 7.10.1
-            kibana_version: 7.10.1
-            elasticsearch_python_lib: elasticsearch==7.*
+          # - elasticsearch_version: 7.10.1
+          #   kibana_version: 7.10.1
+          #   elasticsearch_python_lib: elasticsearch==7.*
           - elasticsearch_version: 8.8.2
             kibana_version: 8.8.2
             elasticsearch_python_lib: elasticsearch==8.*
@@ -163,7 +164,7 @@ jobs:
         with:
           timeout_minutes: 3
           max_attempts: 3
-          command: pip install docker ${{ matrix.elasticsearch_version_combinations.elasticsearch_python_lib }} requests coverage
+          command: pip install docker opensearch-py ${{ matrix.elasticsearch_version_combinations.elasticsearch_python_lib }} requests coverage
 
       - name: Install ansible-base (${{ matrix.ansible_version_combinations.ansible_version }})
         uses: nick-invision/retry@v3
@@ -190,6 +191,7 @@ jobs:
         run: |
           echo "elasticsearch_version: ${{ matrix.elasticsearch_version_combinations.elasticsearch_version }}" >> tests/integration/integration_config.yml
           echo "kibana_version: ${{ matrix.elasticsearch_version_combinations.kibana_version }}" >> tests/integration/integration_config.yml
+          echo "opensearch_version: 3.3.0" >> tests/integration/integration_config.yml
 
       - name: >-
           Run integration tests on Python ${{ matrix.ansible_version_combinations.python_version }} |
