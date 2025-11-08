@@ -125,9 +125,13 @@ def get_user(module, client, name):
     return response
 
 
-def put_user(module, client, name):
+def put_user(module, client, name, exists):
     '''
     Creates or updates a user
+    @module - The Ansible module object
+    @client - Elastic instance client
+    @name - Username
+    @exists - If the user already exists or not
     '''
     keys = [
         "enabled",
@@ -137,11 +141,20 @@ def put_user(module, client, name):
         "password",
         "roles"
     ]
-    body = {}
-    for k in keys:
-        if module.params[k] is not None:
-            body[k] = module.params[k]
+
     try:
+        # We need to not update the password
+        # when the user already exists and 
+        # update_password = on_create
+        if exists == True:
+            if module.params["update_password"] == "on_create":
+                keys.remove("password")
+
+        body = {}
+        for k in keys:
+            if module.params[k] is not None:
+                body[k] = module.params[k]
+
         response = dict(client.security.put_user(username=name, body=body))
         if not isinstance(response, dict):  # Valid response should be a dict
             module.fail_json(msg="Invalid response received: {0}.".format(str(response)))
