@@ -12,3 +12,5 @@
       name: setup_elastic
 
   - import_tasks: 2-test-with-auth.yml
+
+  - import_tasks: 3-121-update-password.yml

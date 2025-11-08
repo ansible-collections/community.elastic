@@ -125,9 +125,13 @@ def get_user(module, client, name):
     return response
 
 
-def put_user(module, client, name):
+def put_user(module, client, name, exists):
     '''
     Creates or updates a user
+    @module - The Ansible module object
+    @client - Elastic instance client
+    @name - Username
+    @exists - If the user already exists or not
     '''
     keys = [
         "enabled",
@@ -137,11 +141,20 @@ def put_user(module, client, name):
         "password",
         "roles"
     ]
-    body = {}
-    for k in keys:
-        if module.params[k] is not None:
-            body[k] = module.params[k]
+
     try:
+        # We need to not update the password
+        # when the user already exists and
+        # update_password = on_create
+        if exists is True:
+            if module.params["update_password"] == "on_create":
+                keys.remove("password")
+
+        body = {}
+        for k in keys:
+            if module.params[k] is not None:
+                body[k] = module.params[k]
+
         response = dict(client.security.put_user(username=name, body=body))
         if not isinstance(response, dict):  # Valid response should be a dict
             module.fail_json(msg="Invalid response received: {0}.".format(str(response)))
@@ -225,7 +238,7 @@ def main():
         if user is None:
             if state == "present":
                 if module.check_mode is False:
-                    response = put_user(module, client, name)
+                    response = put_user(module, client, name, False)
                 module.exit_json(changed=True, msg="The user {0} was successfully created: {1}".format(name, str(response)))
             elif state == "absent":
                 module.exit_json(changed=False, msg="The user {0} does not exist.".format(name))
@@ -233,7 +246,7 @@ def main():
             if state == "present":
                 if user_is_different(user, module) or update_password == "always":
                     if module.check_mode is False:
-                        response = put_user(module, client, name)
+                        response = put_user(module, client, name, True)
                     module.exit_json(changed=True, msg="The user {0} was successfully updated: {1} {2}".format(name, str(response), str(user)))
                 else:
                     module.exit_json(changed=False, msg="The user {0} already exists as configured.".format(name))
