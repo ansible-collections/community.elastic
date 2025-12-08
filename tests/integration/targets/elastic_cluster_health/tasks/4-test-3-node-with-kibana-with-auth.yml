@@ -5,6 +5,10 @@
       login_password: secret
       auth_method: http_auth
       timeout: 90
+      login_hosts: https://admin:P@szw0rd1!@localhost:9200
+      connection_options:
+        verify_certs: false
+        use_ssl: true
 
   block:
 
@@ -144,7 +148,7 @@
   #    state: stopped
 
   - name: Stop es02 container
-    shell: docker compose -f 3-node-with-kibana-no-auth.yml stop es02
+    shell: docker compose -f 3-node-with-dashboards-no-auth.yml stop es02
     args:
       chdir: "{{role_path}}/docker"
     environment:
@@ -187,7 +191,7 @@
   #      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
 
   - name: Start es02 container again - Doesn't work "No containers to restart"
-    shell: docker compose -f 3-node-with-kibana-no-auth.yml restart es02
+    shell: docker compose -f 3-node-with-dashboards-no-auth.yml restart es02
     args:
       chdir: "{{role_path}}/docker"
     environment:

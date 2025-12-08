@@ -74,7 +74,7 @@
   with_items: "{{ docker_volumes }}"
 
 - name: Run docker compose file
-  shell: docker compose -f {{ docker_compose_file | default('single-node-elastic.yml') }} up --detach
+  shell: docker compose -f {{ docker_compose_file | default('single-node-opensearch-with-auth.yml') }} up --detach
   args:
     chdir: "{{role_path}}/docker"
   environment:
@@ -96,13 +96,17 @@
 
 - name: Wait for Elastic to come up
   uri:
-    url: "http://127.0.0.1:9200"
+    url: "https://127.0.0.1:9200"  # for Opensearch
+    validate_certs: false          # for Opensearch
+    user: admin                    # for Opensearch
+    password: "P@szw0rd1!"         # for Opensearch
+
     method: GET
     return_content: yes
     status_code:
       - 200
       - 401
   register: _result
-  until: '"You Know, for Search" in _result.content or "missing authentication credentials for REST request" in _result.content'
+  until: '"The OpenSearch Project" in _result.content or "missing authentication credentials for REST request" in _result.content'
   retries: 30 # retry X times
   delay: 3 # pause for X sec b/w each call
