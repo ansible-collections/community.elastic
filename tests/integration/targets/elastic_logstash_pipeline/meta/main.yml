@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: setup_elastic
+    vars:
+      docker_compose_file: single-node-elastic-with-auth-trial.yml

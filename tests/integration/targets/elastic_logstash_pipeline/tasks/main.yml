@@ -1,0 +1,2 @@
+---
+- import_tasks: 1-test-with-auth-trial.yml
