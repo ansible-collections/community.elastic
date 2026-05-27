@@ -1,0 +1,191 @@
+---
+- vars:
+    elastic_logstash_pipeline_parameters: &elastic_logstash_pipeline_parameters
+      login_user: elastic
+      login_password: secret
+      auth_method: http_auth
+      timeout: 30
+
+  block:
+  - name: Create a logstash pipeline - check mode
+    community.elastic.elastic_logstash_pipeline:
+      <<: *elastic_logstash_pipeline_parameters
+      id: test-pipeline
+      state: present
+      username: elastic
+      description: "My test pipeline"
+      pipeline: "{{ lookup('file', 'logstash_pipeline.conf') }}"
+      pipeline_settings:
+        pipeline_workers: 1
+        pipeline_batch_size: 125
+        pipeline_batch_delay: 50
+        queue_type: "memory"
+        queue_max_bytes: "1gb"
+        queue_checkpoint_writes: 1024
+      pipeline_metadata:
+        version: "1"
+        type: "logstash_pipeline"
+      last_modified: "2026-05-03T00:00:00.000Z"
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The logstash pipeline \\'test-pipeline\\' would be created.'"
+
+  - name: Create a logstash pipeline
+    community.elastic.elastic_logstash_pipeline:
+      <<: *elastic_logstash_pipeline_parameters
+      id: test-pipeline
+      state: present
+      username: elastic
+      description: "My test pipeline"
+      pipeline: "{{ lookup('file', 'logstash_pipeline.conf') }}"
+      pipeline_settings:
+        pipeline_workers: 1
+        pipeline_batch_size: 125
+        pipeline_batch_delay: 50
+        queue_type: "memory"
+        queue_max_bytes: "1gb"
+        queue_checkpoint_writes: 1024
+      pipeline_metadata:
+        version: "1"
+        type: "logstash_pipeline"
+      last_modified: "2026-05-03T00:00:00.000Z"
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The logstash pipeline \\'test-pipeline\\' was created.'"
+
+  - name: Create the same logstash pipeline again
+    community.elastic.elastic_logstash_pipeline:
+      <<: *elastic_logstash_pipeline_parameters
+      id: test-pipeline
+      state: present
+      username: elastic
+      description: "My test pipeline"
+      pipeline: "{{ lookup('file', 'logstash_pipeline.conf') }}"
+      pipeline_settings:
+        pipeline_workers: 1
+        pipeline_batch_size: 125
+        pipeline_batch_delay: 50
+        queue_type: "memory"
+        queue_max_bytes: "1gb"
+        queue_checkpoint_writes: 1024
+      pipeline_metadata:
+        version: "1"
+        type: "logstash_pipeline"
+      last_modified: "2026-05-03T00:00:00.000Z"
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == False"
+        - "result.msg == 'The logstash pipeline \\'test-pipeline\\' already exists.'"
+
+  - name: Create the same logstash pipeline again (without pipeline_settings and pipeline_metadata)
+    community.elastic.elastic_logstash_pipeline:
+      <<: *elastic_logstash_pipeline_parameters
+      id: test-pipeline
+      state: present
+      username: elastic
+      description: "My test pipeline"
+      pipeline: "{{ lookup('file', 'logstash_pipeline.conf') }}"
+      last_modified: "2026-05-03T00:00:00.000Z"
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == False"
+        - "result.msg == 'The logstash pipeline \\'test-pipeline\\' already exists.'"
+
+  - name: Update the logstash pipeline
+    community.elastic.elastic_logstash_pipeline:
+      <<: *elastic_logstash_pipeline_parameters
+      id: test-pipeline
+      state: present
+      username: elastic
+      description: "Updated pipeline"
+      pipeline: "{{ lookup('file', 'logstash_pipeline.conf') }}"
+      pipeline_settings:
+        pipeline_workers: 2
+        pipeline_batch_size: 125
+        pipeline_batch_delay: 50
+        queue_type: "memory"
+        queue_max_bytes: "1gb"
+        queue_checkpoint_writes: 1024
+      pipeline_metadata:
+        version: "2"
+        type: "logstash_pipeline"
+      last_modified: "2026-05-03T00:00:00.000Z"
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The logstash pipeline \\'test-pipeline\\' was updated.'"
+
+  - name: Update the logstash pipeline ( without defining last_modified)
+    community.elastic.elastic_logstash_pipeline:
+      <<: *elastic_logstash_pipeline_parameters
+      id: test-pipeline
+      state: present
+      username: elastic
+      description: "Updated pipeline"
+      pipeline: "{{ lookup('file', 'logstash_pipeline.conf') }}"
+      pipeline_settings:
+        pipeline_workers: 2
+        pipeline_batch_size: 125
+        pipeline_batch_delay: 50
+        queue_type: "memory"
+        queue_max_bytes: "1gb"
+        queue_checkpoint_writes: 1024
+      pipeline_metadata:
+        version: "2"
+        type: "logstash_pipeline"
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The logstash pipeline \\'test-pipeline\\' was updated.'"
+
+  - name: Delete a logstash pipeline - check mode
+    community.elastic.elastic_logstash_pipeline:
+      <<: *elastic_logstash_pipeline_parameters
+      id: test-pipeline
+      state: absent
+    check_mode: yes
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The logstash pipeline \\'test-pipeline\\' would be deleted.'"
+
+  - name: Delete a logstash pipeline
+    community.elastic.elastic_logstash_pipeline:
+      <<: *elastic_logstash_pipeline_parameters
+      id: test-pipeline
+      state: absent
+    register: result
+
+  - assert:
+      that:
+        - "result.changed"
+        - "result.msg == 'The logstash pipeline \\'test-pipeline\\' was deleted.'"
+
+  - name: Delete a non-existent pipeline
+    community.elastic.elastic_logstash_pipeline:
+      <<: *elastic_logstash_pipeline_parameters
+      id: test-pipeline
+      state: absent
+    register: result
+
+  - assert:
+      that:
+        - "result.changed == False"
+        - "result.msg == 'The logstash pipeline \\'test-pipeline\\' does not exist.'"
