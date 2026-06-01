@@ -20,6 +20,7 @@
         - "role2"
       <<: *elastic_index_parameters
     register: elastic
+    retries: 5
 
   - assert:
       that:
