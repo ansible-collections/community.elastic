@@ -134,7 +134,11 @@ def api_key_exists(client, name):
     Checks if an api key with the given name exists
     """
     resp = client.security.query_api_keys(
-    name=name
+        query={
+            "match": {
+                "name": name
+            }
+        }
     )
     return len(resp.get("api_keys", [])) > 0
 
