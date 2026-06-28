@@ -21,6 +21,7 @@
     - name: Delete an api key - check mode
       community.elastic.elastic_api_key:
         name: myAPIKey
+        state: absent
         <<: *elastic_index_parameters
       check_mode: true
       register: myAPIKey
@@ -32,6 +33,7 @@
     - name: Delete an api key
       community.elastic.elastic_api_key:
         name: myAPIKey
+        state: absent
         <<: *elastic_index_parameters
       register: myAPIKey
 
