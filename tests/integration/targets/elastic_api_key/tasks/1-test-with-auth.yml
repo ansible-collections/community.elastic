@@ -79,3 +79,29 @@
         that:
           - "myAPIKey.changed == False"
           - "'The api key myAPIKey does not exist.' in myAPIKey.msg"
+
+- name: Create an api key with custom permissions
+  community.elastic.elastic_api_key:
+    name: myAPIKeyAdvancedExample
+    state: present
+    expiration: 7d
+    role_descriptors:
+      "role-a":
+        cluster:
+          - all
+        indicies:
+          - name: "index-a*"
+            privileges:
+              - read
+      "role-b":
+        cluster:
+          - all
+        indicies:
+          - name: "index-b*"
+            privileges:
+              - all
+  register: myAPIKeyAdvancedExample
+
+- name: debug
+  ansible.builtin.debug:
+    var: myAPIKeyAdvancedExample

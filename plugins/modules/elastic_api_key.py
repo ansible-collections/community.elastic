@@ -15,6 +15,7 @@ short_description: Create and manage API keys for elastic.
 
 description:
   - Create and manage API keys for elastic.
+  - To protect sensitive value you can use no_log with this module.
 
 author: Rhys Campbell (@rhysmeister)
 version_added: "0.0.1"
@@ -66,7 +67,8 @@ EXAMPLES = r'''
 - name: Create an api key
   community.elastic.elastic_api_key:
     name: myAPIKey
-
+  no_log: true
+    
 - name: Delete an api key
   community.elastic.elastic_api_key:
     name: myAPIKey
@@ -92,6 +94,7 @@ EXAMPLES = r'''
           - name: "index-b*"
             privileges:
               - all
+  no_log: true
 '''
 
 RETURN = r'''
