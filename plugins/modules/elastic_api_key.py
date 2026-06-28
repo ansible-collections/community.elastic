@@ -155,20 +155,38 @@ def api_key_exists(client, name):
     return len(resp.get("api_keys", [])) > 0
 
 
+
 def create_api_key(module, client):
     """
-    Creates an Elastic api key
+    Creates an Elastic API key (compatible with ES 7 and 8+)
     """
     name = module.params['name']
-    role_descriptors = module.params['role_descriptors']
-    metadata = module.params['metadata']
-    expiration = module.params['expiration']
-    resp = client.security.create_api_key(
-        name=name,
-        role_descriptors=role_descriptors,
-        metadata=metadata,
-        expiration=expiration
-    )
+    role_descriptors = module.params.get('role_descriptors')
+    metadata = module.params.get('metadata')
+    expiration = module.params.get('expiration')
+
+    version = elasticsearch.VERSION
+    major = version[0]
+
+    # Build payload once
+    payload = {
+        "name": name
+    }
+
+    if role_descriptors is not None:
+        payload["role_descriptors"] = role_descriptors
+    if metadata is not None:
+        payload["metadata"] = metadata
+    if expiration is not None:
+        payload["expiration"] = expiration
+
+    if major <= 7:
+        # ES 7.x requires body=
+        resp = client.security.create_api_key(body=payload)
+    else:
+        # ES 8+ uses keyword arguments
+        resp = client.security.create_api_key(**payload)
+
     return resp
 
 def delete_api_key(client, name):
