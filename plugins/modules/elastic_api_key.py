@@ -47,17 +47,19 @@ options:
       - The expiration time for the API key. 
       - By default, API keys never expire.
     type: str
-    default: none
+    default: None
   role_descriptors:
     description:
       - An array of role descriptors for this API key. 
       - When it is not specified or it is an empty array, the API key will have a point in time snapshot of permissions of the authenticated user.
     type: dict
+    default: {}
   metadata:
     description:
       - Arbitrary metadata that you want to associate with the API key. 
       - It supports nested data structure.
     type: dict
+    default: {}
 '''
 
 EXAMPLES = r'''

@@ -13,6 +13,7 @@
         name: myAPIKey
         <<: *elastic_index_parameters
       register: myAPIKey
+      no_log: true
 
     - name: Verify api key has been created
       ansible.builtin.assert:
