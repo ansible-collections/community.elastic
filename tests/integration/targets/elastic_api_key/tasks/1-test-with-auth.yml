@@ -19,6 +19,9 @@
         that:
           - myAPIKey.changed
           - "'The api key myAPIKey was successfully created' in myAPIKey.msg"
+          - myAPIKey.api_key | length > 10
+          - myAPIKey.encoded | length > 20
+          - myAPIKey.id | length > 10
 
     - name: Debug
       ansible.builtin.debug:

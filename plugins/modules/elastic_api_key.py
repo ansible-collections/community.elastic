@@ -126,17 +126,19 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     NotFoundError
 )
 
-def api_key_exists(client, name):
 
+def api_key_exists_expired(client, name):
     """
-    Checks if an API key with the given name exists,
-    handling both v7 (body/query) and v8+ (name param).
+    Checks if an API key with the given name exists and is NOT expired.
+
+    Returns:
+        True  -> at least one valid (non-expired, non-invalidated) key exists
+        False -> no key exists OR all keys are expired/invalidated
     """
-    version = elasticsearch.VERSION  # tuple like (7, 17, 9) or (8, 12, 0)
+    version = elasticsearch.VERSION
     major = version[0]
 
     if major in [7, 8]:
-        # v7 uses body with query DSL
         resp = client.security.query_api_keys(
             body={
                 "query": {
@@ -147,11 +149,31 @@ def api_key_exists(client, name):
             }
         )
     else:
-        # v9+ uses explicit parameters (no query DSL)
         resp = client.security.query_api_keys(name=name)
 
-    return len(resp.get("api_keys", [])) > 0
+    api_keys = resp.get("api_keys", [])
 
+    if not api_keys:
+        return False
+
+    now = int(time.time() * 1000)  # current time in ms
+
+    for key in api_keys:
+        # Skip invalidated keys
+        if key.get("invalidated", False):
+            continue
+
+        # If no expiration → key is valid
+        expiration = key.get("expiration")
+        if expiration is None:
+            return True
+
+        # If expiration exists and is in the future → valid
+        if expiration > now:
+            return True
+
+    # If we get here → all keys are expired or invalidated
+    return False
 
 
 def create_api_key(module, client):
@@ -248,7 +270,7 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        api_key = api_key_exists(client, name) 
+        api_key = api_key_exists_expired(client, name) 
         
 
         if api_key is False:
