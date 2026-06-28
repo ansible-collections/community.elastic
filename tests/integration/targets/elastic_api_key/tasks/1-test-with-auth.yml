@@ -84,7 +84,7 @@
   community.elastic.elastic_api_key:
     name: myAPIKeyAdvancedExample
     state: present
-    expiration: 604800000
+    expiration: 7d
     role_descriptors:
       "role-a":
         cluster:
@@ -100,6 +100,7 @@
           - name: "index-b*"
             privileges:
               - all
+    <<: *elastic_index_parameters
   register: myAPIKeyAdvancedExample
 
 - name: debug

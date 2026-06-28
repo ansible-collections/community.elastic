@@ -78,7 +78,7 @@ EXAMPLES = r'''
   community.elastic.elastic_api_key:
     name: myAPIKey
     state: present
-    expiration: 604800000
+    expiration: 7d
     role_descriptors:
       "role-a":
         cluster:
@@ -128,7 +128,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 try:
   import elasticsearch
-except:
+except ImportError:
     pass
 import time
 
@@ -137,8 +137,7 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
     elastic_found,
     E_IMP_ERR,
     elastic_common_argument_spec,
-    ElasticHelpers,
-    NotFoundError
+    ElasticHelpers
 )
 
 
@@ -263,7 +262,7 @@ def main():
     argument_spec.update(
         name=dict(type='str', required=True),
         state=dict(type='str', choices=state_choices, default='present'),
-        expiration=dict(type='int', default=None),
+        expiration=dict(type='str', default=None),
         role_descriptors=dict(type='dict', default={}),
         metadata=dict(type='dict', default={}),
     )
@@ -286,14 +285,13 @@ def main():
         client = elastic.connect()
 
         api_key = api_key_exists_expired(client, name) 
-        
 
         if api_key is False:
             if state == "present":
                 if module.check_mode is False:
                     response = create_api_key(module, client)
                 module.exit_json(
-                    changed=True, 
+                    changed=True,
                     msg="The api key {0} was successfully created.".format(name),
                     **response
                 )
