@@ -18,7 +18,7 @@ description:
   - To protect sensitive value you can use no_log with this module.
 
 author: Rhys Campbell (@rhysmeister)
-version_added: "0.0.1"
+version_added: "1.4.0"
 
 extends_documentation_fragment:
   - community.elastic.login_options
