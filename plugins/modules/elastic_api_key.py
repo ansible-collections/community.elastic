@@ -82,10 +82,8 @@ EXAMPLES = r'''
           - all
         indicies:
           - name: "index-b*"
-          privileges:
-            - all
-
-
+            privileges:
+              - all
 '''
 
 RETURN = r'''
@@ -189,14 +187,29 @@ def create_api_key(module, client):
 
     return resp
 
+
 def delete_api_key(client, name):
     """
-    We cannot directly delete an api key, we invalidate it and then, at some point, elastic will clean it up
+    Invalidates an API key by name (ES 7 and 8+ compatible)
     """
-    resp = client.security.invalidate_api_key(
-        name=name
-    )
+    version = elasticsearch.VERSION
+    major = version[0]
+
+    if major <= 7:
+        # ES 7.x: must use body
+        resp = client.security.invalidate_api_key(
+            body={
+                "name": name
+            }
+        )
+    else:
+        # ES 8+: keyword arguments
+        resp = client.security.invalidate_api_key(
+            name=name
+        )
+
     return resp
+
 
 # ================
 # Module execution

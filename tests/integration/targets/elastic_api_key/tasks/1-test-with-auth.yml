@@ -18,6 +18,16 @@
       ansible.builtin.debug:
         var: myAPIKey
 
+    - name: Create an api key (again)
+      community.elastic.elastic_api_key:
+        name: myAPIKey
+        <<: *elastic_index_parameters
+      register: myAPIKey
+
+    - name: Show results
+      ansible.builtin.debug:
+        var: myAPIKey
+
     - name: Delete an api key - check mode
       community.elastic.elastic_api_key:
         name: myAPIKey
