@@ -58,11 +58,6 @@ options:
       - Arbitrary metadata that you want to associate with the API key. 
       - It supports nested data structure.
     type: dict
-  no_Log:
-    description:
-      - Protect module return values by setting no_log in exit_json to true
-    type: bool
-    default: true 
 '''
 
 EXAMPLES = r'''
@@ -126,7 +121,11 @@ from ansible.module_utils._text import to_native
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
-import elasticsearch
+try:
+  import elasticsearch
+except:
+    pass
+import time
 
 from ansible_collections.community.elastic.plugins.module_utils.elastic_common import (
     missing_required_lib,
@@ -262,7 +261,6 @@ def main():
         expiration=dict(type='int', default=None),
         role_descriptors=dict(type='dict', default={}),
         metadata=dict(type='dict', default={}),
-        no_log=dict(type='bool', default=True)
     )
 
     module = AnsibleModule(
@@ -292,8 +290,7 @@ def main():
                 module.exit_json(
                     changed=True, 
                     msg="The api key {0} was successfully created.".format(name),
-                    **response.
-                    no_log=module.params['no_log']
+                    **response
                 )
             elif state == "absent":
                 module.exit_json(changed=False, msg="The api key {0} does not exist.".format(name))
