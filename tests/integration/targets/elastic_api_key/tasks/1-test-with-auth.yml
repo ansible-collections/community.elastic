@@ -107,9 +107,9 @@
 
 - name: Verify return data
   ansible.builtin.assert:
-    - that:
+    that:
       - myAPIKeyAdvancedExample.changed
-      - "'The api key myAPIKeyAdvancedExample was successfully created.'"
-      - myAPIKey.api_key | length > 10
-      - myAPIKey.encoded | length > 20
-      - myAPIKey.id | length > 10
+      - "'The api key myAPIKeyAdvancedExample was successfully created.' in myAPIKeyAdvancedExample.msg"
+      - myAPIKeyAdvancedExample.api_key | length > 10
+      - myAPIKeyAdvancedExample.encoded | length > 20
+      - myAPIKeyAdvancedExample.id | length > 10

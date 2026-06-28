@@ -153,44 +153,30 @@ def api_key_exists_expired(client, name):
         True  -> at least one valid (non-expired, non-invalidated) key exists
         False -> no key exists OR all keys are expired/invalidated
     """
-    version = elasticsearch.VERSION
-    major = version[0]
 
-    if major in [7, 8]:
-        resp = client.security.query_api_keys(
-            body={
-                "query": {
-                    "term": {
-                        "name": name
-                    }
+    resp = client.security.query_api_keys(
+        body={
+            "query": {
+                "term": {
+                    "name": name
                 }
             }
-        )
-    else:
-        resp = client.security.query_api_keys(name=name)
+        }
+    )
 
     api_keys = resp.get("api_keys", [])
 
     if not api_keys:
         return False
 
-    now = int(time.time() * 1000)  # current time in ms
+    now = int(time.time() * 1000)
 
     for key in api_keys:
-        # Skip invalidated keys
         if key.get("invalidated", False):
             continue
-
-        # If no expiration → key is valid
         expiration = key.get("expiration")
-        if expiration is None:
+        if expiration is None or expiration > now:
             return True
-
-        # If expiration exists and is in the future → valid
-        if expiration > now:
-            return True
-
-    # If we get here → all keys are expired or invalidated
     return False
 
 
