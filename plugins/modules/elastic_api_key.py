@@ -142,7 +142,7 @@ def api_key_exists(client, name):
         resp = client.security.query_api_keys(
             body={
                 "query": {
-                    "match": {
+                    "term": {
                         "name": name
                     }
                 }
