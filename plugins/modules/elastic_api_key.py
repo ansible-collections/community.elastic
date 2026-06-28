@@ -298,7 +298,7 @@ def main():
                     **response
                 )
             elif state == "absent":
-                module.exit_json(changed=False, msg="The api key {0} does not exist.".format(name))
+                module.exit_json(changed=False, msg="The api key {0} does not exist or is expired.".format(name))
         else:  # api key already exists, we don't update anything
             if state == "present":
                 module.exit_json(changed=False, msg="The api key {0} already exists.".format(name))

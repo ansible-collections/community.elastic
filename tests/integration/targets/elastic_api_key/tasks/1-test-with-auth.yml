@@ -78,7 +78,7 @@
       ansible.builtin.assert:
         that:
           - "myAPIKey.changed == False"
-          - "'The api key myAPIKey does not exist.' in myAPIKey.msg"
+          - "'The api key myAPIKey does not exist or is expired.' in myAPIKey.msg"
 
 - name: Create an api key with custom permissions
   community.elastic.elastic_api_key:
