@@ -137,7 +137,7 @@ def api_key_exists(client, name):
     version = elasticsearch.VERSION  # tuple like (7, 17, 9) or (8, 12, 0)
     major = version[0]
 
-    if major == 7:
+    if major in [7, 8]:
         # v7 uses body with query DSL
         resp = client.security.query_api_keys(
             body={
@@ -149,7 +149,7 @@ def api_key_exists(client, name):
             }
         )
     else:
-        # v8+ uses explicit parameters (no query DSL)
+        # v9+ uses explicit parameters (no query DSL)
         resp = client.security.query_api_keys(name=name)
 
     return len(resp.get("api_keys", [])) > 0
