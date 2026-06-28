@@ -84,14 +84,16 @@ EXAMPLES = r'''
         cluster:
           - all
         indices:
-          - name: "index-a*"
+          - names: 
+            - "index-a*"
             privileges:
               - read
       "role-b":
         cluster:
           - all
         indices:
-          - name: "index-b*"
+          - names: 
+            - "index-b*"
             privileges:
               - all
   no_log: true
