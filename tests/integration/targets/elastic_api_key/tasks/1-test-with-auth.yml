@@ -89,14 +89,14 @@
       "role-a":
         cluster:
           - all
-        indicies:
+        indices:
           - name: "index-a*"
             privileges:
               - read
       "role-b":
         cluster:
           - all
-        indicies:
+        indices:
           - name: "index-b*"
             privileges:
               - all

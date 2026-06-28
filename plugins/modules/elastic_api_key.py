@@ -45,19 +45,19 @@ options:
     default: present
   expiration:
     description:
-      - The expiration time for the API key. 
+      - The expiration time for the API key.
       - By default, API keys never expire.
     type: str
-    default: None
+    default: null
   role_descriptors:
     description:
-      - An array of role descriptors for this API key. 
+      - An array of role descriptors for this API key.
       - When it is not specified or it is an empty array, the API key will have a point in time snapshot of permissions of the authenticated user.
     type: dict
     default: {}
   metadata:
     description:
-      - Arbitrary metadata that you want to associate with the API key. 
+      - Arbitrary metadata that you want to associate with the API key.
       - It supports nested data structure.
     type: dict
     default: {}
@@ -68,7 +68,7 @@ EXAMPLES = r'''
   community.elastic.elastic_api_key:
     name: myAPIKey
   no_log: true
-    
+
 - name: Delete an api key
   community.elastic.elastic_api_key:
     name: myAPIKey
@@ -83,14 +83,14 @@ EXAMPLES = r'''
       "role-a":
         cluster:
           - all
-        indicies:
+        indices:
           - name: "index-a*"
             privileges:
               - read
       "role-b":
         cluster:
           - all
-        indicies:
+        indices:
           - name: "index-b*"
             privileges:
               - all
@@ -117,7 +117,7 @@ RETURN = r'''
   encoded:
     description: API key credentials which is the base64-encoding of the UTF-8 representation of id and api_key joined by a colon (:).
     returned: on success
-    type: str       
+    type: str
 '''
 
 
@@ -127,7 +127,7 @@ from ansible.module_utils._text import to_native
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 try:
-  import elasticsearch
+    import elasticsearch
 except ImportError:
     pass
 import time
@@ -284,7 +284,7 @@ def main():
         elastic = ElasticHelpers(module)
         client = elastic.connect()
 
-        api_key = api_key_exists_expired(client, name) 
+        api_key = api_key_exists_expired(client, name)
 
         if api_key is False:
             if state == "present":
