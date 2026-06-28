@@ -38,6 +38,7 @@ options:
       - This means that you will encounter problems \
         when attempting to quicky delete and recreate \
         api keys with the same name.
+      - Api Keys cannot be updated after creation via this module.
     type: str
     choices:
       - present
@@ -47,6 +48,7 @@ options:
     description:
       - The expiration time for the API key.
       - By default, API keys never expire.
+      - Accepts various time units e.g. 7d, 1M, 24h.
     type: str
     default: null
   role_descriptors:
@@ -84,7 +86,7 @@ EXAMPLES = r'''
         cluster:
           - all
         indices:
-          - names: 
+          - names:
             - "index-a*"
             privileges:
               - read
@@ -92,7 +94,7 @@ EXAMPLES = r'''
         cluster:
           - all
         indices:
-          - names: 
+          - names:
             - "index-b*"
             privileges:
               - all

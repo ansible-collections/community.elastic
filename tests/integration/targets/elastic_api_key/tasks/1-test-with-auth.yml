@@ -105,6 +105,11 @@
     <<: *elastic_index_parameters
   register: myAPIKeyAdvancedExample
 
-- name: debug
-  ansible.builtin.debug:
-    var: myAPIKeyAdvancedExample
+- name: Verify return data
+  ansible.builtin.assert:
+    - that:
+      - myAPIKeyAdvancedExample.changed
+      - "'The api key myAPIKeyAdvancedExample was successfully created.'"
+      - myAPIKey.api_key | length > 10
+      - myAPIKey.encoded | length > 20
+      - myAPIKey.id | length > 10
