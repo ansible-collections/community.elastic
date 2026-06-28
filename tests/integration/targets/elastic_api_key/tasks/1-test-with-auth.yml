@@ -18,7 +18,7 @@
       ansible.builtin.assert:
         that:
           - myAPIKey.changed
-          - "'The api key myAPIKey was successfull created' in myAPIKey.msg"
+          - "'The api key myAPIKey was successfully created' in myAPIKey.msg"
 
 
     - name: Create an api key (again)
