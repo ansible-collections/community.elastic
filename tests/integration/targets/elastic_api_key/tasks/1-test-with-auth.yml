@@ -84,7 +84,7 @@
   community.elastic.elastic_api_key:
     name: myAPIKeyAdvancedExample
     state: present
-    expiration: 7d
+    expiration: 604800000
     role_descriptors:
       "role-a":
         cluster:
