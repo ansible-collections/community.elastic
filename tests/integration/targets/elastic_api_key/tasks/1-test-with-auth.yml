@@ -20,6 +20,9 @@
           - myAPIKey.changed
           - "'The api key myAPIKey was successfully created' in myAPIKey.msg"
 
+    - name: Debug
+      ansible.builtin.debug:
+        var: myAPIKey
 
     - name: Create an api key (again)
       community.elastic.elastic_api_key:
