@@ -1,0 +1,3 @@
+---
+  # Cannot do tests without auth for api_keys
+  - import_tasks: 1-test-with-auth.yml

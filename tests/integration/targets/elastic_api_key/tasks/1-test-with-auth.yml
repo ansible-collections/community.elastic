@@ -1,0 +1,115 @@
+---
+- vars:
+    elastic_index_parameters: &elastic_index_parameters
+      login_user: elastic
+      login_password: secret
+      auth_method: http_auth
+      timeout: 30
+
+  block:
+
+    - name: Create an api key
+      community.elastic.elastic_api_key:
+        name: myAPIKey
+        <<: *elastic_index_parameters
+      register: myAPIKey
+      no_log: true
+
+    - name: Verify api key has been created
+      ansible.builtin.assert:
+        that:
+          - myAPIKey.changed
+          - "'The api key myAPIKey was successfully created' in myAPIKey.msg"
+          - myAPIKey.api_key | length > 10
+          - myAPIKey.encoded | length > 20
+          - myAPIKey.id | length > 10
+
+    - name: Debug
+      ansible.builtin.debug:
+        var: myAPIKey
+
+    - name: Create an api key (again)
+      community.elastic.elastic_api_key:
+        name: myAPIKey
+        <<: *elastic_index_parameters
+      register: myAPIKey
+
+    - name: Verify no change occured
+      ansible.builtin.assert:
+        that:
+          - "myAPIKey.changed == False"
+          - "'The api key myAPIKey already exists' in myAPIKey.msg"
+
+    - name: Delete an api key - check mode
+      community.elastic.elastic_api_key:
+        name: myAPIKey
+        state: absent
+        <<: *elastic_index_parameters
+      check_mode: true
+      register: myAPIKey
+
+    - name: Verify return data
+      ansible.builtin.assert:
+        that:
+          - myAPIKey.changed
+          - "'The api key myAPIKey was deleted.' in myAPIKey.msg"
+
+    - name: Delete an api key
+      community.elastic.elastic_api_key:
+        name: myAPIKey
+        state: absent
+        <<: *elastic_index_parameters
+      register: myAPIKey
+
+    - name: Verify return data
+      ansible.builtin.assert:
+        that:
+          - myAPIKey.changed
+          - "'The api key myAPIKey was deleted.' in myAPIKey.msg"
+
+    - name: Delete an api key - is already deleted
+      community.elastic.elastic_api_key:
+        name: myAPIKey
+        state: absent
+        <<: *elastic_index_parameters
+      register: myAPIKey
+
+    - name: Verify return data
+      ansible.builtin.assert:
+        that:
+          - "myAPIKey.changed == False"
+          - "'The api key myAPIKey does not exist or is expired.' in myAPIKey.msg"
+
+- name: Create an api key with custom permissions
+  community.elastic.elastic_api_key:
+    name: myAPIKeyAdvancedExample
+    state: present
+    expiration: 7d
+    role_descriptors:
+      "role-a":
+        cluster:
+          - all
+        indices:
+          - names:
+            - "index-a*"
+            privileges:
+              - read
+      "role-b":
+        cluster:
+          - all
+        indices:
+          - names:
+            - "index-b*"
+            privileges:
+              - all
+    <<: *elastic_index_parameters
+  register: myAPIKeyAdvancedExample
+
+- name: Verify return data
+  ansible.builtin.assert:
+    that:
+      - myAPIKeyAdvancedExample.changed
+      - "'The api key myAPIKeyAdvancedExample was successfully created.' in myAPIKeyAdvancedExample.msg"
+      - myAPIKeyAdvancedExample.api_key | length > 10
+      - myAPIKeyAdvancedExample.encoded | length > 20
+      - myAPIKeyAdvancedExample.id | length > 10
