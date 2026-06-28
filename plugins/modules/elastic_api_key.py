@@ -31,6 +31,12 @@ options:
   state:
     description:
       - The required state of the API key.
+      - It is not possible to hard delete a \
+        api key, so they are expired, Elastic \
+        will clean them up at some point.
+      - This means that you will encounter problems \
+        when attempting to quicky delete and recreate \
+        api keys with the same name.
     type: str
     choices:
       - present
@@ -52,6 +58,11 @@ options:
       - Arbitrary metadata that you want to associate with the API key. 
       - It supports nested data structure.
     type: dict
+  no_Log:
+    description:
+      - Protect module return values by setting no_log in exit_json to true
+    type: bool
+    default: true 
 '''
 
 EXAMPLES = r'''
@@ -251,6 +262,7 @@ def main():
         expiration=dict(type='int', default=None),
         role_descriptors=dict(type='dict', default={}),
         metadata=dict(type='dict', default={}),
+        no_log=dict(type='bool', default=True)
     )
 
     module = AnsibleModule(
@@ -280,7 +292,8 @@ def main():
                 module.exit_json(
                     changed=True, 
                     msg="The api key {0} was successfully created.".format(name),
-                    **response
+                    **response.
+                    no_log=module.params['no_log']
                 )
             elif state == "absent":
                 module.exit_json(changed=False, msg="The api key {0} does not exist.".format(name))
