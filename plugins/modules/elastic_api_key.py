@@ -41,7 +41,7 @@ options:
       - The expiration time for the API key. 
       - By default, API keys never expire.
     type: str
-    defaule: none
+    default: none
   role_descriptors:
     description:
       - An array of role descriptors for this API key. 
