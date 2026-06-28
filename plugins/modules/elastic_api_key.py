@@ -255,7 +255,11 @@ def main():
             if state == "present":
                 if module.check_mode is False:
                     response = create_api_key(module, client)
-                module.exit_json(changed=True, msg="The api key {0} was successfully created: {1}".format(name, str(response)))
+                module.exit_json(
+                    changed=True, 
+                    msg="The api key {0} was successfully created.".format(name),
+                    **response
+                )
             elif state == "absent":
                 module.exit_json(changed=False, msg="The api key {0} does not exist.".format(name))
         else:  # api key already exists, we don't update anything
