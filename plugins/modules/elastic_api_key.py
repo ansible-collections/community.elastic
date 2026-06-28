@@ -117,8 +117,7 @@ from ansible.module_utils._text import to_native
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
-import json
-
+import elasticsearch
 
 from ansible_collections.community.elastic.plugins.module_utils.elastic_common import (
     missing_required_lib,
@@ -130,17 +129,31 @@ from ansible_collections.community.elastic.plugins.module_utils.elastic_common i
 )
 
 def api_key_exists(client, name):
+
     """
-    Checks if an api key with the given name exists
+    Checks if an API key with the given name exists,
+    handling both v7 (body/query) and v8+ (name param).
     """
-    resp = client.security.query_api_keys(
-        query={
-            "match": {
-                "name": name
+    version = elasticsearch.VERSION  # tuple like (7, 17, 9) or (8, 12, 0)
+    major = version[0]
+
+    if major == 7:
+        # v7 uses body with query DSL
+        resp = client.security.query_api_keys(
+            body={
+                "query": {
+                    "match": {
+                        "name": name
+                    }
+                }
             }
-        }
-    )
+        )
+    else:
+        # v8+ uses explicit parameters (no query DSL)
+        resp = client.security.query_api_keys(name=name)
+
     return len(resp.get("api_keys", [])) > 0
+
 
 def create_api_key(module, client):
     """
