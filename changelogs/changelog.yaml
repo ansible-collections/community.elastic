@@ -58,4 +58,11 @@ releases:
       This is a maintenance release.
     bugfixes:
       - 122 - elastic_user - Fixes handling of user passwords when account already exists.
-    
+  1.4.0:
+    release_summary: |
+      This collection now supports Elastic 9.
+    modules:
+      - 127 - Adds elastic_logstash_pipeline module.
+      - 128 - Adds elastic_api_key module.
+    minor_changes:
+      - 125 - Adds Elastic 9 to supported versions.
