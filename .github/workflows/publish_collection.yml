@@ -48,7 +48,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload files to release
-        uses: svenstaro/upload-release-action@v4
+        uses: svenstaro/upload-release-action@v2.11.5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ansible_collections/community/elastic/community-elastic-latest.tar.gz
