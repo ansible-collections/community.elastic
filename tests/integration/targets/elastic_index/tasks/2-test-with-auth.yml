@@ -8,6 +8,10 @@
 
   block:
 
+  - name: Pause for a little bit
+    ansible.builtin.pause:
+      seconds: 5
+
   - name: Delete an index called myindex
     community.elastic.elastic_index:
       name: myindex
