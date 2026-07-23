@@ -71,7 +71,7 @@ jobs:
   #        python-version: 3.6
 
   #    - name: Install ansible-base (devel)
-  #      uses: nick-invision/retry@v3
+  #      uses: nick-invision/retry@v4
   #      with:
   #        timeout_minutes: 3
   #        max_attempts: 3
@@ -155,28 +155,28 @@ jobs:
           python-version: ${{ matrix.ansible_version_combinations.python_version }}
 
       - name: Install python packages
-        uses: nick-invision/retry@v3
+        uses: nick-invision/retry@v4
         with:
           timeout_minutes: 3
           max_attempts: 3
           command: pip install docker ${{ matrix.elasticsearch_version_combinations.elasticsearch_python_lib }} requests coverage
 
       - name: Install ansible-base (${{ matrix.ansible_version_combinations.ansible_version }})
-        uses: nick-invision/retry@v3
+        uses: nick-invision/retry@v4
         with:
           timeout_minutes: 3
           max_attempts: 3
           command: pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible_version_combinations.ansible_version }}.tar.gz --disable-pip-version-check
 
       - name: Install community.general
-        uses: nick-invision/retry@v3
+        uses: nick-invision/retry@v4
         with:
           timeout_minutes: 3
           max_attempts: 3
           command: ansible-galaxy collection install community.general -p ansible_collections/
 
       - name: Install community.docker
-        uses: nick-invision/retry@v3
+        uses: nick-invision/retry@v4
         with:
           timeout_minutes: 3
           max_attempts: 3
