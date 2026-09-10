@@ -66,3 +66,8 @@ releases:
       - 128 - Adds elastic_api_key module.
     minor_changes:
       - 125 - Adds Elastic 9 to supported versions.
+  1.4.1:
+    release_summary: |
+      This is a maintenance release.
+    bugfixes:
+      - 130 - Replaces deprecated imports.
