@@ -161,7 +161,7 @@ jobs:
           max_attempts: 3
           command: pip install docker ${{ matrix.elasticsearch_version_combinations.elasticsearch_python_lib }} requests coverage
 
-      - name: Install ansible-base (${{ matrix.ansible_version_combinations.ansible_version }})
+      - name: Install ansible-core (${{ matrix.ansible_version_combinations.ansible_version }})
         uses: nick-invision/retry@v4
         with:
           timeout_minutes: 3
