@@ -106,3 +106,22 @@
   until: '"You Know, for Search" in _result.content or "missing authentication credentials for REST request" in _result.content'
   retries: 30 # retry X times
   delay: 3 # pause for X sec b/w each call
+
+# GET / answers before a master is elected (multi-node) or cluster state is recovered, and with auth
+# Elastic answers 401 until the .security index is allocated, so wait for an authenticated, at least yellow health
+- name: Wait for Elastic cluster to be at least yellow
+  uri:
+    url: "http://127.0.0.1:9200/_cluster/health?wait_for_status=yellow&timeout=5s"
+    method: GET
+    user: "{{ 'elastic' if (docker_compose_file is defined and 'auth' in docker_compose_file) else omit }}"
+    password: "{{ 'secret' if (docker_compose_file is defined and 'auth' in docker_compose_file) else omit }}"
+    force_basic_auth: "{{ docker_compose_file is defined and 'auth' in docker_compose_file }}"
+    status_code:
+      - 200
+      - 401
+      - 408
+      - 503
+  register: _health_result
+  until: _health_result.status == 200 and _health_result.json.status in ['yellow', 'green']
+  retries: 30
+  delay: 3
