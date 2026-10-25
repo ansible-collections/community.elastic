@@ -52,7 +52,7 @@ These modules are tested on Debian and RHEL based distributions.
 ## Running the integration tests
 
 * Requirements
-  * [Python 3.5+](https://www.python.org/)
+  * [Python 3.13+](https://www.python.org/)
   * [pip](https://pypi.org/project/pip/)
   * [virtualenv](https://virtualenv.pypa.io/en/latest/) or [pipenv](https://pypi.org/project/pipenv/) if you prefer.
   * [git](https://git-scm.com/)
@@ -92,7 +92,7 @@ source venv/bin/activate
 cd elastic
 ```
 
-* Install the devel branch of ansible-base.
+* Install the devel branch of ansible-core (requires Python 3.13 or later).
 
 ```bash
 pip install https://github.com/ansible/ansible/archive/devel.tar.gz --disable-pip-version-check
@@ -107,19 +107,19 @@ Refference: tests/integration/integration_config.yml.template
 * Run integration tests for the elastic_user module.
 
 ```bash
-ansible-test integration -v --color yes --python 3.6 elastic_user
+ansible-test integration -v --color yes --python 3.13 elastic_user
 ```
 
 * Run integration tests for the elastic_cluster_health module.
 
 ```bash
-ansible-test integration -v --color yes --python 3.6 elastic_cluster_health
+ansible-test integration -v --color yes --python 3.13 elastic_cluster_health
 ```
 
 * Run tests for everything in the collection.
 
 ```bash
-ansible-test integration -v --color yes --python 3.6
+ansible-test integration -v --color yes --python 3.13
 ```
 
 
