@@ -18,7 +18,6 @@
       <<: *elastic_index_parameters
     register: elastic
     ignore_errors: yes
-    retries: 5
 
   - assert:
       that:
