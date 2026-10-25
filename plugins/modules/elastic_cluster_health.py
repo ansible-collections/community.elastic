@@ -96,7 +96,7 @@ EXAMPLES = r'''
 
 - name: Ensure cluster health status is green with 90 seconds timeout
   community.elastic.elastic_cluster_health:
-    wait_for_status: "green"
+    wait_for: "green"
     timeout: 90
 
 - name: Ensure at least 10 nodes are up with 2m timeout
