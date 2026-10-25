@@ -98,7 +98,8 @@
   community.elastic.elastic_cluster_health:
     wait_for: "status"
     to_be: "green"
-    timeout: 300
+    poll: 30
+    interval: 5
     login_user: "{{ 'elastic' if (docker_compose_file is defined and 'auth' in docker_compose_file) else omit }}"
     login_password:  "{{ 'secret' if (docker_compose_file is defined and 'auth' in docker_compose_file) else omit }}"
     auth_method: "{{ 'http_auth' if (docker_compose_file is defined and 'auth' in docker_compose_file) else omit }}"
