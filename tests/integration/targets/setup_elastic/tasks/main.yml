@@ -126,9 +126,10 @@
   retries: 30
   delay: 3
 
-- name: Ensure cluster health status is green with 90 seconds timeout
+- name: Ensure cluster health status is green
   community.elastic.elastic_cluster_health:
-    wait_for: "green"
+    wait_for: "status"
+    to_be: "green"
     timeout: 300
     login_user: "{{ 'elastic' if (docker_compose_file is defined and 'auth' in docker_compose_file) else omit }}"
     login_password:  "{{ 'secret' if (docker_compose_file is defined and 'auth' in docker_compose_file) else omit }}"
