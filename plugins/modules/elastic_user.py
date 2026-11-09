@@ -168,25 +168,25 @@ def user_is_different(current_user, module):
     Check if user is different
     '''
     name = module.params['name']
-    user = {
-        name: {
-            "username": module.params['name'],
-            "roles": module.params['roles'] or [],
-            "enabled": module.params['enabled']
-        }
+    current = current_user.get(name, {})
+    # Only compare the fields managed by the module. Elastic returns
+    # extra fields (e.g. email/full_name set to null when undefined),
+    # which must not be considered as a difference.
+    desired = {
+        "roles": module.params['roles'] or [],
+        "enabled": module.params['enabled']
     }
-    if module.params['full_name'] is not None:
-        user[name]['full_name'] = module.params['full_name']
-    if module.params['email'] is not None:
-        user[name]['email'] = module.params['email']
-    if module.params['metadata'] is not None:
-        user[name]['metadata'] = module.params['metadata']
-    dict1 = json.dumps(current_user, sort_keys=True)
-    dict2 = json.dumps(user, sort_keys=True)
-    is_different = False
-    if dict1 != dict2:
-        is_different = True
-    return is_different
+    for key in ("full_name", "email", "metadata"):
+        if module.params[key] is not None:
+            desired[key] = module.params[key]
+    for key, value in desired.items():
+        current_value = current.get(key)
+        if key == "roles":
+            value = sorted(value)
+            current_value = sorted(current_value or [])
+        if json.dumps(current_value, sort_keys=True) != json.dumps(value, sort_keys=True):
+            return True
+    return False
 
 
 # ================

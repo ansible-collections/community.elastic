@@ -174,4 +174,38 @@
         - "elastic.changed == True"
         - "'The user rhys was successfully updated' in elastic.msg"
 
+  # Elastic returns email/full_name as null when they are not defined.
+  # This must not be reported as a change.
+  - name: Create a user without email nor full_name
+    community.elastic.elastic_user:
+      name: user-no-email
+      password: secret
+      state: present
+      update_password: "on_create"
+      roles:
+        - "role1"
+      <<: *elastic_index_parameters
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed == True"
+        - "'The user user-no-email was successfully created' in elastic.msg"
+
+  - name: Create the same user again - should NOT change
+    community.elastic.elastic_user:
+      name: user-no-email
+      password: secret
+      state: present
+      update_password: "on_create"
+      roles:
+        - "role1"
+      <<: *elastic_index_parameters
+    register: elastic
+
+  - assert:
+      that:
+        - "elastic.changed == False"
+        - "elastic.msg == 'The user user-no-email already exists as configured.'"
+
 # TODO check_mode tests - See elastic_role tests
